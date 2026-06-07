@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOLD'N GENIUZ &mdash; Premium Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#FFD700;--gold-light:#FFE566;--gold-dark:#C9A800;--black:#060609;--dark:#0C0C12;--dark2:#111118;--dark3:#18181F;--dark4:#202028;--white:#E8E8F0;--grey:#6A6A80;--grey2:#9090A8;--cyan:#00E5FF;--green:#00FF88;--amber:#FFB300;--red:#FF4444;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--black);color:var(--white);font-family:'Exo 2',sans-serif;overflow-x:hidden;}
+.grid-bg{position:fixed;inset:0;background-image:linear-gradient(rgba(255,215,0,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,215,0,0.025) 1px,transparent 1px);background-size:80px 80px;pointer-events:none;z-index:0;}
+.nav{position:sticky;top:0;z-index:1000;background:rgba(6,6,9,0.95);backdrop-filter:blur(20px);border-bottom:1px solid rgba(255,215,0,0.18);}
+.nav-inner{max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:66px;padding:0 2rem;}
+.nav-logo{font-family:'Orbitron',sans-serif;font-weight:900;font-size:.9rem;background:linear-gradient(135deg,var(--gold),var(--gold-dark));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.12em;text-decoration:none;}
+.portal-container{max-width:1200px;margin:4rem auto;padding:0 2rem;position:relative;z-index:1;}
+.section-title{font-family:'Orbitron',sans-serif;font-weight:800;font-size:2.5rem;text-align:center;margin-bottom:1rem;}
+.section-title span{color:var(--gold);}
+.gateway-notice{background:var(--dark2);border:1.5px solid var(--amber);border-radius:6px;padding:2rem;margin-bottom:3rem;text-align:center;box-shadow:0 0 20px rgba(255,179,0,0.15);}
+.gateway-notice h2{font-family:'Orbitron',sans-serif;color:var(--amber);margin-bottom:0.5rem;font-size:1.2rem;letter-spacing:0.1em;}
+.gateway-notice p{color:var(--grey2);font-size:0.9rem;max-width:700px;margin:0 auto 1.5rem;line-height:1.6;}
+.subject-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.5rem;}
+.subject-card{background:var(--dark2);border:1.5px solid rgba(255,255,255,.06);border-radius:4px;padding:2rem 1.5rem;text-align:center;position:relative;transition:all 0.3s;}
+.subject-card:hover{border-color:var(--cyan);transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,229,255,0.1);}
+.subject-icon{font-size:2.5rem;margin-bottom:1rem;display:block;}
+.subject-name{font-family:'Orbitron',sans-serif;font-weight:700;font-size:1.2rem;color:var(--white);margin-bottom:0.5rem;}
+.lock-badge{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--cyan);background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.2);padding:0.2rem 0.6rem;border-radius:2px;letter-spacing:0.1em;text-transform:uppercase;}
+.btn-wa{background:linear-gradient(135deg,#25D366,#128C7E);color:#fff;border:none;padding:0.75rem 1.5rem;font-family:'Orbitron',sans-serif;font-weight:700;font-size:0.75rem;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;border-radius:3px;text-decoration:none;display:inline-block;transition:0.2s;}
+.btn-wa:hover{box-shadow:0 5px 20px rgba(37,211,102,0.4);transform:translateY(-2px);}
+.btn-disabled{display:block;width:100%;margin-top:1.5rem;padding:0.6rem;background:var(--dark3);border:1px solid rgba(255,255,255,0.05);color:var(--grey);font-family:'Share Tech Mono',monospace;font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;text-decoration:none;border-radius:2px;cursor:not-allowed;}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">GOLD'N GENIUZ</a>
+  </div>
+</nav>
+
+<div class="portal-container">
+  <h1 class="section-title">PREMIUM <span>PORTAL</span></h1>
+  
+  <div class="gateway-notice">
+    <h2>⚠️ PREMIUM ACCESS VERIFICATION REQUIRED</h2>
+    <p>To view resource modules and uploaded materials, students must complete payment and verify their enrollment. Please click below to send your student details alongside a picture/screenshot of your payment receipt.</p>
+    <a href="https://api.whatsapp.com/send?phone=18762160798&text=Hello%20Gold%27n%20Geniuz%21%20I%20want%20to%20enroll%20in%20a%20Premium%20Subject.%20Here%20are%20my%20details%20and%20attached%20receipt%3A" target="_blank" class="btn-wa">
+      📲 SUBMIT ENROLLMENT & RECEIPT VIA WHATSAPP
+    </a>
+  </div>
+
+  <div class="subject-grid">
+    <div class="subject-card">
+      <span class="subject-icon">🧬</span>
+      <div class="subject-name">Biology</div>
+      <span class="lock-badge">Premium Vault</span>
+      <a href="#" class="btn-disabled" onclick="alert('Access Restricted. You must first submit your payment receipt via WhatsApp to unlock this subject vault.')">Locked Module</a>
+    </div>
+
+    <div class="subject-card">
+      <span class="subject-icon">🧪</span>
+      <div class="subject-name">Chemistry</div>
+      <span class="lock-badge">Premium Vault</span>
+      <a href="#" class="btn-disabled" onclick="alert('Access Restricted. You must first submit your payment receipt via WhatsApp to unlock this subject vault.')">Locked Module</a>
+    </div>
+
+    <div class="subject-card">
+      <span class="subject-icon">📐</span>
+      <div class="subject-name">Mathematics</div>
+      <span class="lock-badge">Premium Vault</span>
+      <a href="#" class="btn-disabled" onclick="alert('Access Restricted. You must first submit your payment receipt via WhatsApp to unlock this subject vault.')">Locked Module</a>
+    </div>
+
+    <div class="subject-card">
+      <span class="subject-icon">⚛️</span>
+      <div class="subject-name">Physics</div>
+      <span class="lock-badge">Premium Vault</span>
+      <a href="#" class="btn-disabled" onclick="alert('Access Restricted. You must first submit your payment receipt via WhatsApp to unlock this subject vault.')">Locked Module</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>
