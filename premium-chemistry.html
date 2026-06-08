@@ -34,6 +34,27 @@ h1 span{color:var(--gold);}
 .btn-view:hover{background:var(--cyan);color:#000;}
 .back-link{display:inline-block;margin-bottom:2rem;color:var(--grey2);text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:0.8rem;transition:0.2s;}
 .back-link:hover{color:var(--gold);}
+  /* MOBILE OPTIMIZATION FOR BUTTONS */
+@media (max-width: 600px) {
+  .resource-card {
+    flex-direction: column; /* Stacks the text info and the buttons vertically */
+    align-items: stretch;   /* Stacks them neatly across the card width */
+    gap: 1.5rem;            /* Puts clean breathing room between text and buttons */
+    padding: 1.25rem;
+  }
+
+  .action-buttons {
+    width: 100%;            /* Force the button container to span the whole card */
+    flex-direction: column; /* Stack VIEW above DOWNLOAD */
+    gap: 0.75rem;           /* Space between the two buttons */
+  }
+
+  .btn-action {
+    width: 100%;            /* Makes each button wide and easy to tap with a thumb */
+    text-align: center;     /* Centers your "VIEW" and "DOWNLOAD" text */
+    padding: 0.8rem 1.2rem; /* Slightly chunkier tap target for mobile fingers */
+  }
+}
 </style>
 </head>
 <body>
