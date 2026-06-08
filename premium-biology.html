@@ -26,33 +26,32 @@ h1 span{color:var(--gold);}
 .resource-tag{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--green);text-transform:uppercase;letter-spacing:0.1em;}
 .resource-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);}
 .resource-meta{font-size:0.8rem;color:var(--grey2);line-height:1.4;}
-.action-buttons{display:flex;gap:1rem;}
-.btn-action{font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none;transition:0.2s;letter-spacing:0.05em;}
-.btn-download{background:transparent;border:1.5px solid var(--green);color:var(--green);}
-.btn-download:hover{background:var(--green);color:#000;}
-.btn-view{background:transparent;border:1.5px solid var(--cyan);color:var(--cyan);}
-.btn-view:hover{background:var(--cyan);color:#000;}
+
+/* MULTI-FILE ACTION SELECT DROPDOWN STYLING */
+.action-dropdown-container{flex-shrink:0;}
+.vault-dropdown{font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;padding:0.6rem 2.5rem 0.6rem 1.2rem;background:var(--black);border:1.5px solid var(--green);color:var(--green);border-radius:2px;letter-spacing:0.05em;cursor:pointer;outline:none;transition:0.2s;appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--green) 50%),linear-gradient(135deg,var(--green) 50%,transparent 50%);background-position:calc(100% - 20px) calc(1em + 2px),calc(100% - 15px) calc(1em + 2px);background-size:5px 5px,5px 5px;background-repeat:no-repeat;}
+.vault-dropdown:hover{background-color:rgba(0,255,136,0.05);border-color:var(--cyan);color:var(--cyan);background-image:linear-gradient(45deg,transparent 50%,var(--cyan) 50%),linear-gradient(135deg,var(--cyan) 50%,transparent 50%);}
+.vault-dropdown option{background:var(--dark2);color:var(--white);font-family:'sans-serif';font-weight:normal;}
+
 .back-link{display:inline-block;margin-bottom:2rem;color:var(--grey2);text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:0.8rem;transition:0.2s;}
 .back-link:hover{color:var(--gold);}
-  /* MOBILE OPTIMIZATION FOR BUTTONS */
+
+/* MOBILE OPTIMIZATION */
 @media (max-width: 600px) {
   .resource-card {
-    flex-direction: column; /* Stacks the text info and the buttons vertically */
-    align-items: stretch;   /* Stacks them neatly across the card width */
-    gap: 1.5rem;            /* Puts clean breathing room between text and buttons */
+    flex-direction: column; 
+    align-items: stretch;   
+    gap: 1.5rem;            
     padding: 1.25rem;
   }
-
-  .action-buttons {
-    width: 100%;            /* Force the button container to span the whole card */
-    flex-direction: column; /* Stack VIEW above DOWNLOAD */
-    gap: 0.75rem;           /* Space between the two buttons */
+  .action-dropdown-container {
+    width: 100%;            
   }
-
-  .btn-action {
-    width: 100%;            /* Makes each button wide and easy to tap with a thumb */
-    text-align: center;     /* Centers your "VIEW" and "DOWNLOAD" text */
-    padding: 0.8rem 1.2rem; /* Slightly chunkier tap target for mobile fingers */
+  .vault-dropdown {
+    width: 100%;            
+    text-align: center;     
+    padding: 0.8rem 1.2rem; 
+    background-position: calc(100% - 20px) calc(1.1em + 2px),calc(100% - 15px) calc(1.1em + 2px);
   }
 }
 </style>
@@ -82,9 +81,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Cell Structure, Microbes & Transport Systems</h3>
         <p class="resource-meta">Masterclass study notes covering prokaryotic vs eukaryotic grids, specialized cells, and passive vs active transport dynamics (Diffusion, Osmosis).</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -94,9 +98,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Ecological Energetics, Food Webs & Biotic Interdependence</h3>
         <p class="resource-meta">Complete mapping of energy flow, food chains, predator-prey dynamics, symbiosis (mutualism, parasitism), and nutrient cycles (Carbon, Nitrogen).</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -108,9 +117,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Nutrition, Bio-Energetics & Photosynthesis Mechanics</h3>
         <p class="resource-meta">Light vs Dark reactions, structural adaptations of leaves, human digestive chemistry, enzyme profiles, and deficiency diseases.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -120,9 +134,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Respiration, Gas Exchange & Internal Transport</h3>
         <p class="resource-meta">Aerobic vs anaerobic equations, human vs fish respiratory mechanics, cardiovascular architecture (blood composition, heart cycle), and plant vascular systems.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -132,9 +151,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Excretion, Homeostasis & Co-ordination Systems</h3>
         <p class="resource-meta">Kidney nephron functions, osmoregulation, feedback loops, nervous system wiring (reflex arcs, brain regions), and endocrine control.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -146,9 +170,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Inheritance, Chromosomes & Mitosis/Meiosis Splits</h3>
         <p class="resource-meta">DNA structural blueprints, cell division comparison matrices, genetic terminology (alleles, genotypes), and monohybrid crosses.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -158,9 +187,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Natural Selection, Mutations & Genetic Engineering</h3>
         <p class="resource-meta">Continuous vs discontinuous variation, evolutionary theory mechanisms, artificial selection instances, and modern biotechnology frameworks.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -172,13 +206,47 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">SBA Experimental Design & Lab Criteria Matrix</h3>
         <p class="resource-meta">Full structural guides for ORR (Organization, Recording, and Presentation), AI (Analysis and Interpretation), and PD (Planning and Designing) assessment criteria.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
   </div>
 </div>
+
+<script>
+function handleVaultAction(selectElement) {
+  const card = selectElement.closest('.resource-card');
+  const titleElement = card.querySelector('.resource-title');
+  if (!titleElement || !selectElement.value) return;
+
+  const docTitle = titleElement.innerText.trim();
+  // Strip out punctuation and slash characters, replacing spaces with underscores
+  const baseName = docTitle.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+  const selectedType = selectElement.value; // Retrieves: "notes", "past_papers", etc.
+  
+  const finalFilePath = `vault-assets/${baseName}_${selectedType}.pdf`;
+
+  if (selectedType === "notes") {
+    // Open standard notes directly in a clean browser window
+    window.open(finalFilePath, '_blank');
+  } else {
+    // Generate simulated dynamic link to instantly force document download
+    const link = document.createElement('a');
+    link.href = finalFilePath;
+    link.download = `${baseName}_${selectedType}.pdf`;
+    link.click();
+  }
+
+  // Soft-reset selector focus back to default option state
+  selectElement.value = "";
+}
+</script>
 </body>
 </html>
