@@ -50,35 +50,61 @@ body{background:var(--black);color:var(--white);font-family:'Exo 2',sans-serif;o
     </a>
   </div>
 
-  <div class="subject-grid">
-    <div class="subject-card">
-  <span class="subject-icon">🧬</span>
-  <div class="subject-name">Biology</div>
-  <span class="lock-badge" style="color: var(--green); border-color: var(--green);">Unlocked</span>
-  <a href="premium-biology.html" class="btn-action" style="background: transparent; border: 1.5px solid var(--green); color: var(--green); text-decoration: none; display: block; text-align: center; font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: 700; padding: 0.6rem 1.2rem; margin-top: 1rem; transition: 0.2s;">ENTER VAULT</a>
-</div>
+ <div class="subject-grid">
 
-    <div class="subject-card">
-      <span class="subject-icon">🧪</span>
-      <div class="subject-name">Chemistry</div>
-      <span class="lock-badge">Premium Vault</span>
-      <a href="#" class="btn-disabled" onclick="alert('Access Restricted. You must first submit your payment receipt via WhatsApp to unlock this subject vault.')">Locked Module</a>
-    </div>
-
-    <div class="subject-card">
-      <span class="subject-icon">📐</span>
-      <div class="subject-name">Mathematics</div>
-      <span class="lock-badge">Premium Vault</span>
-      <a href="#" class="btn-disabled" onclick="alert('Access Restricted. You must first submit your payment receipt via WhatsApp to unlock this subject vault.')">Locked Module</a>
-    </div>
-
-    <div class="subject-card">
-      <span class="subject-icon">⚛️</span>
-      <div class="subject-name">Physics</div>
-      <span class="lock-badge">Premium Vault</span>
-      <a href="#" class="btn-disabled" onclick="alert('Access Restricted. You must first submit your payment receipt via WhatsApp to unlock this subject vault.')">Locked Module</a>
-    </div>
+  <div class="subject-card" style="background: var(--dark2); border: 1px solid rgba(0,255,136,0.15); padding: 2rem; border-radius: 4px; text-align: center;">
+    <span class="subject-icon" style="font-size: 2.5rem; display: block; margin-bottom: 1rem;">🧬</span>
+    <div class="subject-name" style="font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.2rem; margin-bottom: 0.25rem;">Biology</div>
+    <span class="lock-badge" id="badge-bio" style="font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--grey2); border: 1px solid var(--grey2); padding: 2px 6px; text-transform: uppercase;">🔒 RESTRICTED</span>
+    <a href="#" class="btn-action" onclick="gatekeeper(event, 'biology')" style="background: transparent; border: 1.5px solid var(--gold); color: var(--gold); text-decoration: none; display: block; text-align: center; font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: 700; padding: 0.6rem 1.2rem; margin-top: 1.5rem; letter-spacing: 0.05em;">ENTER VAULT</a>
   </div>
+
+  <div class="subject-card" style="background: var(--dark2); border: 1px solid rgba(255,136,0,0.15); padding: 2rem; border-radius: 4px; text-align: center;">
+    <span class="subject-icon" style="font-size: 2.5rem; display: block; margin-bottom: 1rem;">🧪</span>
+    <div class="subject-name" style="font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.2rem; margin-bottom: 0.25rem;">Chemistry</div>
+    <span class="lock-badge" id="badge-chem" style="font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--grey2); border: 1px solid var(--grey2); padding: 2px 6px; text-transform: uppercase;">🔒 RESTRICTED</span>
+    <a href="#" class="btn-action" onclick="gatekeeper(event, 'chemistry')" style="background: transparent; border: 1.5px solid var(--gold); color: var(--gold); text-decoration: none; display: block; text-align: center; font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: 700; padding: 0.6rem 1.2rem; margin-top: 1.5rem; letter-spacing: 0.05em;">ENTER VAULT</a>
+  </div>
+
+  <div class="subject-card" style="background: var(--dark2); border: 1px solid rgba(160,32,240,0.15); padding: 2rem; border-radius: 4px; text-align: center;">
+    <span class="subject-icon" style="font-size: 2.5rem; display: block; margin-bottom: 1rem;">📐</span>
+    <div class="subject-name" style="font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.2rem; margin-bottom: 0.25rem;">Mathematics</div>
+    <span class="lock-badge" id="badge-math" style="font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--grey2); border: 1px solid var(--grey2); padding: 2px 6px; text-transform: uppercase;">🔒 RESTRICTED</span>
+    <a href="#" class="btn-action" onclick="gatekeeper(event, 'mathematics')" style="background: transparent; border: 1.5px solid var(--gold); color: var(--gold); text-decoration: none; display: block; text-align: center; font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: 700; padding: 0.6rem 1.2rem; margin-top: 1.5rem; letter-spacing: 0.05em;">ENTER VAULT</a>
+  </div>
+
+  <div class="subject-card" style="background: var(--dark2); border: 1px solid rgba(0,102,255,0.15); padding: 2rem; border-radius: 4px; text-align: center;">
+    <span class="subject-icon" style="font-size: 2.5rem; display: block; margin-bottom: 1rem;">⚛️</span>
+    <div class="subject-name" style="font-family: 'Orbitron', sans-serif; font-weight: 800; font-size: 1.2rem; margin-bottom: 0.25rem;">Physics</div>
+    <span class="lock-badge" id="badge-physics" style="font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--grey2); border: 1px solid var(--grey2); padding: 2px 6px; text-transform: uppercase;">🔒 RESTRICTED</span>
+    <a href="#" class="btn-action" onclick="gatekeeper(event, 'physics')" style="background: transparent; border: 1.5px solid var(--gold); color: var(--gold); text-decoration: none; display: block; text-align: center; font-family: 'Orbitron', sans-serif; font-size: 0.7rem; font-weight: 700; padding: 0.6rem 1.2rem; margin-top: 1.5rem; letter-spacing: 0.05em;">ENTER VAULT</a>
+  </div>
+
 </div>
+
+<script>
+function gatekeeper(event, subject) {
+  event.preventDefault();
+  
+  // Set your customized secret keys for each vault here:
+  const accessKeys = {
+    biology: "BIO-GENIUZ-26",
+    chemistry: "CHEM-GENIUZ-26",
+    mathematics: "MATH-GENIUZ-26",
+    physics: "PHYS-GENIUZ-26"
+  };
+
+  let userInput = prompt(`ENTER DECRYPTION KEY FOR PREMIUM ${subject.toUpperCase()}:`);
+  
+  if (userInput === null) return; // Student pressed cancel
+  
+  if (userInput === accessKeys[subject]) {
+    // Access authorized! Redirect to corresponding syllabus file
+    window.location.href = `premium-${subject}.html`;
+  } else {
+    alert("ACCESS DENIED: Invalid Security Key. Verify receipt credentials via WhatsApp.");
+  }
+}
+</script>
 </body>
 </html>
