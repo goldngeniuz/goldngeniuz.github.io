@@ -26,16 +26,17 @@ h1 span{color:var(--gold);}
 .resource-tag{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;}
 .resource-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);}
 .resource-meta{font-size:0.8rem;color:var(--grey2);line-height:1.4;}
-.action-buttons{display:flex;gap:1rem;flex-shrink:0;}
-.btn-action{font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none;transition:0.2s;letter-spacing:0.05em;}
-.btn-download{background:transparent;border:1.5px solid var(--orange);color:var(--orange);}
-.btn-download:hover{background:var(--orange);color:#000;}
-.btn-view{background:transparent;border:1.5px solid var(--cyan);color:var(--cyan);}
-.btn-view:hover{background:var(--cyan);color:#000;}
+
+/* DROPDOWN CONTAINER STYLING */
+.action-dropdown-container{flex-shrink:0;}
+.vault-dropdown{font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;padding:0.6rem 2.5rem 0.6rem 1.2rem;background:var(--black);border:1.5px solid var(--orange);color:var(--orange);border-radius:2px;letter-spacing:0.05em;cursor:pointer;outline:none;transition:0.2s;appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--orange) 50%),linear-gradient(135deg,var(--orange) 50%,transparent 50%);background-position:calc(100% - 20px) calc(1em + 2px),calc(100% - 15px) calc(1em + 2px);background-size:5px 5px,5px 5px;background-repeat:no-repeat;}
+.vault-dropdown:hover{background-color:rgba(255,136,0,0.05);border-color:var(--cyan);color:var(--cyan);background-image:linear-gradient(45deg,transparent 50%,var(--cyan) 50%),linear-gradient(135deg,var(--cyan) 50%,transparent 50%);}
+.vault-dropdown option{background:var(--dark2);color:var(--white);font-family:'sans-serif';font-weight:normal;}
+
 .back-link{display:inline-block;margin-bottom:2rem;color:var(--grey2);text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:0.8rem;transition:0.2s;}
 .back-link:hover{color:var(--gold);}
 
-/* MOBILE OPTIMIZATION FOR BUTTONS */
+/* MOBILE DEVICE ADJUSTMENTS */
 @media (max-width: 600px) {
   .resource-card {
     flex-direction: column; 
@@ -46,15 +47,14 @@ h1 span{color:var(--gold);}
   .resource-info {
     padding-right: 0;
   }
-  .action-buttons {
+  .action-dropdown-container {
     width: 100%;            
-    flex-direction: column; 
-    gap: 0.75rem;           
   }
-  .btn-action {
+  .vault-dropdown {
     width: 100%;            
     text-align: center;     
     padding: 0.8rem 1.2rem; 
+    background-position: calc(100% - 20px) calc(1.1em + 2px),calc(100% - 15px) calc(1.1em + 2px);
   }
 }
 </style>
@@ -84,19 +84,31 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">States of Matter, Mixtures & Separation Techniques</h3>
         <p class="resource-meta">Comprehensive breakdown of particulate theory, diffusion, osmosis, and complex separation mechanisms (fractional distillation, chromatography, and extraction matrices).</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
-    </div> <div class="resource-card">
+    </div>
+
+    <div class="resource-card">
       <div class="resource-info">
         <span class="resource-tag">Section A &bull; Unit 4-6</span>
         <h3 class="resource-title">Atomic Structure, Periodicity & Chemical Bonding</h3>
         <p class="resource-meta">Subatomic architecture, isotopes, periodic trends, ionic vs covalent lattices, metallic structures, and physical properties master grids.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -106,9 +118,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">The Mole Concept, Stoichiometry & Redox Reactions</h3>
         <p class="resource-meta">Balancing ionic equations, mass/volume mole calculations, molar concentration math, oxidation states, and reducing/oxidizing agent test grids.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -120,9 +137,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Functional Groups, Naming & Homologous Series</h3>
         <p class="resource-meta">IUPAC rules for Alkanes, Alkenes, Alcohols, and Carboxylic acids. Structural, molecular, and fully displayed formula diagrams.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -132,9 +154,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Organic Reactions & Polymerization Matrices</h3>
         <p class="resource-meta">Substitution vs Addition mechanisms, combustion dynamics, esterification formulas, and condensation vs addition polymers (Natural vs Synthetic).</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -146,9 +173,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Characteristics of Metals & Qualitative Analysis</h3>
         <p class="resource-meta">Reactivity series mechanics, extraction of Iron (Blast Furnace) and Aluminium, action of heat on nitrates/carbonates, and cation/anion identification tests.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -158,9 +190,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Non-Metals & Industrial Production Dynamics</h3>
         <p class="resource-meta">Properties of Carbon, Sulfur, and Nitrogen. Industrial focus on the Haber Process (Ammonia generation) and Contact Process (Sulfuric acid creation).</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -172,9 +209,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Chemistry SBA Standard Operations & Writing Protocols</h3>
         <p class="resource-meta">Perfect data recording setups for Volumetric Analysis (Titrations), Qualitative Observations, Rates of Reaction plots, and Plan & Design experimental hypotheses.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -182,30 +224,33 @@ h1 span{color:var(--gold);}
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const resourceCards = document.querySelectorAll(".resource-card");
+function handleVaultAction(selectElement) {
+  const card = selectElement.closest('.resource-card');
+  const titleElement = card.querySelector('.resource-title');
+  if (!titleElement || !selectElement.value) return;
 
-  resourceCards.forEach(card => {
-    const titleElement = card.querySelector(".resource-title");
-    if (!titleElement) return;
+  const docTitle = titleElement.innerText.trim();
+  // Strip special characters and turn spaces into underscores
+  const baseName = docTitle.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+  const selectedType = selectElement.value; // Get selection value ("notes", "past_papers", etc.)
+  
+  // Construct the targeted dynamic asset link
+  const finalFilePath = `vault-assets/${baseName}_${selectedType}.pdf`;
 
-    const docTitle = titleElement.innerText.trim();
-    const safeFileName = docTitle.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase() + ".pdf";
-    const fileStoragePath = `vault-assets/${safeFileName}`;
+  if (selectedType === "notes") {
+    // Stream lecture notes in a clean separate window layer
+    window.open(finalFilePath, '_blank');
+  } else {
+    // Generate an instantaneous automated background trigger for downloadeable sheets
+    const link = document.createElement('a');
+    link.href = finalFilePath;
+    link.download = `${baseName}_${selectedType}.pdf`;
+    link.click();
+  }
 
-    const viewBtn = card.querySelector(".btn-view");
-    if (viewBtn) {
-      viewBtn.setAttribute("href", fileStoragePath);
-      viewBtn.setAttribute("target", "_blank");
-    }
-
-    const downloadBtn = card.querySelector(".btn-download");
-    if (downloadBtn) {
-      downloadBtn.setAttribute("href", fileStoragePath);
-      downloadBtn.setAttribute("download", safeFileName);
-    }
-  });
-});
+  // Soft-reset the choice row back to placeholder state
+  selectElement.value = "";
+}
 </script>
 </body>
 </html>
