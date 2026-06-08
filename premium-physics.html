@@ -26,33 +26,32 @@ h1 span{color:var(--gold);}
 .resource-tag{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--blue);text-transform:uppercase;letter-spacing:0.1em;}
 .resource-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);}
 .resource-meta{font-size:0.8rem;color:var(--grey2);line-height:1.4;}
-.action-buttons{display:flex;gap:1rem;}
-.btn-action{font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none;transition:0.2s;letter-spacing:0.05em;}
-.btn-download{background:transparent;border:1.5px solid var(--blue);color:var(--blue);}
-.btn-download:hover{background:var(--blue);color:#000;}
-.btn-view{background:transparent;border:1.5px solid var(--cyan);color:var(--cyan);}
-.btn-view:hover{background:var(--cyan);color:#000;}
+
+/* MULTI-FILE ACTION SELECT DROPDOWN STYLING */
+.action-dropdown-container{flex-shrink:0;}
+.vault-dropdown{font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;padding:0.6rem 2.5rem 0.6rem 1.2rem;background:var(--black);border:1.5px solid var(--blue);color:var(--blue);border-radius:2px;letter-spacing:0.05em;cursor:pointer;outline:none;transition:0.2s;appearance:none;-webkit-appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--blue) 50%),linear-gradient(135deg,var(--blue) 50%,transparent 50%);background-position:calc(100% - 20px) calc(1em + 2px),calc(100% - 15px) calc(1em + 2px);background-size:5px 5px,5px 5px;background-repeat:no-repeat;}
+.vault-dropdown:hover{background-color:rgba(0,102,255,0.05);border-color:var(--cyan);color:var(--cyan);background-image:linear-gradient(45deg,transparent 50%,var(--cyan) 50%),linear-gradient(135deg,var(--cyan) 50%,transparent 50%);}
+.vault-dropdown option{background:var(--dark2);color:var(--white);font-family:'sans-serif';font-weight:normal;}
+
 .back-link{display:inline-block;margin-bottom:2rem;color:var(--grey2);text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:0.8rem;transition:0.2s;}
 .back-link:hover{color:var(--gold);}
-  /* MOBILE OPTIMIZATION FOR BUTTONS */
+
+/* MOBILE OPTIMIZATION */
 @media (max-width: 600px) {
   .resource-card {
-    flex-direction: column; /* Stacks the text info and the buttons vertically */
-    align-items: stretch;   /* Stacks them neatly across the card width */
-    gap: 1.5rem;            /* Puts clean breathing room between text and buttons */
+    flex-direction: column; 
+    align-items: stretch;   
+    gap: 1.5rem;            
     padding: 1.25rem;
   }
-
-  .action-buttons {
-    width: 100%;            /* Force the button container to span the whole card */
-    flex-direction: column; /* Stack VIEW above DOWNLOAD */
-    gap: 0.75rem;           /* Space between the two buttons */
+  .action-dropdown-container {
+    width: 100%;            
   }
-
-  .btn-action {
-    width: 100%;            /* Makes each button wide and easy to tap with a thumb */
-    text-align: center;     /* Centers your "VIEW" and "DOWNLOAD" text */
-    padding: 0.8rem 1.2rem; /* Slightly chunkier tap target for mobile fingers */
+  .vault-dropdown {
+    width: 100%;            
+    text-align: center;     
+    padding: 0.8rem 1.2rem; 
+    background-position: calc(100% - 20px) calc(1.1em + 2px),calc(100% - 15px) calc(1.1em + 2px);
   }
 }
 </style>
@@ -82,9 +81,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Vectors, Statics, Moments & Hydrostatics</h3>
         <p class="resource-meta">Derivations and scalar/vector splits, center of gravity analysis, principle of moments proofs, Archimedes' principle, and pressure depth derivations ($P = \rho g h$).</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -94,9 +98,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Dynamics, Momentum & Kinetic Calculations</h3>
         <p class="resource-meta">Newton's three laws of motion, ticker-tape vector charts, linear momentum conservation equations, work-energy transformations, and power metrics.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -108,9 +117,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Kinetic Theory, Gas Laws & Thermometry</h3>
         <p class="resource-meta">Molecular dynamics models, macroscopic properties links, liquid-in-glass calibration curves, and absolute temperature laws (Boyle's, Charles's, Pressure Law).</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -120,9 +134,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Thermal Energy Capacities & Phase Changes</h3>
         <p class="resource-meta">Specific heat capacity vs specific latent heat calculation models, heating/cooling curve analytics, and conduction, convection, and radiation transfers.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -134,9 +153,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Wave Mechanics & Electromagnetic Spectrum</h3>
         <p class="resource-meta">Transverse vs longitudinal wave profiles, universal equation tracking ($v = f \lambda$), sound pitch/loudness links, and electromagnetic radiation application tables.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -146,9 +170,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Geometrical Optics: Reflection, Refraction & Lenses</h3>
         <p class="resource-meta">Snell's Law calculations, total internal reflection (critical angles), real vs virtual image tracing, and converging lens principal axis focal charts.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -160,9 +189,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Electrostatics & Current Electricity Networks</h3>
         <p class="resource-meta">Electric fields, charge behaviors, Ohm's Law parameters, and comprehensive series/parallel network calculations ($R_s$ and $R_p$ layouts).</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -172,9 +206,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Magnetism, Electromagnetism & Induction</h3>
         <p class="resource-meta">Magnetic field mapping, force on conductors (Fleming's Left-Hand Rule), Faraday's and Lenz's laws of induction, and alternating current step-up/down transformer dynamics.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -186,9 +225,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Atomic Architecture & Radioactive Decay Systems</h3>
         <p class="resource-meta">Geiger-Marsden alpha scattering conclusions, subatomic configurations, background radiation, and alpha ($\alpha$), beta ($\beta$), and gamma ($\gamma$) stabilization drops.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -198,9 +242,14 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Nuclear Half-Life Equations, Fission & Fusion</h3>
         <p class="resource-meta">Graphical decay charts, half-life sequence problems, nuclear binding mass-defects, and energy calculations using Einstein's equation ($E = mc^2$).</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
@@ -212,13 +261,47 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">Physics SBA Structural Analysis & Graph Protocols</h3>
         <p class="resource-meta">Master framework for plotting best-fit lines, executing error analyses, estimating slope uncertainties, and structuring rigorous Planning and Designing (PD) logic proofs.</p>
       </div>
-      <div class="action-buttons">
-        <a href="#" class="btn-action btn-view">VIEW</a>
-        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes (View)</option>
+          <option value="past_papers">Past Paper Practices (Download)</option>
+          <option value="assignment">Assignment Worksheets (Download)</option>
+          <option value="lab_guide">SBA Lab Guides (Download)</option>
+        </select>
       </div>
     </div>
 
   </div>
 </div>
+
+<script>
+function handleVaultAction(selectElement) {
+  const card = selectElement.closest('.resource-card');
+  const titleElement = card.querySelector('.resource-title');
+  if (!titleElement || !selectElement.value) return;
+
+  const docTitle = titleElement.innerText.trim();
+  // Strip special symbols, tracking punctuation, and map spaces cleanly to underscores
+  const baseName = docTitle.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase();
+  const selectedType = selectElement.value; // "notes", "past_papers", etc.
+  
+  const finalFilePath = `vault-assets/${baseName}_${selectedType}.pdf`;
+
+  if (selectedType === "notes") {
+    // Open the primary study framework targets in an external window window view
+    window.open(finalFilePath, '_blank');
+  } else {
+    // Anchor dynamic target simulation to initialize immediate user asset downloads
+    const link = document.createElement('a');
+    link.href = finalFilePath;
+    link.download = `${baseName}_${selectedType}.pdf`;
+    link.click();
+  }
+
+  // Clear select focus indexing back to original system tier configuration
+  selectElement.value = "";
+}
+</script>
 </body>
 </html>
