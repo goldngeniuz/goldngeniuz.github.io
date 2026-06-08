@@ -19,14 +19,14 @@ h1{font-family:'Orbitron',sans-serif;font-weight:900;text-align:center;margin-bo
 h1 span{color:var(--gold);}
 .syllabus-disclaimer{text-align:center;font-family:'Share Tech Mono',monospace;font-size:0.8rem;color:var(--grey2);margin-bottom:4rem;text-transform:uppercase;letter-spacing:0.05em;}
 .syllabus-section-title{font-family:'Orbitron',sans-serif;font-size:1.4rem;font-weight:800;color:var(--gold);margin:3rem 0 1.5rem 0;padding-bottom:0.5rem;border-bottom:1px dashed rgba(255,215,0,0.2);display:flex;align-items:center;gap:0.75rem;}
-.resource-grid{display:flex;flex-direction:column;gap:1.25rem;width:100%}
-.resource-card{background:var(--dark2);border:1px solid rgba(255,136,0,0.1);border-radius:4px;padding:1.5rem;display:flex;justify-content:space-between;align-items:center;transition:all 0.3s;width:100%}
+.resource-grid{display:flex;flex-direction:column;gap:1.25rem;width:100%;}
+.resource-card{background:var(--dark2);border:1px solid rgba(255,136,0,0.1);border-radius:4px;padding:1.5rem;display:flex;justify-content:space-between;align-items:center;transition:all 0.3s;width:100%;}
 .resource-card:hover{border-color:var(--orange);box-shadow:0 5px 20px rgba(255,136,0,0.08);transform:translateX(5px);}
-.resource-info{display:flex;flex-direction:column;gap:0.25rem;}
+.resource-info{display:flex;flex-direction:column;gap:0.25rem;padding-right:2rem;}
 .resource-tag{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--orange);text-transform:uppercase;letter-spacing:0.1em;}
 .resource-title{font-family:'Orbitron',sans-serif;font-size:1.1rem;font-weight:700;color:var(--white);}
 .resource-meta{font-size:0.8rem;color:var(--grey2);line-height:1.4;}
-.action-buttons{display:flex;gap:1rem;}
+.action-buttons{display:flex;gap:1rem;flex-shrink:0;}
 .btn-action{font-family:'Orbitron',sans-serif;font-size:0.7rem;font-weight:700;padding:0.6rem 1.2rem;border-radius:2px;text-decoration:none;transition:0.2s;letter-spacing:0.05em;}
 .btn-download{background:transparent;border:1.5px solid var(--orange);color:var(--orange);}
 .btn-download:hover{background:var(--orange);color:#000;}
@@ -34,25 +34,27 @@ h1 span{color:var(--gold);}
 .btn-view:hover{background:var(--cyan);color:#000;}
 .back-link{display:inline-block;margin-bottom:2rem;color:var(--grey2);text-decoration:none;font-family:'Share Tech Mono',monospace;font-size:0.8rem;transition:0.2s;}
 .back-link:hover{color:var(--gold);}
-  /* MOBILE OPTIMIZATION FOR BUTTONS */
+
+/* MOBILE OPTIMIZATION FOR BUTTONS */
 @media (max-width: 600px) {
   .resource-card {
-    flex-direction: column; /* Stacks the text info and the buttons vertically */
-    align-items: stretch;   /* Stacks them neatly across the card width */
-    gap: 1.5rem;            /* Puts clean breathing room between text and buttons */
+    flex-direction: column; 
+    align-items: stretch;   
+    gap: 1.5rem;            
     padding: 1.25rem;
   }
-
-  .action-buttons {
-    width: 100%;            /* Force the button container to span the whole card */
-    flex-direction: column; /* Stack VIEW above DOWNLOAD */
-    gap: 0.75rem;           /* Space between the two buttons */
+  .resource-info {
+    padding-right: 0;
   }
-
+  .action-buttons {
+    width: 100%;            
+    flex-direction: column; 
+    gap: 0.75rem;           
+  }
   .btn-action {
-    width: 100%;            /* Makes each button wide and easy to tap with a thumb */
-    text-align: center;     /* Centers your "VIEW" and "DOWNLOAD" text */
-    padding: 0.8rem 1.2rem; /* Slightly chunkier tap target for mobile fingers */
+    width: 100%;            
+    text-align: center;     
+    padding: 0.8rem 1.2rem; 
   }
 }
 </style>
@@ -82,11 +84,11 @@ h1 span{color:var(--gold);}
         <h3 class="resource-title">States of Matter, Mixtures & Separation Techniques</h3>
         <p class="resource-meta">Comprehensive breakdown of particulate theory, diffusion, osmosis, and complex separation mechanisms (fractional distillation, chromatography, and extraction matrices).</p>
       </div>
-<div class="action-buttons">
-  <a href="#" class="btn-action btn-view">VIEW</a>
-  <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
-</div>
-    <div class="resource-card">
+      <div class="action-buttons">
+        <a href="#" class="btn-action btn-view">VIEW</a>
+        <a href="#" class="btn-action btn-download" download>DOWNLOAD</a>
+      </div>
+    </div> <div class="resource-card">
       <div class="resource-info">
         <span class="resource-tag">Section A &bull; Unit 4-6</span>
         <h3 class="resource-title">Atomic Structure, Periodicity & Chemical Bonding</h3>
@@ -179,32 +181,24 @@ h1 span{color:var(--gold);}
   </div>
 </div>
 
-  <script>
+<script>
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Find every resource card on the page automatically
   const resourceCards = document.querySelectorAll(".resource-card");
 
   resourceCards.forEach(card => {
     const titleElement = card.querySelector(".resource-title");
     if (!titleElement) return;
 
-    // 2. Grab the text inside the <h3> title tag
     const docTitle = titleElement.innerText.trim();
-    
-    // 3. Clean up the title (lowercase, turn spaces/special chars into underscores)
     const safeFileName = docTitle.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase() + ".pdf";
-    
-    // 4. Construct the automatic path to your vault-assets folder
     const fileStoragePath = `vault-assets/${safeFileName}`;
 
-    // 5. Inject the path into the VIEW button automatically
     const viewBtn = card.querySelector(".btn-view");
     if (viewBtn) {
       viewBtn.setAttribute("href", fileStoragePath);
       viewBtn.setAttribute("target", "_blank");
     }
 
-    // 6. Inject the path into the DOWNLOAD button automatically
     const downloadBtn = card.querySelector(".btn-download");
     if (downloadBtn) {
       downloadBtn.setAttribute("href", fileStoragePath);
