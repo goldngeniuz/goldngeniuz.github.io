@@ -179,5 +179,40 @@ h1 span{color:var(--gold);}
 
   </div>
 </div>
+
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  // 1. Find every resource card on the page automatically
+  const resourceCards = document.querySelectorAll(".resource-card");
+
+  resourceCards.forEach(card => {
+    const titleElement = card.querySelector(".resource-title");
+    if (!titleElement) return;
+
+    // 2. Grab the text inside the <h3> title tag
+    const docTitle = titleElement.innerText.trim();
+    
+    // 3. Clean up the title (lowercase, turn spaces/special chars into underscores)
+    const safeFileName = docTitle.replace(/[^a-zA-Z0-9]/g, "_").toLowerCase() + ".pdf";
+    
+    // 4. Construct the automatic path to your vault-assets folder
+    const fileStoragePath = `vault-assets/${safeFileName}`;
+
+    // 5. Inject the path into the VIEW button automatically
+    const viewBtn = card.querySelector(".btn-view");
+    if (viewBtn) {
+      viewBtn.setAttribute("href", fileStoragePath);
+      viewBtn.setAttribute("target", "_blank");
+    }
+
+    // 6. Inject the path into the DOWNLOAD button automatically
+    const downloadBtn = card.querySelector(".btn-download");
+    if (downloadBtn) {
+      downloadBtn.setAttribute("href", fileStoragePath);
+      downloadBtn.setAttribute("download", safeFileName);
+    }
+  });
+});
+</script>
 </body>
 </html>
