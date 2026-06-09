@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Au-CHIVES — Premium Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@700;800;900&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<style>
+:root {
+  --c-bg: #0b1120;
+  --c-panel: #111827;
+  --c-surface: #1a2236;
+  --c-border: #1f2d45;
+  --c-border2: #2d3f5a;
+  --c-text: #e2e8f0;
+  --c-muted: #6b7f9a;
+  --c-gold: #f5c842;
+  --c-accent: #00e8c6;
+  
+  --c-catalyst: #00ffcc;
+  --c-lab: #00d4ff;
+  --c-blueprint: #ff9f43;
+  --c-vault: #a29bfe;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+/* ═══ NAVIGATION ═══ */
+nav {
+  height: 70px;
+  background: rgba(17, 24, 39, 0.9);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--c-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4%;
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+}
+.brand {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  color: var(--c-gold);
+  letter-spacing: 1px;
+}
+.nav-links { display: flex; align-items: center; gap: 24px; }
+.nav-links a {
+  color: var(--c-muted);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--c-text); }
+
+/* ═══ BUTTONS ═══ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 26px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  font-family: 'Montserrat', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  cursor: pointer;
+  border: none;
+  transition: all .2s;
+  text-decoration: none;
+}
+.btn-gold { background: var(--c-gold); color: #000; }
+.btn-gold:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(245,200,66,0.3); }
+.btn-accent { background: var(--c-accent); color: #001a14; }
+.btn-accent:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,232,198,0.3); }
+.btn-ghost { background: transparent; color: var(--c-text); border: 1px solid var(--c-border2); }
+.btn-ghost:hover { background: rgba(255,255,255,0.02); border-color: var(--c-muted); }
+
+/* ═══ HERO CONVERSION FUNNEL ═══ */
+.hero {
+  padding: 170px 4% 90px;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+.hero-badge {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  background: rgba(245,200,66,0.1);
+  color: var(--c-gold);
+  padding: 5px 14px;
+  border-radius: 30px;
+  border: 1px solid rgba(245,200,66,0.2);
+  display: inline-block;
+  margin-bottom: 20px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+.hero h1 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 3.8rem;
+  font-weight: 900;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 24px;
+  letter-spacing: -1.5px;
+}
+.hero p.tagline {
+  font-family: 'Lora', serif;
+  font-size: 1.4rem;
+  color: var(--c-muted);
+  max-width: 750px;
+  margin: 0 auto 40px;
+  line-height: 1.5;
+}
+
+/* ═══ VALUE PILLARS STRIP ═══ */
+.perks-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto 60px;
+  padding: 0 4%;
+}
+.perk-card {
+  background: var(--c-panel);
+  border: 1px solid var(--c-border);
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+}
+.perk-icon { font-size: 1.5rem; margin-bottom: 8px; display: block; }
+.perk-title { font-family: 'Montserrat', sans-serif; font-size: 0.9rem; color: #fff; margin-bottom: 4px;}
+.perk-desc { font-size: 0.75rem; color: var(--c-muted); }
+
+/* ═══ THE GATE INTERFACE (PAYWALL PREVIEW) ═══ */
+.gate-section {
+  padding: 60px 4%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.section-label {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  color: var(--c-accent);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+.gated-article-box {
+  background: var(--c-panel);
+  border: 1px solid var(--c-border);
+  border-radius: 16px;
+  padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+.article-header { margin-bottom: 20px; }
+.article-title { font-family: 'Montserrat', sans-serif; font-size: 1.6rem; color: #fff; margin-bottom: 8px; }
+.blur-layer {
+  filter: blur(5px);
+  user-select: none;
+  opacity: 0.25;
+  padding-top: 10px;
+  border-top: 1px dashed var(--c-border2);
+}
+.paywall-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0; top: 120px;
+  background: linear-gradient(to top, var(--c-panel) 40%, rgba(17,24,39,0.85) 80%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 50px 30px;
+  text-align: center;
+}
+.paywall-card {
+  background: var(--c-surface);
+  border: 1px solid var(--c-border2);
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 480px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+/* ═══ TIERS PRICING MATRIX ═══ */
+.pricing-section {
+  padding: 80px 4%;
+  background: #060d1a;
+  border-top: 1px solid var(--c-border);
+  border-bottom: 1px solid var(--c-border);
+}
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 1100px;
+  margin: 40px auto 0;
+}
+.price-card {
+  background: var(--c-panel);
+  border: 1px solid var(--c-border);
+  border-radius: 14px;
+  padding: 35px 28px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+.price-card.featured {
+  border-color: var(--c-gold);
+  box-shadow: 0 10px 30px rgba(245,200,66,0.1);
+}
+.featured-tag {
+  position: absolute;
+  top: -12px; right: 24px;
+  background: var(--c-gold);
+  color: #000;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+.tier-name { font-family: 'Montserrat', sans-serif; font-size: 1rem; color: #fff; margin-bottom: 10px; }
+.tier-price { font-family: 'Montserrat', sans-serif; font-size: 2.2rem; font-weight: 900; color: #fff; margin-bottom: 20px; }
+.tier-price span { font-size: 0.9rem; color: var(--c-muted); font-weight: 400; }
+.tier-features { list-style: none; margin-bottom: 30px; flex-grow: 1; }
+.tier-features li { font-size: 0.85rem; color: #cbd5e1; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.tier-features li::before { content: "✓"; color: var(--c-accent); font-weight: bold; }
+
+/* PayPal Integration Layout Tweak */
+.paypal-button-wrapper {
+  margin-top: auto;
+  min-height: 45px;
+}
+
+/* ═══ FOOTER ═══ */
+footer {
+  padding: 40px 4%;
+  background: var(--c-bg);
+  border-top: 1px solid var(--c-border);
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--c-muted);
+  font-family: 'Montserrat', sans-serif;
+}
+
+@media(max-width: 768px) {
+  .hero h1 { font-size: 2.5rem; }
+  .paywall-overlay { top: 160px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">The Au-CHIVES</div>
+  <div class="nav-links">
+    <a href="#preview">Inside The Issue</a>
+    <a href="#pricing">Access Tiers</a>
+    <a href="#pricing" class="btn btn-accent" style="padding: 8px 16px; font-size: 0.7rem;">Subscribe Now</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-badge">Architectural Intelligence Portal</div>
+  <h1>Unlocking Advanced Knowledge Matrices</h1>
+  <p class="tagline">High-fidelity strategic blueprints, interactive physical simulations, and systemic analytics engineered for professional execution.</p>
+  <div style="display:flex; justify-content:center; gap:16px;">
+    <a href="#pricing" class="btn btn-gold">Get All-Access Pass</a>
+    <a href="#preview" class="btn btn-ghost">View Gated Sample</a>
+  </div>
+</section>
+
+<section class="perks-strip">
+  <div class="perk-card">
+    <span class="perk-icon">📘</span>
+    <div class="perk-title">6 Interactive Modules</div>
+    <div class="perk-desc">Deep editorial investigations natively embedding code and dynamic formulations.</div>
+  </div>
+  <div class="perk-card">
+    <span class="perk-icon">🎙️</span>
+    <div class="perk-title">Audio Engineering Briefings</div>
+    <div class="perk-desc">Stream professional walkthroughs and strategic system deep-dives directly.</div>
+  </div>
+  <div class="perk-card">
+    <span class="perk-icon">⚡</span>
+    <div class="perk-title">Resource Code Vault</div>
+    <div class="perk-desc">Instantly download fully functional scripts and simulation sandboxes.</div>
+  </div>
+</section>
+
+<section class="gate-section" id="preview">
+  <div class="section-label">— Premium Content Teaser —</div>
+  
+  <div class="gated-article-box">
+    <div class="article-header">
+      <span style="font-family:'Montserrat'; font-size:0.65rem; color:var(--c-blueprint); font-weight:700; letter-spacing:1px; text-transform:uppercase;">Module 03: Structural Blueprints</span>
+      <h2 class="article-title">High-Velocity Multi-System Modeling</h2>
+      <p style="font-size:0.9rem; color:var(--c-muted); font-family:'Lora', serif; font-style:italic;">Analyzing the core computational boundary conditions for seamless dynamic tracking.</p>
+    </div>
+    
+    <div class="blur-layer">
+      <p>To construct a highly responsive digital simulation workspace, developers must accurately calibrate the initial value constraints within the system boundaries. Failure to establish these core parameters results in mathematical derivation decay over extended run sequences.</p>
+      <div style="text-align:center; margin:20px 0; font-size:1.3rem;">
+        \[ \oint_{\partial \Omega} \mathbf{F} \cdot d\mathbf{\Gamma} = \iint_{\Omega} (\nabla \times \mathbf{F}) \cdot d\mathbf{\Sigma} \]
+      </div>
+      <p>By mapping this classical transformation matrix natively into JavaScript animation frames, we eliminate the runtime lag commonly encountered during heavy multi-variable execution updates.</p>
+    </div>
+    
+    <div class="paywall-overlay">
+      <div class="paywall-card">
+        <h3 style="font-family:'Montserrat'; font-size:1.1rem; color:#fff; margin-bottom:10px;">This Module is Locked</h3>
+        <p style="font-size:0.8rem; color:var(--c-muted); margin-bottom:20px;">Gain active access to structural blueprints, full interactive simulators, and downloadable solution scripts by joining our network.</p>
+        <a href="#pricing" class="btn btn-accent" style="width:100%;">Unlock Instantly</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="pricing-section" id="pricing">
+  <div class="section-label" style="color:var(--c-gold);">— Select Your Membership Engine —</div>
+  
+  <div class="pricing-grid">
+    
+    <div class="price-card">
+      <div class="tier-name">Regular Pass</div>
+      <div class="tier-price">$15 <span>/ month</span></div>
+      <ul class="tier-features">
+        <li>Full monthly digital issue text access</li>
+        <li>Access to public audio podcast briefings</li>
+        <li>Basic academic module archives</li>
+      </ul>
+      <div class="paypal-button-wrapper" id="paypal-button-container-regular"></div>
+    </div>
+
+    <div class="price-card featured">
+      <div class="featured-tag">Most Popular</div>
+      <div class="tier-name" style="color:var(--c-gold)">Genius All-Access</div>
+      <div class="tier-price">$35 <span>/ month</span></div>
+      <ul class="tier-features">
+        <li>Unlock **The Resource Vault** entirely</li>
+        <li>Download all dynamic code &amp; spreadsheets</li>
+        <li>Full interactive KaTeX equation render sheets</li>
+        <li>Priority access to future project frameworks</li>
+      </ul>
+      <div class="paypal-button-wrapper" id="paypal-button-container-genius"></div>
+    </div>
+
+    <div class="price-card">
+      <div class="tier-name">Institutional / Team</div>
+      <div class="tier-price">$120 <span>/ month</span></div>
+      <ul class="tier-features">
+        <li>Up to 15 team or student user seats</li>
+        <li>Full license for curriculum/blueprint integration</li>
+        <li>Dedicated private resource vault hosting path</li>
+        <li>Direct strategic support consultations</li>
+      </ul>
+      <div class="paypal-button-wrapper" id="paypal-button-container-institutional"></div>
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <p>&copy; 2026 THE Au-CHIVES CONTENT STUDIO. ALL RIGHTS RESERVED.</p>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=Ae_0KAbb6kEGCD5cMjiwO8K0XsGVH_0A6pTO7chQToO3XVrcYWILSnEzsaXtl149XoQuCezF2hno8EcR&vault=true&intent=subscription" data-sdk-integration-source="button-factory"></script>
+
+<script>
+  // 1. Render Mathematical Formulations (KaTeX)
+  document.addEventListener("DOMContentLoaded", function() {
+    renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false},
+        {left: '\\[', right: '\\]', display: true}
+      ],
+      throwOnError : false
+    });
+  });
+
+  // 2. Initialize PayPal Subscription Engine Buttons
+  
+  // Regular Pass Button Setup
+  paypal.Buttons({
+      style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({ plan_id: 'P-06F30957WV829625LNIUBYHA' });
+      },
+      onApprove: function(data, actions) {
+        alert("Subscription Successful! ID: " + data.subscriptionID);
+      }
+  }).render('#paypal-button-container-regular');
+
+  // Genius All-Access Button Setup
+  paypal.Buttons({
+      style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({ plan_id: 'P-32L379682D8182351NIUB3KY' });
+      },
+      onApprove: function(data, actions) {
+        alert("Subscription Successful! ID: " + data.subscriptionID);
+      }
+  }).render('#paypal-button-container-genius');
+
+  // Institutional / Team Button Setup
+  paypal.Buttons({
+      style: { shape: 'rect', color: 'gold', layout: 'vertical', label: 'subscribe' },
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({ plan_id: 'P-06F30957WV829625LNIUBYHA' }); // Remember to double-check this Plan ID later!
+      },
+      onApprove: function(data, actions) {
+        alert("Subscription Successful! ID: " + data.subscriptionID);
+      }
+  }).render('#paypal-button-container-institutional');
+</script>
+</body>
+</html>
