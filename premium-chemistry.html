@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GOLD'N GENIUZ &mdash; Premium Chemistry Vault</title>
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600;700;800&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Share+Tech+Mono&family=Exo+2:wght=300;400;600;700;800&family=Rajdhani:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--gold:#FFD700;--gold-dark:#C9A800;--black:#060609;--dark:#0C0C12;--dark2:#111118;--dark3:#18181F;--white:#E8E8F0;--grey2:#9090A8;--cyan:#00E5FF;--orange:#FF8800;--amber:#FFB300;}
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -80,9 +80,9 @@ h1 span{color:var(--gold);}
     
     <div class="resource-card" data-topic="states_of_matter_mixtures">
       <div class="resource-info">
-        <span class="resource-tag">Section A &bull; Unit 1-3</span>
+        <span class="resource-tag">Section A &bull; Objectives 1.1 - 3.4</span>
         <h3 class="resource-title">States of Matter, Mixtures & Separation Techniques</h3>
-        <p class="resource-meta">Comprehensive breakdown of particulate theory, diffusion, osmosis, and complex separation mechanisms (fractional distillation, chromatography, and extraction matrices).</p>
+        <p class="resource-meta">Comprehensive breakdown of particulate theory, diffusion, osmosis, and complex separation mechanisms (fractional distillation, paper chromatography, and extraction matrices).</p>
       </div>
       <div class="action-dropdown-container">
         <select class="vault-dropdown" onchange="handleVaultAction(this)">
@@ -97,9 +97,9 @@ h1 span{color:var(--gold);}
 
     <div class="resource-card" data-topic="atomic_structure_bonding">
       <div class="resource-info">
-        <span class="resource-tag">Section A &bull; Unit 4-6</span>
+        <span class="resource-tag">Section A &bull; Objectives 4.1 - 5.12</span>
         <h3 class="resource-title">Atomic Structure, Periodicity & Chemical Bonding</h3>
-        <p class="resource-meta">Subatomic architecture, isotopes, periodic trends, ionic vs covalent lattices, metallic structures, and physical properties master grids.</p>
+        <p class="resource-meta">Subatomic architecture, isotopes, atomic/mass numbers, periodic trends (Group II and VII), ionic vs covalent lattices, metallic structures, and physical properties master grids.</p>
       </div>
       <div class="action-dropdown-container">
         <select class="vault-dropdown" onchange="handleVaultAction(this)">
@@ -114,9 +114,26 @@ h1 span{color:var(--gold);}
 
     <div class="resource-card" data-topic="mole_concept_stoichiometry">
       <div class="resource-info">
-        <span class="resource-tag">Section A &bull; Unit 7-10</span>
+        <span class="resource-tag">Section A &bull; Objectives 6.1 - 7.4</span>
         <h3 class="resource-title">The Mole Concept, Stoichiometry & Redox Reactions</h3>
-        <p class="resource-meta">Balancing ionic equations, mass/volume mole calculations, molar concentration math, oxidation states, and reducing/oxidizing agent test grids.</p>
+        <p class="resource-meta">Balancing chemical/ionic equations, Avogadro's constant, mass/volume mole calculations, molar concentration math, oxidation numbers, and reducing/oxidizing agent test parameters.</p>
+      </div>
+      <div class="action-dropdown-container">
+        <select class="vault-dropdown" onchange="handleVaultAction(this)">
+          <option value="" selected disabled>SELECT RESOURCE...</option>
+          <option value="notes">Lecture Study Notes</option>
+          <option value="past_papers">Past Paper Practices</option>
+          <option value="assignment">Assignment Worksheets</option>
+          <option value="lab_guide">SBA Lab Guides</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="resource-card" data-topic="acids_bases_energetics">
+      <div class="resource-info">
+        <span class="resource-tag">Section A &bull; Objectives 8.1 - 10.4</span>
+        <h3 class="resource-title">Acids, Bases, Energetics & Reaction Rates</h3>
+        <p class="resource-meta">Properties of acids, bases, and salts. Acid-base titrations, solubility rules, endothermic vs exothermic energy profiles, and factors affecting rate parameters.</p>
       </div>
       <div class="action-dropdown-container">
         <select class="vault-dropdown" onchange="handleVaultAction(this)">
@@ -133,9 +150,9 @@ h1 span{color:var(--gold);}
     
     <div class="resource-card" data-topic="functional_groups_naming">
       <div class="resource-info">
-        <span class="resource-tag">Section B &bull; Unit 1-2</span>
+        <span class="resource-tag">Section B &bull; Objectives 1.1 - 2.2</span>
         <h3 class="resource-title">Functional Groups, Naming & Homologous Series</h3>
-        <p class="resource-meta">IUPAC rules for Alkanes, Alkenes, Alcohols, and Carboxylic acids. Structural, molecular, and fully displayed formula diagrams.</p>
+        <p class="resource-meta">IUPAC rules for Alkanes, Alkenes, Alcohols, and Carboxylic acids. Structural, molecular, and fully displayed formula diagrams for branched and unbranched networks.</p>
       </div>
       <div class="action-dropdown-container">
         <select class="vault-dropdown" onchange="handleVaultAction(this)">
@@ -148,11 +165,11 @@ h1 span{color:var(--gold);}
       </div>
     </div>
 
-    <div class="resource-card" data-topic="organic_reactions_polymerization">
+    <div class="resource-card" data-topic="organic_reactions_macromolecules">
       <div class="resource-info">
-        <span class="resource-tag">Section B &bull; Unit 3-4</span>
-        <h3 class="resource-title">Organic Reactions & Polymerization Matrices</h3>
-        <p class="resource-meta">Substitution vs Addition mechanisms, combustion dynamics, esterification formulas, and condensation vs addition polymers (Natural vs Synthetic).</p>
+        <span class="resource-tag">Section B &bull; Objectives 3.1 - 4.2</span>
+        <h3 class="resource-title">Organic Reactions & Macromolecules Matrices</h3>
+        <p class="resource-meta">Substitution vs Addition mechanisms, cracking of alkanes, esterification formulas, and condensation vs addition polymerization chains (Natural vs Synthetic systems).</p>
       </div>
       <div class="action-dropdown-container">
         <select class="vault-dropdown" onchange="handleVaultAction(this)">
@@ -165,13 +182,13 @@ h1 span{color:var(--gold);}
       </div>
     </div>
 
-    <div class="syllabus-section-title"><span>C</span> Inorganic Chemistry & Industry</div>
+    <div class="syllabus-section-title"><span>C</span> Inorganic Chemistry</div>
     
-    <div class="resource-card" data-topic="metals_qualitative_analysis">
+    <div class="resource-card" data-topic="metals_non_metals">
       <div class="resource-info">
-        <span class="resource-tag">Section C &bull; Unit 1-3</span>
-        <h3 class="resource-title">Characteristics of Metals & Qualitative Analysis</h3>
-        <p class="resource-meta">Reactivity series mechanics, extraction of Iron (Blast Furnace) and Aluminium, action of heat on nitrates/carbonates, and cation/anion identification tests.</p>
+        <span class="resource-tag">Section C &bull; Objectives 1.1 - 2.8</span>
+        <h3 class="resource-title">Metals & Non-Metals Processes</h3>
+        <p class="resource-meta">Reactivity series scales, action of heat on nitrates/carbonates, extraction of Iron and Aluminium. Environmental impact of Carbon, Sulfur, and Nitrogen cycles (Haber & Contact industrial steps).</p>
       </div>
       <div class="action-dropdown-container">
         <select class="vault-dropdown" onchange="handleVaultAction(this)">
@@ -184,11 +201,11 @@ h1 span{color:var(--gold);}
       </div>
     </div>
 
-    <div class="resource-card" data-topic="non_metals_industrial_production">
+    <div class="resource-card" data-topic="qualitative_analysis">
       <div class="resource-info">
-        <span class="resource-tag">Section C &bull; Unit 4-5</span>
-        <h3 class="resource-title">Non-Metals & Industrial Production Dynamics</h3>
-        <p class="resource-meta">Properties of Carbon, Sulfur, and Nitrogen. Industrial focus on the Haber Process (Ammonia generation) and Contact Process (Sulfuric acid creation).</p>
+        <span class="resource-tag">Section C &bull; Objectives 3.1 - 3.3</span>
+        <h3 class="resource-title">Qualitative Analysis Identification Frameworks</h3>
+        <p class="resource-meta">Crucial identification blueprints for aqueous cations (using NaOH/NH3), anions (carbonate, sulfate, halides, nitrate), and evolution parameters for specific gases.</p>
       </div>
       <div class="action-dropdown-container">
         <select class="vault-dropdown" onchange="handleVaultAction(this)">
@@ -207,7 +224,7 @@ h1 span{color:var(--gold);}
       <div class="resource-info">
         <span class="resource-tag">Practical Lab Manual</span>
         <h3 class="resource-title">Chemistry SBA Standard Operations & Writing Protocols</h3>
-        <p class="resource-meta">Perfect data recording setups for Volumetric Analysis (Titrations), Qualitative Observations, Rates of Reaction plots, and Plan & Design experimental hypotheses.</p>
+        <p class="resource-meta">Data recording parameters for Volumetric Analysis (Titrations), Qualitative Observations, Rates of Reaction plots, and Plan & Design experimental hypotheses profiles.</p>
       </div>
       <div class="action-dropdown-container">
         <select class="vault-dropdown" onchange="handleVaultAction(this)">
@@ -227,17 +244,17 @@ h1 span{color:var(--gold);}
 function handleVaultAction(selectElement) {
   const card = selectElement.closest('.resource-card');
   const topicFolder = card.getAttribute('data-topic');
-  const selectedType = selectElement.value; // Retrieves: "notes", "past_papers", etc.
+  const selectedType = selectElement.value; 
 
   if (!topicFolder || !selectedType) return;
 
-  // Dynamically routes to the corresponding subfolder inside vault-assets/chemistry/
+  // Exact target tracking to asset folders inside vault-assets/chemistry/
   const finalFolderPath = `vault-assets/chemistry/${topicFolder}/${selectedType}/`;
 
-  // Opens the clean HTML folder directory directory in a new tab
+  // Opens target index.html directory smoothly in secondary frame layer
   window.open(finalFolderPath, '_blank');
 
-  // Soft-reset choice selection back to default state
+  // Soft-reset selection choices
   selectElement.value = "";
 }
 </script>
