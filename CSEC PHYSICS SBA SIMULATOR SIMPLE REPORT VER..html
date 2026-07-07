@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GOLD'N GENIUZ — CSEC Physics Virtual Lab</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"></script>
+<script src="https://unpkg.com/mathlive"></script>
+<style>
+:root {
+  --gold: #FFD700;--gold2: #FFA500;--bg: #060810;--bg2: #0b1120;--bg3: #111b2e;--bg4: #162035;
+  --panel: #0d1828;--cyan: #00e5ff;--green: #39ff85;--red: #ff4444;
+  --text: #cce0ff;--muted: #556a8a;--border: #1e3050;--glow: 0 0 18px rgba(255,215,0,0.3);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'Exo 2',sans-serif;min-height:100vh;overflow-x:hidden;}
+header{background:linear-gradient(135deg,#070c18 0%,#0a1525 50%,#061020 100%);border-bottom:2px solid var(--gold);padding:0;position:sticky;top:0;z-index:1000;}
+.header-inner{display:flex;align-items:center;justify-content:space-between;padding:10px 28px;gap:16px;flex-wrap:wrap;}
+.logo{font-family:'Orbitron',monospace;font-weight:900;font-size:1.3rem;color:var(--gold);letter-spacing:2px;text-shadow:0 0 20px rgba(255,215,0,0.5);flex-shrink:0;}
+.logo span{color:var(--cyan);font-size:0.7rem;display:block;letter-spacing:4px;font-weight:400;}
+.header-fields{display:flex;gap:14px;align-items:center;flex:1;justify-content:center;flex-wrap:wrap;}
+.hf-group{display:flex;flex-direction:column;gap:3px;}
+.hf-label{font-family:'Share Tech Mono',monospace;font-size:0.55rem;color:var(--gold);letter-spacing:3px;text-transform:uppercase;}
+.hf-input{background:rgba(255,215,0,0.07);border:1px solid rgba(255,215,0,0.25);border-radius:4px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.82rem;padding:5px 10px;outline:none;width:200px;transition:border 0.2s;}
+.hf-input:focus{border-color:rgba(255,215,0,0.6);background:rgba(255,215,0,0.12);}
+.hf-input::placeholder{color:var(--muted);font-size:0.75rem;}
+.subtitle{font-family:'Share Tech Mono',monospace;color:var(--muted);font-size:0.75rem;text-align:right;flex-shrink:0;}
+.app{display:flex;min-height:calc(100vh - 70px);}
+.sidebar{width:280px;background:var(--bg2);border-right:1px solid var(--border);overflow-y:auto;flex-shrink:0;}
+.sidebar-title{font-family:'Orbitron',monospace;font-size:0.65rem;letter-spacing:3px;color:var(--gold);padding:18px 16px 10px;text-transform:uppercase;border-bottom:1px solid var(--border);}
+.exp-btn{display:block;width:100%;text-align:left;background:none;border:none;border-bottom:1px solid rgba(30,48,80,0.5);padding:12px 16px;cursor:pointer;transition:all 0.2s;color:var(--text);}
+.exp-btn:hover{background:rgba(255,215,0,0.06);color:var(--gold);}
+.exp-btn.active{background:linear-gradient(90deg,rgba(255,215,0,0.12),transparent);color:var(--gold);border-left:3px solid var(--gold);}
+.exp-btn .num{font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--muted);display:block;}
+.exp-btn .title{font-size:0.82rem;font-weight:500;line-height:1.3;}
+.exp-btn .tag{display:inline-block;font-size:0.6rem;padding:2px 6px;border-radius:3px;margin-top:4px;font-family:'Share Tech Mono',monospace;}
+.tag-meas{background:rgba(0,229,255,0.12);color:var(--cyan);}
+.tag-motion{background:rgba(57,255,133,0.12);color:var(--green);}
+.tag-thermal{background:rgba(255,140,0,0.15);color:#FF8C00;}
+.tag-optics{background:rgba(180,100,255,0.15);color:#b464ff;}
+.tag-elec{background:rgba(255,215,0,0.12);color:var(--gold);}
+.tag-nuclear{background:rgba(255,68,68,0.12);color:var(--red);}
+.tag-special{background:rgba(0,160,192,0.15);color:#00e5ff;}
+.main{flex:1;overflow-y:auto;padding:28px;}
+.welcome{text-align:center;padding:60px 20px;}
+.welcome h1{font-family:'Orbitron',monospace;font-size:2rem;color:var(--gold);margin-bottom:12px;text-shadow:var(--glow);}
+.welcome p{color:var(--muted);max-width:500px;margin:0 auto;line-height:1.7;}
+.welcome .stats{display:flex;justify-content:center;gap:32px;margin-top:32px;}
+.stat{text-align:center;}
+.stat .n{font-family:'Orbitron',monospace;font-size:1.8rem;color:var(--gold);}
+.stat .l{font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:2px;}
+.exp-page{display:none;}
+.exp-page.active{display:block;}
+.exp-header{background:linear-gradient(135deg,var(--bg3),var(--bg4));border:1px solid var(--border);border-top:2px solid var(--gold);border-radius:8px;padding:20px 24px;margin-bottom:20px;}
+.exp-num{font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--muted);letter-spacing:3px;text-transform:uppercase;}
+.exp-title{font-family:'Orbitron',monospace;font-size:1.25rem;color:var(--gold);margin:6px 0 4px;}
+.sections-grid{display:flex;flex-direction:column;gap:16px;}
+.section-card{background:var(--panel);border:1px solid var(--border);border-radius:8px;overflow:hidden;}
+.section-header{display:flex;align-items:center;gap:10px;padding:12px 18px;background:rgba(255,215,0,0.04);border-bottom:1px solid var(--border);}
+.section-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.85rem;flex-shrink:0;}
+.icon-aim{background:rgba(0,229,255,0.15);color:var(--cyan);}
+.icon-theory{background:rgba(255,215,0,0.15);color:var(--gold);}
+.icon-app{background:rgba(57,255,133,0.15);color:var(--green);}
+.icon-sim{background:rgba(180,100,255,0.15);color:#b464ff;}
+.icon-proc{background:rgba(255,140,0,0.15);color:#FF8C00;}
+.icon-result{background:rgba(0,229,255,0.12);color:var(--cyan);}
+.icon-analysis{background:rgba(255,68,68,0.12);color:var(--red);}
+.icon-conclusion{background:rgba(57,255,133,0.15);color:var(--green);}
+.section-label{font-family:'Orbitron',monospace;font-size:0.72rem;font-weight:600;letter-spacing:2px;color:var(--text);}
+.section-body{padding:18px;}
+.theory-box{background:rgba(255,215,0,0.03);border:1px solid rgba(255,215,0,0.15);border-radius:6px;padding:16px;font-size:0.88rem;line-height:1.8;color:var(--text);}
+.theory-box h4{color:var(--gold);font-size:0.82rem;margin-bottom:8px;letter-spacing:1px;}
+.theory-box p{margin-bottom:10px;}
+.formula-block{background:var(--bg);border-left:3px solid var(--cyan);padding:10px 14px;margin:10px 0;border-radius:0 4px 4px 0;font-family:'Share Tech Mono',monospace;}
+.apparatus-list{display:flex;flex-wrap:wrap;gap:8px;}
+.app-item{background:rgba(57,255,133,0.07);border:1px solid rgba(57,255,133,0.2);border-radius:20px;padding:5px 12px;font-size:0.8rem;color:var(--green);font-family:'Share Tech Mono',monospace;}
+.proc-step{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start;}
+.proc-num{width:26px;height:26px;border-radius:50%;background:rgba(255,215,0,0.1);border:1px solid var(--gold);display:flex;align-items:center;justify-content:center;font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--gold);flex-shrink:0;}
+.proc-text{font-size:0.88rem;line-height:1.6;padding-top:4px;}
+.results-table-wrap{overflow-x:auto;}
+table.results{width:100%;border-collapse:collapse;font-size:0.85rem;}
+table.results th{background:rgba(255,215,0,0.1);color:var(--gold);font-family:'Share Tech Mono',monospace;font-size:0.75rem;padding:10px 12px;border:1px solid var(--border);text-align:center;white-space:nowrap;}
+table.results td{border:1px solid var(--border);padding:0;}
+table.results td input{width:100%;background:transparent;border:none;color:var(--cyan);font-family:'Share Tech Mono',monospace;font-size:0.85rem;padding:9px 12px;outline:none;text-align:center;}
+table.results td input:focus{background:rgba(0,229,255,0.05);}
+table.results tr.auto-logged td{background:rgba(57,255,133,0.04);}
+table.results tr.auto-logged td input{color:var(--green);}
+.sim-container{background:var(--bg);border:1px solid var(--border);border-radius:8px;overflow:hidden;position:relative;}
+.sim-controls{display:flex;flex-wrap:wrap;gap:10px;padding:14px;border-bottom:1px solid var(--border);background:rgba(0,0,0,0.3);}
+.sim-btn{background:rgba(255,215,0,0.1);border:1px solid rgba(255,215,0,0.3);color:var(--gold);font-family:'Share Tech Mono',monospace;font-size:0.78rem;padding:7px 14px;border-radius:4px;cursor:pointer;transition:all 0.2s;}
+.sim-btn:hover{background:rgba(255,215,0,0.2);box-shadow:0 0 10px rgba(255,215,0,0.2);}
+.sim-btn.active{background:rgba(255,215,0,0.25);box-shadow:0 0 12px rgba(255,215,0,0.3);}
+.sim-reset{background:rgba(255,68,68,0.1);border-color:rgba(255,68,68,0.3);color:var(--red);}
+.sim-reset:hover{background:rgba(255,68,68,0.2);}
+.sim-log-btn{background:rgba(57,255,133,0.1);border:1px solid rgba(57,255,133,0.3);color:var(--green);font-family:'Share Tech Mono',monospace;font-size:0.78rem;padding:7px 14px;border-radius:4px;cursor:pointer;transition:all 0.2s;}
+.sim-log-btn:hover{background:rgba(57,255,133,0.2);}
+canvas{display:block;}
+.slider-row{display:flex;align-items:center;gap:10px;padding:0 14px 12px;}
+.slider-row label{font-family:'Share Tech Mono',monospace;font-size:0.72rem;color:var(--muted);white-space:nowrap;min-width:120px;}
+input[type=range]{flex:1;accent-color:var(--gold);}
+.slider-val{font-family:'Share Tech Mono',monospace;font-size:0.78rem;color:var(--cyan);min-width:70px;text-align:right;}
+.readout-row{display:flex;gap:16px;padding:10px 14px;flex-wrap:wrap;}
+.readout{background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:4px;padding:6px 12px;font-family:'Share Tech Mono',monospace;font-size:0.78rem;}
+.readout span{color:var(--gold);}
+@keyframes logFlash{0%{background:rgba(57,255,133,0.3);}100%{background:transparent;}}
+.log-flash{animation:logFlash 0.8s ease-out;}
+.analysis-q{margin-bottom:16px;}
+.q-label{font-size:0.82rem;color:var(--text);margin-bottom:7px;font-weight:500;}
+.q-label .qn{color:var(--gold);font-family:'Share Tech Mono',monospace;margin-right:6px;}
+textarea.answer{width:100%;background:rgba(0,229,255,0.03);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.88rem;padding:12px;resize:vertical;min-height:70px;outline:none;transition:border 0.2s;}
+textarea.answer:focus{border-color:rgba(0,229,255,0.4);background:rgba(0,229,255,0.05);}
+/* ── CONCLUSION TEXTAREA ── */
+textarea.conclusion-input{width:100%;background:rgba(57,255,133,0.03);border:1px solid rgba(57,255,133,0.25);border-radius:6px;color:var(--text);font-family:'Exo 2',sans-serif;font-size:0.88rem;padding:14px;resize:vertical;min-height:110px;outline:none;transition:border 0.2s;line-height:1.7;}
+textarea.conclusion-input:focus{border-color:rgba(57,255,133,0.5);background:rgba(57,255,133,0.06);}
+textarea.conclusion-input::placeholder{color:var(--muted);font-size:0.82rem;}
+.conclusion-hint{font-size:0.78rem;color:var(--muted);margin-bottom:10px;font-style:italic;}
+.graph-area{background:var(--bg);border:1px solid var(--border);border-radius:6px;overflow:hidden;}
+.log-status{display:inline-block;font-family:'Share Tech Mono',monospace;font-size:0.7rem;padding:3px 10px;border-radius:12px;margin-left:8px;background:rgba(57,255,133,0.1);color:var(--green);border:1px solid rgba(57,255,133,0.2);}
+.results-header-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;flex-wrap:wrap;gap:8px;}
+.results-header-bar .results-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.import-btn{background:rgba(255,215,0,0.08);border:1px solid rgba(255,215,0,0.25);color:var(--gold);font-family:'Share Tech Mono',monospace;font-size:0.75rem;padding:6px 12px;border-radius:4px;cursor:pointer;}
+.import-btn:hover{background:rgba(255,215,0,0.15);}
+.clear-btn{background:rgba(255,68,68,0.08);border:1px solid rgba(255,68,68,0.2);color:var(--red);font-family:'Share Tech Mono',monospace;font-size:0.75rem;padding:6px 12px;border-radius:4px;cursor:pointer;}
+.clear-btn:hover{background:rgba(255,68,68,0.15);}
+
+/* ── EXP 19 TABLE & EQUATION TOOLS ── */
+.builder-controls { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+.tool-btn { padding: 8px 12px; background: rgba(255,215,0,0.1); border: 1px solid rgba(255,215,0,0.3); border-radius: 4px; cursor: pointer; font-size: 13px; color: var(--gold); transition: 0.2s; flex-grow: 1; text-align: center; font-family:'Share Tech Mono',monospace; }
+.tool-btn:hover { background: rgba(255,215,0,0.2); }
+.table-container { overflow-x: auto; border: 1px solid var(--border); padding: 10px; background: rgba(255,255,255,0.02); border-radius: 4px; }
+.dynamic-table { border-collapse: collapse; width: 100%; }
+.dynamic-table td { padding: 2px; border: 1px solid var(--border); }
+.dynamic-table input { width: 100%; border: none; padding: 8px; box-sizing: border-box; background: transparent; color: var(--cyan); text-align: center; font-family:'Share Tech Mono',monospace; }
+.dynamic-table tr:first-child input { font-weight: bold; background: rgba(255,215,0,0.1); color: var(--gold); }
+.dynamic-table input:focus { outline: 1px solid var(--cyan); background: rgba(0,229,255,0.05); }
+math-field { font-size: 20px; width: 100%; padding: 12px; background: rgba(0,0,0,0.2); border: 1px solid var(--border); border-radius: 4px; color: #fff; box-sizing: border-box; }
+math-field:focus-within { outline: 1px solid var(--gold); border-color: transparent; }
+
+/* ═══ REPORT BUTTON ═══ */
+.report-section{margin-top:24px;padding:4px 0 12px;}
+.report-section-label{font-family:'Share Tech Mono',monospace;font-size:0.65rem;letter-spacing:3px;color:var(--muted);text-align:center;margin-bottom:10px;text-transform:uppercase;}
+.generate-report-btn{display:flex;align-items:center;gap:0;background:linear-gradient(135deg,rgba(255,215,0,0.07) 0%,rgba(255,165,0,0.03) 100%);border:1px solid rgba(255,215,0,0.3);border-top:3px solid var(--gold);border-radius:10px;padding:0;width:100%;cursor:pointer;transition:all 0.25s;text-align:left;overflow:hidden;}
+.generate-report-btn:hover{background:linear-gradient(135deg,rgba(255,215,0,0.15),rgba(255,165,0,0.08));box-shadow:0 0 32px rgba(255,215,0,0.2),inset 0 0 20px rgba(255,215,0,0.03);transform:translateY(-2px);border-color:rgba(255,215,0,0.6);}
+.generate-report-btn:active{transform:translateY(0);}
+.report-btn-left{background:rgba(255,215,0,0.1);border-right:1px solid rgba(255,215,0,0.15);width:70px;min-height:72px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;flex-shrink:0;}
+.report-btn-center{flex:1;padding:14px 18px;}
+.report-btn-title{font-family:'Orbitron',monospace;font-weight:700;font-size:0.82rem;color:var(--gold);letter-spacing:2px;display:block;}
+.report-btn-sub{font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--muted);letter-spacing:1px;margin-top:4px;display:block;}
+.report-btn-pills{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+.report-pill{font-family:'Share Tech Mono',monospace;font-size:0.6rem;letter-spacing:1px;padding:2px 8px;border-radius:10px;}
+.pill-print{background:rgba(0,229,255,0.1);color:var(--cyan);border:1px solid rgba(0,229,255,0.2);}
+.pill-save{background:rgba(57,255,133,0.1);color:var(--green);border:1px solid rgba(57,255,133,0.2);}
+.pill-pdf{background:rgba(255,215,0,0.1);color:var(--gold);border:1px solid rgba(255,215,0,0.2);}
+.report-btn-right{padding:0 18px;color:rgba(255,215,0,0.3);font-size:1.3rem;flex-shrink:0;}
+::-webkit-scrollbar{width:6px;}
+::-webkit-scrollbar-track{background:var(--bg2);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+@media(max-width:768px){.app{flex-direction:column;}.sidebar{width:100%;height:auto;max-height:220px;}.main{padding:14px;}.header-fields{justify-content:flex-start;}.hf-input{width:150px;}}
+</style>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div class="logo">GOLD'N GENIUZ<span>VIRTUAL PHYSICS LAB</span></div>
+    <div class="header-fields">
+      <div class="hf-group">
+        <label class="hf-label" for="student-name">Student Name</label>
+        <input type="text" id="student-name" class="hf-input" placeholder="Enter your name…">
+      </div>
+      <div class="hf-group">
+        <label class="hf-label" for="class-name">Class</label>
+        <input type="text" id="class-name" class="hf-input" placeholder="e.g. 5A, Form 4B…">
+      </div>
+      <div class="hf-group">
+        <label class="hf-label" for="teacher-name">Teacher Name</label>
+        <input type="text" id="teacher-name" class="hf-input" placeholder="Enter teacher's name…">
+      </div>
+    </div>
+    <div class="subtitle">CSEC Physics SBA · Interactive Edition<br>19 Experiments · Auto-Logging Data Suite</div>
+  </div>
+</header>
+<div class="app">
+  <nav class="sidebar" id="sidebar"><div class="sidebar-title">⚗ Experiments</div></nav>
+  <main class="main" id="main">
+    <div class="welcome" id="welcome">
+      <h1>CSEC PHYSICS<br>VIRTUAL LAB</h1>
+      <p>Select an experiment from the menu to begin. Each lab includes an interactive simulation that <strong style="color:var(--gold)">automatically logs data</strong> to your results table as you take readings.</p>
+      <div class="stats">
+        <div class="stat"><div class="n">19</div><div class="l">Experiments</div></div>
+        <div class="stat"><div class="n">6</div><div class="l">Topics</div></div>
+        <div class="stat"><div class="n">Auto</div><div class="l">Data Logging</div></div>
+      </div>
+    </div>
+    <div id="exp-pages"></div>
+  </main>
+</div>
+<script>
+// ════════════════════════════════════════════════════════════════
+//  EXPERIMENT DATA
+// ════════════════════════════════════════════════════════════════
+const EXPERIMENTS = [
+  {id:1,topic:"Measurement",title:"Volume of a Cylindrical Rod",tag:"meas",tagLabel:"Measurement",aim:"To determine the volume of a cylindrical glass rod.",theory:`<p>Volume is the amount of 3-dimensional space an object occupies. Its SI unit is the <b>cubic metre (m³)</b>, though cm³ is commonly used in lab work.</p><p>For a cylinder of diameter $d$ and length $L$:</p><div class="formula-block">$$V = \\pi r^2 L = \\frac{\\pi d^2 L}{4}$$</div><p>A <b>Vernier calliper</b> measures to ±0.02 mm. Reading = main scale + (vernier division × 0.02 mm).</p>`,apparatus:["Vernier calliper","50 cm rule","Cylindrical rod"],procedure:["Close the Vernier calliper jaws and check for zero error. Record any zero error.","Place the cylindrical rod between the jaws. Record the main scale and Vernier scale readings to find diameter d.","Measure the length L of the cylindrical rod using the 50 cm rule.","Repeat diameter measurement at three positions along the rod and find average d."],resultsCols:["Quantity","Value"],resultsRows:[["Zero Reading (mm)",""],["Main Scale Reading (mm)",""],["Vernier Scale Reading (mm)",""],["Corrected Diameter d (mm)",""],["Length L (cm)",""]],simType:"vernier",analysisQs:[{type:"calc",label:"Calculate the volume of the cylindrical rod (in cm³). Use V = πd²L/4. Enter your values:"},{type:"text",label:"State two precautions taken to ensure accuracy in this experiment."},{type:"text",label:"State all sources of error in this experiment."}]},
+  {id:2,topic:"Measurement",title:"Density of a Marble",tag:"meas",tagLabel:"Measurement",aim:"To determine the density of a marble.",theory:`<p><b>Density</b> is defined as mass per unit volume. SI unit: <b>kg m⁻³</b>.</p><div class="formula-block">$$\\rho = \\frac{m}{V}$$</div><p>A marble is spherical: $V = \\frac{\\pi d^3}{6}$. A <b>micrometer screw gauge</b> measures to ±0.01 mm.</p>`,apparatus:["Marble","Micrometer screw gauge","Electronic top pan balance"],procedure:["Place the marble on the top pan balance and record its mass m.","Close the micrometer screw gauge on nothing and record the zero error.","Place the marble between the anvil and spindle. Use the ratchet to close gently.","Record sleeve and thimble readings. Calculate diameter d.","Repeat diameter measurement in three orientations. Calculate average d."],resultsCols:["Quantity","Value"],resultsRows:[["Mass m (g)",""],["Zero error (mm)",""],["Sleeve reading (mm)",""],["Thimble reading (mm)",""],["Corrected diameter d (mm)",""]],simType:"micrometer",analysisQs:[{type:"calc",label:"Calculate the volume of the marble, then calculate the density ρ = m/V. Show your working:"},{type:"text",label:"State two precautions taken to ensure accuracy."},{type:"text",label:"State all sources of error in this experiment."}]},
+  {id:3,topic:"Measurement",title:"Cross-Sectional Area of a Boiling Tube",tag:"meas",tagLabel:"Measurement",aim:"To determine the cross-sectional area of a boiling tube.",theory:`<p>Adding volume $V$ to a cylinder of cross-sectional area $A$ raises the water height by:</p><div class="formula-block">$$h = \\frac{1}{A} \\cdot V$$</div><p>Plotting $h$ vs $V$ gives gradient $m = \\frac{1}{A}$, so $A = \\frac{1}{m}$.</p>`,apparatus:["Boiling tube","Retort stand","Syringe","50 cm rule"],procedure:["Clamp the boiling tube vertically on the stand.","Mark the initial water level as zero reference.","Using the syringe, add 2 cm³ of water and measure the rise in height h (cm).","Repeat for at least 6 different values of V. Record all (V, h) pairs in the results table."],resultsCols:["V / cm³","h / cm"],resultsRows:[["",""],["",""],["",""],["",""],["",""],["",""]],simType:"boilingtube",analysisQs:[{type:"graph",label:"Plot a graph of h (y-axis) against V (x-axis) using the simulation graph tool above."},{type:"calc",label:"Find the gradient G of your graph. Enter rise and run values to calculate G:"},{type:"calc",label:"Given that G = 1/A, calculate A (cross-sectional area in cm²):"},{type:"text",label:"Discuss errors that could have been made and precautions taken to avoid them."}]},
+  {id:4,topic:"Motion / Forces",title:"Simple Pendulum — Acceleration due to Gravity",tag:"motion",tagLabel:"Motion",aim:"To investigate the relationship between length and period of a pendulum, and to determine g.",theory:`<p>For small amplitudes:</p><div class="formula-block">$$T = 2\\pi\\sqrt{\\frac{L}{g}} \\implies T^2 = \\frac{4\\pi^2}{g}\\,L$$</div><p>A graph of $T^2$ vs $L$ has gradient $m = \\frac{4\\pi^2}{g}$, giving $g = \\frac{4\\pi^2}{m}$.</p>`,apparatus:["Metre rule","Pendulum bob + string","Stopwatch","Set square","Clamp stand"],procedure:["Set the pendulum length L. Measure from pivot to centre of bob.","Displace the bob by a small angle (<10°) and release. Time 20 complete oscillations (t₁).","Repeat the timing (t₂) for accuracy.","Change the pendulum length and repeat for L = 10, 20, 30, 40, 50, 60, 70, 80 cm."],resultsCols:["L (cm)","t₁ (s)","t₂ (s)","t_avg (s)","T (s)","T² (s²)"],resultsRows:[["10","","","","",""],["20","","","","",""],["30","","","","",""],["40","","","","",""],["50","","","","",""],["60","","","","",""],["70","","","","",""],["80","","","","",""]],simType:"pendulum",analysisQs:[{type:"text",label:"From your table, does T² appear proportional to L? Explain how your data supports this."},{type:"graph",label:"Plot a graph of T² (y-axis) against L (x-axis) using the graph tool."},{type:"calc",label:"Find the gradient m of your T² vs L graph. Enter coordinates of two well-separated points:"},{type:"calc",label:"Using g = 4π²/m (where L is in metres), calculate the value of g:"},{type:"text",label:"Use your graph to find the period of a pendulum whose length is 35 cm."},{type:"text",label:"Write the equation connecting T² and L from your experiment."},{type:"text",label:"Discuss possible sources of error and precautions taken."}]},
+  {id:5,topic:"Motion / Forces",title:"Weight of a Metre Rule — Principle of Moments",tag:"motion",tagLabel:"Motion",aim:"To determine the weight of a metre rule using the principle of moments.",theory:`<p>Moment of a force: $M = F \\times d$. The <b>Principle of Moments</b>: for equilibrium, clockwise moments = anti-clockwise moments.</p><div class="formula-block">$$100g \\times l = W \\times d \\implies \\text{slope}\\; S = -\\frac{W+100}{100}$$</div>`,apparatus:["Metre rule","100 g mass","Pivot","Thread","Clamp stand"],procedure:["Locate the centre of gravity (COG) of the rule by balancing it on a pivot — record this position.","Hang the 100 g mass at a set position (l from the nearer end). Move the pivot until balanced.","Measure distance l (mass to nearer end) and distance d (COG to pivot).","Repeat for l = 5, 10, 15, 20, 25, 30, 35, 40, 45 cm."],resultsCols:["l (cm)","d (cm)"],resultsRows:[["5",""],["10",""],["15",""],["20",""],["25",""],["30",""],["35",""],["40",""],["45",""]],simType:"moments",analysisQs:[{type:"graph",label:"Plot a graph of l (y-axis) against d (x-axis)."},{type:"calc",label:"Determine the slope S of your graph. Enter two points for gradient calculation:"},{type:"calc",label:"Given S = −(W + 100)/100, determine the weight W (in grams) of the metre rule:"},{type:"text",label:"State the y-intercept l₀ from your graph and explain its physical meaning."},{type:"text",label:"State precautions and all sources of error."}]},
+  {id:6,topic:"Motion / Forces",title:"Hooke's Law",tag:"motion",tagLabel:"Motion",aim:"To investigate Hooke's Law.",theory:`<p><b>Hooke's Law</b>: extension ∝ applied force (within elastic limit):</p><div class="formula-block">$$F = k \\cdot e$$</div><p>A graph of $e$ vs $F$ gives gradient $\\frac{1}{k}$. Beyond the elastic limit, permanent deformation occurs.</p>`,apparatus:["Metre rule","Slotted masses and holder","Spring","Pointer","Clamp stand","Set square"],procedure:["Set up the spring hanging from the clamp stand with pointer and rule vertical.","Record the natural length L₀ (zero-load position).","Add masses in steps. For each mass m, record pointer position L₁ (loading). Calculate extension e = L₁ − L₀.","Obtain at least 8 readings. Remove masses in reverse and record L₂ (unloading)."],resultsCols:["m (g)","F = mg (N)","L₁ loading (cm)","L₂ unloading (cm)","e avg (cm)"],resultsRows:[["0","0.000","","",""],["50","","","",""],["100","","","",""],["150","","","",""],["200","","","",""],["250","","","",""],["300","","","",""],["350","","","",""]],simType:"spring",analysisQs:[{type:"graph",label:"Plot a graph of extension e (y-axis) against force F (x-axis)."},{type:"calc",label:"Find the gradient of the graph (= 1/k). Enter two points:"},{type:"calc",label:"Calculate the spring constant k (in N/m):"},{type:"text",label:"Is F proportional to e? Does the system obey Hooke's Law? Justify from your graph."},{type:"text",label:"Use your graph to determine the extension produced by a force of 0.45 N."},{type:"text",label:"State precautions and all sources of error."}]},
+  {id:7,topic:"Motion / Forces",title:"Speed of a Marble on a Ramp",tag:"motion",tagLabel:"Motion",aim:"To investigate how the speed of a marble varies with the angle of inclination of a ramp.",theory:`<p>Speed = distance ÷ time. For a 100 cm track:</p><div class="formula-block">$$v = \\frac{1.00}{t_{avg}} \\text{ m/s}, \\quad \\sin\\theta = \\frac{h}{L}$$</div>`,apparatus:["Plasticine","Metal track","Marble","Metre rule","Stopwatch","Retort stand"],procedure:["Set up the ramp. Set height h = 5 cm. Measure 100 cm along the track from the bottom.","Release the marble from the 100 cm mark. Record time t₁ to reach the bottom.","Repeat to obtain t₂. Calculate t_avg and speed.","Repeat for h = 5, 10, 15, 20, 25, 30, 35, 40 cm."],resultsCols:["h (cm)","t₁ (s)","t₂ (s)","t_avg (s)","speed (m/s)","θ (°)"],resultsRows:[["5","","","","",""],["10","","","","",""],["15","","","","",""],["20","","","","",""],["25","","","","",""],["30","","","","",""],["35","","","","",""],["40","","","","",""]],simType:"ramp",analysisQs:[{type:"graph",label:"Plot a graph of speed v (y-axis) against angle θ (x-axis)."},{type:"text",label:"Using sinθ = h/L, establish the relationship between height h and angle θ. Show working."},{type:"text",label:"Describe the relationship between speed and angle of inclination from your graph."},{type:"text",label:"Discuss the effect of friction on the speed of the marble."},{type:"text",label:"State precautions and all sources of error."}]},
+  {id:8,topic:"Motion / Forces",title:"Archimedes' Principle",tag:"motion",tagLabel:"Motion",aim:"To verify Archimedes' Principle.",theory:`<p>Upthrust = weight of fluid displaced:</p><div class="formula-block">$$U = W_{air} - W_{submerged} = W_{fluid\\,displaced}$$</div>`,apparatus:["Mass (object)","Water","Beaker","Displacement can","Spring balance","Electronic balance"],procedure:["Hang the object from the spring balance in air. Record its weight W_air (N).","Record mass m₁ of empty beaker.","Fill displacement can with water. Place beaker under spout.","Slowly lower the object into the can until fully submerged. Record W_sub and mass m₂ of beaker + displaced water.","Repeat with object partially submerged."],resultsCols:["Condition","W_air (N)","W_sub (N)","m₁ (g)","m₂ (g)"],resultsRows:[["Fully submerged","","","",""],["Partially submerged","","","",""]],simType:"archimedes",analysisQs:[{type:"calc",label:"Calculate the upthrust U = W_air − W_sub for full submersion:"},{type:"calc",label:"Calculate the weight of displaced fluid W_F = (m₂ − m₁) × g/1000 (N):"},{type:"text",label:"Do your results support Archimedes' Principle? Explain with reference to your values."},{type:"text",label:"State precautions and all sources of error."}]},
+  {id:9,topic:"Thermal Physics",title:"Specific Heat Capacity of a Metal",tag:"thermal",tagLabel:"Thermal",aim:"To determine the specific heat capacity of a metal.",theory:`<p>Heat lost by metal = heat gained by water (method of mixtures):</p><div class="formula-block">$$c_s = \\frac{m_w c_w (T_3 - T_1)}{m_s(T_2 - T_3)}, \\quad c_w = 4200\\,\\text{J kg}^{-1}\\text{°C}^{-1}$$</div>`,apparatus:["Water bath","Thermometer","Styrofoam cup","Water","String","Electronic balance"],procedure:["Record mass m_s of the metal.","Place the metal in boiling water bath ≥ 5 minutes. Record temperature T₂.","Record mass m_w of water in Styrofoam cup. Record initial temperature T₁.","Transfer metal quickly to the cup. Stir gently.","Record the final equilibrium temperature T₃."],resultsCols:["Quantity","Value"],resultsRows:[["Mass of metal m_s (kg)",""],["Mass of water m_w (kg)",""],["Initial temp of water T₁ (°C)",""],["Temp of boiling water T₂ (°C)",""],["Final mixture temp T₃ (°C)",""]],simType:"shc",analysisQs:[{type:"text",label:"Why must the transfer of the metal from the boiling water to the cup be done as quickly as possible?"},{type:"calc",label:"Using heat lost = heat gained, calculate the specific heat capacity c_s of the metal:"},{type:"text",label:"Why is the assumption 'heat lost = heat gained' not strictly true in practice?"},{type:"text",label:"State two possible sources of error in your experiment."},{type:"text",label:"The metal is copper (theoretical c = 385 J kg⁻¹ °C⁻¹). Compare and comment on your experimental value."}]},
+  {id:10,topic:"Thermal Physics",title:"Specific Latent Heat of Fusion of Ice",tag:"thermal",tagLabel:"Thermal",aim:"To determine the specific latent heat of fusion of ice.",theory:`<p>Heat conservation:</p><div class="formula-block">$$m_w c_w(T_1 - T_2) = m_i L_f + m_i c_w T_2$$</div><p>$c_w = 4200\\,\\text{J kg}^{-1}\\text{°C}^{-1}$, theoretical $L_f = 3.34 \\times 10^5\\,\\text{J kg}^{-1}$</p>`,apparatus:["Ice","Filter paper","Styrofoam cup","Thermometer","Electronic balance"],procedure:["Record mass m_c of the Styrofoam cup.","Warm water to about 10°C above room temperature. Pour into the cup.","Find mass m₁ (cup + warm water). Record initial temperature T₁.","Dry ice pieces with filter paper and slowly add to the warm water. Stir.","Wait until all ice melts. Record final temperature T₂.","Record final mass m_f (cup + water after melting)."],resultsCols:["Quantity","Value"],resultsRows:[["Mass of cup m_c (g)",""],["Mass of cup + water m₁ (g)",""],["Initial water temp T₁ (°C)",""],["Final temp after ice melts T₂ (°C)",""],["Final mass m_f (g)",""]],simType:"latent",analysisQs:[{type:"text",label:"Write the energy conservation equation for this experiment."},{type:"calc",label:"Calculate the mass of ice: m_i = m_f − (m₁ − m_c). Then calculate L_f:"},{type:"text",label:"List precautions taken and explain how they improve accuracy."},{type:"text",label:"Compare your experimental L_f to the theoretical value (3.34 × 10⁵ J/kg)."}]},
+  {id:11,topic:"Thermal Physics",title:"Cooling Curve & Melting Point",tag:"thermal",tagLabel:"Thermal",aim:"To plot the cooling curve of a substance and find its melting point.",theory:`<p>During a <b>phase change</b>, energy is released without temperature change — the <b>melting point</b>. On a cooling curve, the constant-temperature plateau indicates the phase change.</p>`,apparatus:["Stearic acid / naphthalene","Test tube","Water bath","Thermometer","Stopwatch","Retort stand"],procedure:["Heat the substance in the water bath until fully melted and well above melting point.","Remove the test tube. Start the stopwatch. Record temperature every 30 seconds.","Continue until temperature is well below the melting point."],resultsCols:["Time t (min)","Temperature T (°C)"],resultsRows:[["0",""],["0.5",""],["1.0",""],["1.5",""],["2.0",""],["2.5",""],["3.0",""],["3.5",""],["4.0",""],["4.5",""],["5.0",""],["5.5",""],["6.0",""]],simType:"cooling",analysisQs:[{type:"graph",label:"Plot the cooling curve (temperature vs time) using the graph tool above."},{type:"text",label:"Label on your graph: (a) liquid region, (b) solid region, (c) phase change."},{type:"text",label:"What is the melting point of the substance as shown by your cooling curve?"},{type:"text",label:"What was noticeable about the temperature as solidification was taking place?"},{type:"text",label:"Using kinetic theory, account for the shape of the cooling curve, especially the plateau."},{type:"text",label:"List precautions and sources of error."}]},
+  {id:12,topic:"Optics",title:"Snell's Law — Refraction through a Glass Block",tag:"optics",tagLabel:"Optics",aim:"To demonstrate Snell's Law.",theory:`<p>Snell's Law: $n_1 \\sin i = n_2 \\sin r$. For air to glass ($n_1=1$):</p><div class="formula-block">$$n = \\frac{\\sin i}{\\sin r}$$</div><p>A graph of sin i vs sin r has gradient = refractive index $n$. Critical angle: $\\sin C = \\frac{1}{n}$.</p>`,apparatus:["Glass block","Ruler","Paper","Protractor","4 optical pins","Optical board"],procedure:["Place the glass block on paper and trace its outline. Draw a normal at the midpoint.","Draw incident ray lines at i = 10°, 20°, 30°, 40°, 50°, 60°, 70°.","For each angle, place pins A and B on the incident line. Align pins C and D through the glass.","Draw refracted ray and measure angle of refraction r.","Record i, r, sin i, and sin r for each angle."],resultsCols:["i (°)","r (°)","sin i","sin r"],resultsRows:[["10","","",""],["20","","",""],["30","","",""],["40","","",""],["50","","",""],["60","","",""],["70","","",""]],simType:"snell",analysisQs:[{type:"graph",label:"Plot a graph of sin i (y-axis) against sin r (x-axis)."},{type:"text",label:"Does your graph show proportionality? Justify with reference to the graph."},{type:"calc",label:"Find the gradient — this is the refractive index n. Enter two points:"},{type:"calc",label:"Given n = 1/sin C, calculate the critical angle C:"},{type:"text",label:"Discuss precautions and sources of error."}]},
+  {id:13,topic:"Optics",title:"First Law of Reflection",tag:"optics",tagLabel:"Optics",aim:"To demonstrate the First Law of Reflection.",theory:`<p>The <b>First Law of Reflection</b>: angle of incidence = angle of reflection, both from the normal.</p><div class="formula-block">$$i = r$$</div>`,apparatus:["Plane mirror","Ruler","Paper","Protractor","4 optical pins","Optical board"],procedure:["Draw a mirror line and a normal perpendicular to it at the midpoint.","Draw incident ray lines at i = 15°, 30°, 45°, 60°, 75°.","Place pins A and B on each incident line. Observe reflections and align pins C and D.","Draw reflected ray through pin holes C and D. Measure angle of reflection r."],resultsCols:["i (°)","r (°)"],resultsRows:[["15",""],["20",""],["25",""],["30",""],["35",""],["40",""],["45",""],["50",""],["60",""],["65",""],["70",""],["75",""]],simType:"reflection",analysisQs:[{type:"text",label:"Why are the pins placed as far apart as possible in this experiment?"},{type:"text",label:"Why are common pins said to be better to use than optical pins for this experiment?"},{type:"text",label:"If the reflected rays did not all intersect at one point on the mirror line, what would this indicate?"},{type:"text",label:"From your results, state the relationship between angle of incidence and angle of reflection."},{type:"text",label:"List any precautions and sources of error."}]},
+  {id:14,topic:"Optics",title:"Focal Length & Magnification of a Convex Lens",tag:"optics",tagLabel:"Optics",aim:"To determine the focal length and magnification of a converging lens.",theory:`<p>The <b>lens equation</b>:</p><div class="formula-block">$$\\frac{1}{u} + \\frac{1}{v} = \\frac{1}{f}$$</div><p>A graph of $\\frac{1}{u}$ vs $\\frac{1}{v}$ has y-intercept $= \\frac{1}{f}$.</p>`,apparatus:["Converging lens","Lens holder","Object (cross-wires)","Screen","Ruler","Light source"],procedure:["Set up the light source, cross-wire object, lens, and screen in a straight line.","Place object at u = 15 cm from the lens.","Move the screen until the image is sharp. Record image distance v.","Repeat by increasing u in 5 cm steps up to 40 cm.","Calculate 1/u and 1/v for each pair."],resultsCols:["u (cm)","v (cm)","1/u (cm⁻¹)","1/v (cm⁻¹)"],resultsRows:[["15","","",""],["20","","",""],["25","","",""],["30","","",""],["35","","",""],["40","","",""]],simType:"lens",analysisQs:[{type:"graph",label:"Plot a graph of 1/u (y-axis) against 1/v (x-axis)."},{type:"text",label:"What kind of relationship exists between 1/u and 1/v from your graph?"},{type:"calc",label:"Calculate the gradient m and the y-intercept c. Given c = 1/f, find the focal length f:"},{type:"text",label:"Show clearly that the gradient equals the magnification m = −v/u."},{type:"text",label:"State precautions and sources of error."}]},
+  {id:15,topic:"Electricity",title:"IV Characteristics of a Filament Lamp",tag:"elec",tagLabel:"Electricity",aim:"To investigate the IV characteristics of a filament lamp.",theory:`<p>A <b>filament lamp</b> is <em>non-ohmic</em> — as current increases, temperature rises, increasing resistance. An IV graph is non-linear (curved).</p>`,apparatus:["Filament lamp","Voltmeter","Ammeter","Battery","Variable resistor","Breadboard"],procedure:["Set up the circuit with the variable resistor at maximum resistance.","Record initial current I (A) on ammeter and voltage V (V) on voltmeter.","Adjust the variable resistor to obtain different pairs of I and V.","Record at least 10 pairs of readings."],resultsCols:["V (V)","I (A)","R (Ω)"],resultsRows:Array.from({length:10},()=>["","",""]),simType:"iv_lamp",analysisQs:[{type:"graph",label:"Plot a graph of current I (y-axis) against voltage V (x-axis)."},{type:"text",label:"Is the filament lamp ohmic? Justify your answer with reference to your graph's shape."},{type:"text",label:"Explain, in terms of temperature and resistance, why the filament lamp behaves this way."},{type:"text",label:"Discuss any precautions and sources of error in this experiment."}]},
+  {id:16,topic:"Electricity",title:"IV Characteristics of a Resistor",tag:"elec",tagLabel:"Electricity",aim:"To investigate the IV characteristics of a fixed resistor.",theory:`<p>An <b>ohmic conductor</b> obeys $V = IR$ — a graph of I vs V is a straight line through the origin. $R = \\frac{1}{\\text{gradient}}$.</p>`,apparatus:["Fixed resistor","Voltmeter","Ammeter","Battery","Variable resistor","Breadboard"],procedure:["Set up the circuit with the variable resistor at maximum resistance.","Record initial current I and voltage V.","Adjust variable resistor to obtain multiple I–V pairs.","Record at least 8 pairs of readings."],resultsCols:["V (V)","I (A)","R (Ω)"],resultsRows:Array.from({length:8},()=>["","",""]),simType:"iv_resistor",analysisQs:[{type:"graph",label:"Plot a graph of current I (y-axis) against voltage V (x-axis)."},{type:"text",label:"Is the resistor ohmic? Justify your answer with reference to your graph."},{type:"calc",label:"Find the gradient of your graph. Calculate the resistance R = 1/gradient:"},{type:"text",label:"Discuss any precautions and sources of error."}]},
+  {id:17,topic:"Nuclear Physics",title:"Radioactive Simulation — Playing Cards",tag:"nuclear",tagLabel:"Nuclear",aim:"To investigate the characteristics of a radioactive substance using a playing card simulation.",theory:`<p><b>Radioactivity</b> is a <em>random</em> process. Drawing the queen of spades from 12 cards (probability 1/12) models random radioactive decay.</p>`,apparatus:["Pack of playing cards (12 selected: 4 kings, 4 queens, 4 jacks)"],procedure:["Select 4 kings, 4 queens, and 4 jacks from the pack.","Shuffle the 12 cards. Have a partner pull one card without looking.","Record whether the queen of spades was drawn (1 = yes, 0 = no).","Replace the card and repeat for 100 trials."],resultsCols:["Trial Group","Events in Group","Running Total","Running Frequency"],resultsRows:Array.from({length:20},(_,i)=>[String(i*5+1)+"-"+String(i*5+5),"","",""]),simType:"cards",analysisQs:[{type:"text",label:"What pattern did you observe in the results over 100 trials?"},{type:"text",label:"Predict how many times the queen of spades would be drawn in 200 trials. Explain your reasoning."},{type:"text",label:"How does this simulation model the random nature of radioactive decay?"},{type:"text",label:"Write a suitable conclusion based on your observations."}]},
+  {id:18,topic:"Nuclear Physics",title:"Radioactive Simulation — Dice (Half-Life)",tag:"nuclear",tagLabel:"Nuclear",aim:"To investigate the characteristics of a radioactive substance using a dice simulation.",theory:`<p><b>Half-life</b> ($t_{1/2}$): time for half the nuclei to decay. Each throw, dice showing 6 are "decayed" (probability 1/6).</p><div class="formula-block">$$N_n = N_0 \\left(\\frac{5}{6}\\right)^n$$</div>`,apparatus:["50 dice"],procedure:["Shake and throw all 50 dice.","Remove and count all dice with 6 facing upward. Record number removed.","Record number remaining.","Repeat until very few dice remain."],resultsCols:["Throw #","Removed (6s)","Remaining"],resultsRows:[["Start","0","50"],["1","",""],["2","",""],["3","",""],["4","",""],["5","",""],["6","",""],["7","",""],["8","",""],["9","",""],["10","",""],["11","",""],["12","",""],["13","",""],["14","",""],["15","",""]],simType:"dice",analysisQs:[{type:"graph",label:"Plot a graph of number of dice remaining (y-axis) against throw number (x-axis)."},{type:"text",label:"From your graph, determine the 'half-life' — the number of throws that halved the original count."},{type:"text",label:"Does the shape of your graph match an exponential decay curve? Explain."},{type:"text",label:"How does this simulation model actual radioactive decay?"},{type:"text",label:"Write a suitable conclusion based on your findings."}]},
+  {
+    id: 19,
+    topic: "Custom SBA",
+    title: "Open Laboratory Project",
+    tag: "special",
+    tagLabel: "Design & Plan",
+    isSpecial: true,
+    aim: "Student Defined",
+    theory: "Student Defined",
+    apparatus: ["User Defined"],
+    procedure: ["User Defined"],
+    resultsCols: ["Column 1", "Column 2"],
+    resultsRows: [["", ""]],
+    simType: "none",
+    analysisQs: []
+  }
+];
+
+// ════════════════════════════════════════════════════════════════
+//  BUILD SIDEBAR
+// ════════════════════════════════════════════════════════════════
+const sidebar = document.getElementById('sidebar');
+EXPERIMENTS.forEach(exp=>{
+  const btn = document.createElement('button');
+  btn.className='exp-btn'; btn.id=`btn-${exp.id}`;
+  btn.innerHTML=`<span class="num">EXP ${String(exp.id).padStart(2,'0')}</span><span class="title">${exp.title}</span><span class="tag tag-${exp.tag}">${exp.tagLabel}</span>`;
+  btn.onclick=()=>showExp(exp.id);
+  sidebar.appendChild(btn);
+});
+
+// ════════════════════════════════════════════════════════════════
+//  TABLE BUILDER FUNCTIONS (For Exp 19)
+// ════════════════════════════════════════════════════════════════
+function addRow(id, colCountOverride = null) {
+    const table = document.getElementById(`dynamicTable_${id}`);
+    if(!table) return;
+    const rowCount = table.rows.length;
+    const colCount = colCountOverride || (rowCount > 0 ? table.rows[0].cells.length : 2);
+    const row = table.insertRow(-1);
+    for (let c = 0; c < colCount; c++) {
+        const cell = row.insertCell(c);
+        const input = document.createElement('input');
+        input.type = 'text';
+        if (rowCount === 0) input.placeholder = "Header " + (c + 1);
+        cell.appendChild(input);
+    }
+}
+function removeRow(id) {
+    const table = document.getElementById(`dynamicTable_${id}`);
+    if (table && table.rows.length > 1) table.deleteRow(-1);
+}
+function addColumn(id) {
+    const table = document.getElementById(`dynamicTable_${id}`);
+    if(!table) return;
+    const rowCount = table.rows.length;
+    if (rowCount === 0) { addRow(id, 1); return; }
+    for (let r = 0; r < rowCount; r++) {
+        const cell = table.rows[r].insertCell(-1);
+        const input = document.createElement('input');
+        input.type = 'text';
+        if (r === 0) input.placeholder = "Header " + (table.rows[r].cells.length);
+        cell.appendChild(input);
+    }
+}
+function removeColumn(id) {
+    const table = document.getElementById(`dynamicTable_${id}`);
+    if(!table) return;
+    const rowCount = table.rows.length;
+    if (rowCount > 0 && table.rows[0].cells.length > 1) {
+        for (let r = 0; r < rowCount; r++) table.rows[r].deleteCell(-1);
+    }
+}
+function getPrintableTableHTML(id) {
+    const table = document.getElementById(`dynamicTable_${id}`);
+    if(!table || table.rows.length === 0) return '';
+    let html = '<table class="results-table-rpt" style="width:100%; border-collapse:collapse; margin-top:10px; font-size:10.5pt;">';
+    for (let r = 0; r < table.rows.length; r++) {
+        html += '<tr>';
+        for (let c = 0; c < table.rows[r].cells.length; c++) {
+            const inputVal = table.rows[r].cells[c].querySelector('input').value;
+            if (r === 0) html += `<th style="background:#0a1525; color:#FFD700; padding:8px 12px; border:1px solid #334466; text-align:center;">${escHtml(inputVal)}</th>`;
+            else html += `<td style="border:1px solid #c8d0d8; padding:7px 12px; text-align:center; color:#1a2a3a;">${escHtml(inputVal)}</td>`;
+        }
+        html += '</tr>';
+    }
+    html += '</table>';
+    return html;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  BUILD EXPERIMENT PAGES
+// ════════════════════════════════════════════════════════════════
+const pagesContainer = document.getElementById('exp-pages');
+EXPERIMENTS.forEach(exp=>{
+  const page = document.createElement('div');
+  page.className='exp-page'; page.id=`exp-${exp.id}`;
+  page.innerHTML=buildExpPage(exp);
+  pagesContainer.appendChild(page);
+});
+
+function buildExpPage(exp){
+  if (exp.id === 19) {
+    return `
+    <div class="exp-header">
+      <div class="exp-num">EXPERIMENT 19 · SPECIAL OPEN LAB</div>
+      <div class="exp-title">${exp.title}</div>
+    </div>
+    <div class="sections-grid">
+      <div class="section-card"><div class="section-header"><div class="section-label">AIM</div></div><div class="section-body"><textarea class="conclusion-input" id="special-aim" placeholder="Enter Aim here..."></textarea></div></div>
+      
+      <div class="section-card">
+        <div class="section-header"><div class="section-label">THEORY & EQUATIONS</div></div>
+        <div class="section-body">
+          <textarea class="conclusion-input" id="special-theory" placeholder="Enter Theory here..."></textarea>
+          <span class="conclusion-hint" style="display:block; margin-top:15px; color:var(--gold);"><strong>Visual Equation Builder:</strong> Click below to build an equation. It will be added to your Theory section.</span>
+          <math-field id="special-equation" placeholder="Type equation here..."></math-field>
+        </div>
+      </div>
+      
+      <div class="section-card"><div class="section-header"><div class="section-label">APPARATUS</div></div><div class="section-body"><textarea class="conclusion-input" id="special-apparatus" placeholder="Enter Apparatus list here..."></textarea></div></div>
+      <div class="section-card"><div class="section-header"><div class="section-label">PROCEDURE</div></div><div class="section-body"><textarea class="conclusion-input" id="special-procedure" placeholder="Enter Procedure steps here..."></textarea></div></div>
+      
+      <div class="section-card">
+        <div class="section-header"><div class="section-label">RESULTS & OBSERVATIONS</div></div>
+        <div class="section-body">
+          <span class="conclusion-hint">Build your data table dynamically:</span>
+          <div class="builder-controls">
+              <button type="button" class="tool-btn" onclick="addRow(19)">+ Add Row</button>
+              <button type="button" class="tool-btn" onclick="removeRow(19)">- Remove Row</button>
+              <button type="button" class="tool-btn" onclick="addColumn(19)">+ Add Column</button>
+              <button type="button" class="tool-btn" onclick="removeColumn(19)">- Remove Column</button>
+          </div>
+          <div class="table-container">
+              <table class="dynamic-table" id="dynamicTable_19"></table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="section-card">
+        <div class="section-header"><div class="section-label">DISCUSSION</div></div>
+        <div class="section-body">
+          <textarea class="conclusion-input" id="special-discussion" placeholder="Analyze your findings here..."></textarea>
+          <span class="conclusion-hint" style="display:block; margin-top:15px; color:var(--gold);"><strong>Visual Equation Builder:</strong> Click below to build an equation. It will be added to your Discussion section.</span>
+          <math-field id="special-equation-discussion" placeholder="Type equation here..."></math-field>
+        </div>
+      </div>
+
+      <div class="section-card"><div class="section-header"><div class="section-label">CONCLUSION</div></div><div class="section-body"><textarea class="conclusion-input" id="special-conclusion" placeholder="Final thoughts..."></textarea></div></div>
+      <div class="section-card"><div class="section-header" style="border-bottom: 1px solid var(--cyan);"><div class="section-label" style="color: var(--cyan);">REFLECTION</div></div><div class="section-body"><textarea class="conclusion-input" style="border-color: var(--cyan); background: rgba(0, 229, 255, 0.02);" id="special-reflection" placeholder="What did you learn? How does this apply to real life?"></textarea></div></div>
+    </div>
+    <div class="report-section">
+      <div class="report-section-label">── Completed this experiment? ──</div>
+      <button class="generate-report-btn" onclick="generateReport(19)">
+        <div class="report-btn-left">📄</div>
+        <div class="report-btn-center">
+          <span class="report-btn-title">GENERATE SPECIAL LAB REPORT</span>
+          <span class="report-btn-sub">Compiles all your custom inputs into a professional format</span>
+        </div>
+        <div class="report-btn-right">›</div>
+      </button>
+    </div>`;
+  }
+
+  return `
+  <div class="exp-header">
+    <div class="exp-num">EXPERIMENT ${String(exp.id).padStart(2,'0')} · ${exp.topic.toUpperCase()}</div>
+    <div class="exp-title">${exp.title}</div>
+  </div>
+  <div class="sections-grid">
+    <div class="section-card">
+      <div class="section-header"><div class="section-icon icon-aim">🎯</div><div class="section-label">AIM</div></div>
+      <div class="section-body"><div class="theory-box"><p>${exp.aim}</p></div></div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><div class="section-icon icon-theory">📐</div><div class="section-label">THEORY</div></div>
+      <div class="section-body"><div class="theory-box">${exp.theory}</div></div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><div class="section-icon icon-app">🔬</div><div class="section-label">APPARATUS</div></div>
+      <div class="section-body"><div class="apparatus-list">${exp.apparatus.map(a=>`<span class="app-item">${a}</span>`).join('')}</div></div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><div class="section-icon icon-sim">⚡</div><div class="section-label">SIMULATION</div></div>
+      <div class="section-body"><div class="sim-container" id="sim-${exp.id}">${buildSim(exp)}</div></div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><div class="section-icon icon-proc">📋</div><div class="section-label">PROCEDURE</div></div>
+      <div class="section-body">${exp.procedure.map((s,i)=>`<div class="proc-step"><div class="proc-num">${i+1}</div><div class="proc-text">${s}</div></div>`).join('')}</div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><div class="section-icon icon-result">📊</div><div class="section-label">RESULTS <span class="log-status" id="log-status-${exp.id}">0 readings logged</span></div></div>
+      <div class="section-body">
+        <div class="results-header-bar">
+          <div style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--muted);">Data is auto-logged from simulation. Edit cells manually if needed.</div>
+          <div class="results-actions">
+            <button class="import-btn" onclick="importAllData(${exp.id})">⬇ Fill All Rows from Sim</button>
+            <button class="clear-btn" onclick="clearTable(${exp.id})">✕ Clear Table</button>
+          </div>
+        </div>
+        <div class="results-table-wrap">
+          <table class="results" id="table-${exp.id}">
+            <thead><tr>${exp.resultsCols.map(c=>`<th>${c}</th>`).join('')}</tr></thead>
+            <tbody>${exp.resultsRows.map((row,ri)=>`<tr id="row-${exp.id}-${ri}">${row.map((cell,ci)=>`<td><input type="text" id="r${exp.id}_${ri}_${ci}" value="${cell}" placeholder="—"></td>`).join('')}</tr>`).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><div class="section-icon icon-analysis">🔍</div><div class="section-label">DATA ANALYSIS</div></div>
+      <div class="section-body">${buildAnalysis(exp)}</div>
+    </div>
+    <div class="section-card">
+      <div class="section-header"><div class="section-icon icon-conclusion">📝</div><div class="section-label">CONCLUSION</div></div>
+      <div class="section-body">
+        <p class="conclusion-hint">Summarise your findings: state whether the aim was achieved, give your experimental values, compare to theory where applicable, and comment on sources of error.</p>
+        <textarea class="conclusion-input" placeholder="Write your conclusion here…&#10;&#10;Example: This experiment successfully demonstrated… The value obtained for [quantity] was … which compares to the theoretical value of … The percentage error was … %. The main sources of error were…" rows="7"></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="report-section">
+    <div class="report-section-label">── Completed this experiment? ──</div>
+    <button class="generate-report-btn" onclick="generateReport(${exp.id})">
+      <div class="report-btn-left">📄</div>
+      <div class="report-btn-center">
+        <span class="report-btn-title">GENERATE LAB REPORT</span>
+        <span class="report-btn-sub">Compiles all data, analysis answers, conclusion &amp; simulation into a formatted report</span>
+        <div class="report-btn-pills">
+          <span class="report-pill pill-print">🖨 Print</span>
+          <span class="report-pill pill-save">⬇ Save HTML</span>
+          <span class="report-pill pill-pdf">Opens in new tab</span>
+        </div>
+      </div>
+      <div class="report-btn-right">›</div>
+    </button>
+  </div>`;
+}
+
+function buildAnalysis(exp){
+  return exp.analysisQs.map((q,i)=>{
+    const n=i+1;
+    if(q.type==='text'||q.type==='calc'){
+      return `<div class="analysis-q"><div class="q-label"><span class="qn">Q${n}.</span>${q.label}</div>
+        <textarea class="answer" placeholder="${q.type==='calc'?'Show working and calculated value…':'Enter your answer here…'}" rows="${q.type==='calc'?4:3}"></textarea></div>`;
+    } else if(q.type==='graph'){
+      return `<div class="analysis-q"><div class="q-label"><span class="qn">Q${n}.</span>${q.label}</div>
+        <div class="graph-area" id="graph-${exp.id}-${i}">${buildGraphTool(exp.id,i)}</div></div>`;
+    }
+    return '';
+  }).join('');
+}
+
+function buildGraphTool(expId,qi){
+  return `<div style="padding:10px">
+    <canvas id="gc-${expId}-${qi}" width="560" height="320" style="width:100%;background:#050c14;border-radius:4px;cursor:crosshair;"></canvas>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+      <button class="sim-btn" onclick="plotFromTable(${expId},${qi})">📈 Plot from Table</button>
+      <button class="sim-btn" onclick="drawBestFit(${expId},${qi})">📏 Best Fit Line</button>
+      <button class="sim-reset" onclick="clearGraph(${expId},${qi})">✕ Clear</button>
+    </div>
+    <div style="margin-top:8px;font-family:'Share Tech Mono',monospace;font-size:0.78rem;color:var(--muted);" id="ginfo-${expId}-${qi}">Click 'Plot from Table' to generate graph from your data.</div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════
+//  TABLE HELPERS
+// ════════════════════════════════════════════════════════════════
+function setCell(expId,row,col,value){const el=document.getElementById(`r${expId}_${row}_${col}`);if(el){el.value=value;}}
+function getCell(expId,row,col){const el=document.getElementById(`r${expId}_${row}_${col}`);return el?el.value:'';}
+function highlightRow(expId,row){const tr=document.getElementById(`row-${expId}-${row}`);if(tr){tr.classList.add('auto-logged','log-flash');setTimeout(()=>tr.classList.remove('log-flash'),900);}}
+function updateLogStatus(expId){
+  const exp=EXPERIMENTS.find(e=>e.id===expId);if(!exp)return;
+  let filled=0;
+  exp.resultsRows.forEach((_,ri)=>{
+    const hasData=exp.resultsCols.some((_,ci)=>{const v=getCell(expId,ri,ci);return v!==''&&v!=='—'&&v!==exp.resultsRows[ri][ci];});
+    if(hasData)filled++;
+  });
+  const el=document.getElementById(`log-status-${expId}`);if(el)el.textContent=`${filled} readings logged`;
+}
+function clearTable(expId){
+  const exp=EXPERIMENTS.find(e=>e.id===expId);if(!exp)return;
+  exp.resultsRows.forEach((row,ri)=>{
+    row.forEach((cell,ci)=>{const el=document.getElementById(`r${expId}_${ri}_${ci}`);if(el)el.value=cell;});
+    const tr=document.getElementById(`row-${expId}-${ri}`);if(tr)tr.classList.remove('auto-logged');
+  });
+  updateLogStatus(expId);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  SHOW/HIDE
+// ════════════════════════════════════════════════════════════════
+function showExp(id){
+  document.getElementById('welcome').style.display='none';
+  document.querySelectorAll('.exp-page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.exp-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`exp-${id}`).classList.add('active');
+  document.getElementById(`btn-${id}`).classList.add('active');
+  document.querySelector('.main').scrollTo(0,0);
+  initSim(id);
+  setTimeout(()=>{if(window.renderMathInElement)renderMathInElement(document.getElementById(`exp-${id}`));},100);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  GRAPH TOOL
+// ════════════════════════════════════════════════════════════════
+const graphState={};
+function initGraph(expId,qi){if(!graphState[`${expId}-${qi}`])graphState[`${expId}-${qi}`]={points:[],fitted:false};drawGraph(expId,qi);}
+function clearGraph(expId,qi){graphState[`${expId}-${qi}`]={points:[],fitted:false};drawGraph(expId,qi);document.getElementById(`ginfo-${expId}-${qi}`).textContent='Graph cleared.';}
+function getGraphColumns(expId){
+  const map={1:{xCol:0,yCol:1},2:{xCol:0,yCol:1},3:{xCol:0,yCol:1},4:{xCol:0,yCol:5},5:{xCol:1,yCol:0},6:{xCol:1,yCol:4},7:{xCol:5,yCol:4},8:{xCol:0,yCol:1},9:{xCol:0,yCol:1},10:{xCol:0,yCol:1},11:{xCol:0,yCol:1},12:{xCol:3,yCol:2},13:{xCol:0,yCol:1},14:{xCol:3,yCol:2},15:{xCol:0,yCol:1},16:{xCol:0,yCol:1},17:{xCol:0,yCol:2},18:{xCol:0,yCol:2}};
+  return map[expId]||{xCol:0,yCol:1};
+}
+function plotFromTable(expId,qi){
+  const exp=EXPERIMENTS.find(e=>e.id===expId);
+  const{xCol,yCol}=getGraphColumns(expId);
+  let pts=[];
+  exp.resultsRows.forEach((_,ri)=>{const x=parseFloat(getCell(expId,ri,xCol)),y=parseFloat(getCell(expId,ri,yCol));if(!isNaN(x)&&!isNaN(y))pts.push({x,y});});
+  if(pts.length<2){document.getElementById(`ginfo-${expId}-${qi}`).textContent='⚠ Enter at least 2 rows of numeric data in the Results table first.';return;}
+  graphState[`${expId}-${qi}`]={points:pts,fitted:false,xCol,yCol};
+  drawGraph(expId,qi);
+  document.getElementById(`ginfo-${expId}-${qi}`).textContent=`Plotted ${pts.length} points. X = ${exp.resultsCols[xCol]}, Y = ${exp.resultsCols[yCol]}`;
+}
+function drawBestFit(expId,qi){
+  const key=`${expId}-${qi}`,state=graphState[key];
+  if(!state||state.points.length<2){document.getElementById(`ginfo-${expId}-${qi}`).textContent='⚠ Plot data points first.';return;}
+  state.fitted=true;drawGraph(expId,qi);
+  const pts=state.points,n=pts.length;
+  const sx=pts.reduce((a,p)=>a+p.x,0),sy=pts.reduce((a,p)=>a+p.y,0);
+  const sxy=pts.reduce((a,p)=>a+p.x*p.y,0),sx2=pts.reduce((a,p)=>a+p.x*p.x,0);
+  const m=(n*sxy-sx*sy)/(n*sx2-sx*sx),b=(sy-m*sx)/n;
+  document.getElementById(`ginfo-${expId}-${qi}`).textContent=`Gradient m = ${m.toFixed(4)} | y-intercept b = ${b.toFixed(4)}`;
+}
+function drawGraph(expId,qi){
+  const canvas=document.getElementById(`gc-${expId}-${qi}`);if(!canvas)return;
+  const ctx=canvas.getContext('2d'),W=canvas.width,H=canvas.height;
+  const pad={l:55,r:20,t:20,b:45};
+  const key=`${expId}-${qi}`,state=graphState[key]||{points:[],fitted:false};
+  const exp=EXPERIMENTS.find(e=>e.id===expId);
+  const{xCol,yCol}=getGraphColumns(expId);
+  ctx.clearRect(0,0,W,H);ctx.fillStyle='#050c14';ctx.fillRect(0,0,W,H);
+  ctx.strokeStyle='rgba(30,48,80,0.7)';ctx.lineWidth=1;
+  const gx=8,gy=6;
+  for(let i=0;i<=gx;i++){const x=pad.l+i*(W-pad.l-pad.r)/gx;ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();}
+  for(let j=0;j<=gy;j++){const y=pad.t+j*(H-pad.t-pad.b)/gy;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();}
+  ctx.strokeStyle='#FFD700';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,H-pad.b);ctx.lineTo(W-pad.r,H-pad.b);ctx.stroke();
+  ctx.fillStyle='#FFD700';ctx.font='11px Share Tech Mono';ctx.textAlign='center';ctx.fillText(exp.resultsCols[xCol]||'x',W/2,H-6);
+  ctx.save();ctx.translate(12,H/2);ctx.rotate(-Math.PI/2);ctx.fillText(exp.resultsCols[yCol]||'y',0,0);ctx.restore();
+  if(state.points.length===0){ctx.fillStyle='rgba(85,106,138,0.7)';ctx.font='13px Exo 2';ctx.textAlign='center';ctx.fillText('Enter data in Results table, then click Plot',W/2,H/2);return;}
+  const xs=state.points.map(p=>p.x),ys=state.points.map(p=>p.y);
+  const xMin=Math.min(...xs),xMax=Math.max(...xs),yMin=Math.min(Math.min(...ys),0),yMax=Math.max(...ys);
+  const xRange=xMax-xMin||1,yRange=yMax-yMin||1;
+  const toX=x=>pad.l+(x-xMin+xRange*0.05)/(xRange*1.1)*(W-pad.l-pad.r);
+  const toY=y=>H-pad.b-(y-Math.min(yMin,0)+Math.abs(Math.min(yMin,0))*0.05)/(yRange*1.1)*(H-pad.t-pad.b);
+  ctx.fillStyle='rgba(85,106,138,0.9)';ctx.font='10px Share Tech Mono';ctx.textAlign='center';
+  for(let i=0;i<=gx;i++){const val=xMin-xRange*0.05+i*(xRange*1.1)/gx;ctx.fillText(val.toFixed(2),pad.l+i*(W-pad.l-pad.r)/gx,H-pad.b+14);}
+  ctx.textAlign='right';
+  for(let j=0;j<=gy;j++){const val=Math.min(yMin,0)-yRange*0.05+(gy-j)*(yRange*1.1)/gy;ctx.fillText(val.toFixed(2),pad.l-4,pad.t+j*(H-pad.t-pad.b)/gy+4);}
+  if(state.fitted){
+    const n=xs.length,sx=xs.reduce((a,v)=>a+v,0),sy=ys.reduce((a,v)=>a+v,0);
+    const sxy=state.points.reduce((a,p)=>a+p.x*p.y,0),sx2=xs.reduce((a,v)=>a+v*v,0);
+    const m=(n*sxy-sx*sy)/(n*sx2-sx*sx),b=(sy-m*sx)/n;
+    ctx.strokeStyle='rgba(0,229,255,0.7)';ctx.lineWidth=1.5;ctx.setLineDash([5,3]);
+    ctx.beginPath();ctx.moveTo(toX(xMin-xRange*0.05),toY(m*(xMin-xRange*0.05)+b));ctx.lineTo(toX(xMax+xRange*0.05),toY(m*(xMax+xRange*0.05)+b));ctx.stroke();ctx.setLineDash([]);
+  }
+  state.points.forEach(p=>{ctx.fillStyle='#FFD700';ctx.beginPath();ctx.arc(toX(p.x),toY(p.y),5,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(255,215,0,0.4)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(toX(p.x),toY(p.y),8,0,Math.PI*2);ctx.stroke();});
+}
+
+// ════════════════════════════════════════════════════════════════
+//  SIMULATIONS — BUILD HTML
+// ════════════════════════════════════════════════════════════════
+function buildSim(exp){
+  switch(exp.simType){
+    case 'vernier':return buildVernierSim(exp.id);case 'micrometer':return buildMicrometerSim(exp.id);
+    case 'boilingtube':return buildBoilingTubeSim(exp.id);case 'pendulum':return buildPendulumSim(exp.id);
+    case 'moments':return buildMomentsSim(exp.id);case 'spring':return buildSpringSim(exp.id);
+    case 'ramp':return buildRampSim(exp.id);case 'archimedes':return buildArchimedesSim(exp.id);
+    case 'shc':return buildSHCSim(exp.id);case 'latent':return buildLatentSim(exp.id);
+    case 'cooling':return buildCoolingSim(exp.id);case 'snell':return buildSnellSim(exp.id);
+    case 'reflection':return buildReflectionSim(exp.id);case 'lens':return buildLensSim(exp.id);
+    case 'iv_lamp':return buildIVSim(exp.id,'lamp');case 'iv_resistor':return buildIVSim(exp.id,'resistor');
+    case 'cards':return buildCardsSim(exp.id);case 'dice':return buildDiceSim(exp.id);
+    default:return '<div style="padding:20px;color:var(--muted)">Simulation loading…</div>';
+  }
+}
+
+// ─── VERNIER (Exp 1) ───
+function buildVernierSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="vernierRandom(${id})">🎲 Random Object</button><button class="sim-log-btn" onclick="vernierLog(${id})">📋 Log Reading to Table</button><button class="sim-reset" onclick="vernierReset(${id})">↺ Reset</button></div><div class="slider-row"><label>Diameter (mm):</label><input type="range" id="vd-${id}" min="5" max="30" step="0.02" value="14.5" oninput="vernierDraw(${id})"><span class="slider-val" id="vdv-${id}">14.50 mm</span></div><div class="slider-row"><label>Length L (cm):</label><input type="range" id="vl-${id}" min="2" max="20" step="0.1" value="8.5" oninput="vernierDraw(${id})"><span class="slider-val" id="vlv-${id}">8.5 cm</span></div><div style="padding:10px"><canvas id="vc-${id}" width="560" height="160" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">Main Scale: <span id="vms-${id}">14</span> mm</div><div class="readout">Vernier: <span id="vvs-${id}">0.50</span> mm</div><div class="readout">Diameter d: <span id="vtot-${id}">14.50</span> mm</div><div class="readout">Length L: <span id="vtotL-${id}">8.5</span> cm</div></div>`;}
+function vernierDraw(id){const d=parseFloat(document.getElementById(`vd-${id}`).value),L=parseFloat(document.getElementById(`vl-${id}`).value);document.getElementById(`vdv-${id}`).textContent=d.toFixed(2)+' mm';document.getElementById(`vlv-${id}`).textContent=L.toFixed(1)+' cm';const ms=Math.floor(d),vs=Math.round((d-ms)*20)*0.05,vDiv=Math.round((d-ms)/0.05);document.getElementById(`vms-${id}`).textContent=ms;document.getElementById(`vvs-${id}`).textContent=vs.toFixed(2);document.getElementById(`vtot-${id}`).textContent=d.toFixed(2);document.getElementById(`vtotL-${id}`).textContent=L.toFixed(1);const cv=document.getElementById(`vc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);ctx.fillStyle='#8899bb';ctx.fillRect(20,40,W-40,30);ctx.fillStyle='#FFD700';ctx.font='11px Share Tech Mono';ctx.textAlign='center';for(let i=0;i<=25;i++){const x=20+i*(W-40)/25;ctx.fillStyle='#cce0ff';ctx.fillRect(x,40,1,i%5===0?20:12);if(i%5===0){ctx.fillStyle='#FFD700';ctx.fillText(i,x,35);}}const vOff=20+(d/25)*(W-40)-20;ctx.fillStyle='#1e3a5a';ctx.fillRect(vOff,55,120,30);ctx.fillStyle='#00e5ff';for(let j=0;j<=10;j++){const x2=vOff+j*12;ctx.fillRect(x2,55,1,j%5===0?18:10);if(j%5===0){ctx.font='9px Share Tech Mono';ctx.fillText(j,x2,92);}}const matchX=vOff+vDiv*12;ctx.strokeStyle='#ff4400';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(matchX,53);ctx.lineTo(matchX,87);ctx.stroke();ctx.fillStyle='rgba(255,68,0,0.2)';ctx.fillRect(matchX-3,53,6,34);ctx.fillStyle='#FFD700';ctx.font='13px Share Tech Mono';ctx.textAlign='left';ctx.fillText('Reading = '+d.toFixed(2)+' mm',20,140);ctx.fillStyle='rgba(0,229,255,0.6)';ctx.font='11px Share Tech Mono';ctx.fillText('Main: '+ms+' | Vernier div: '+vDiv+' × 0.05 = '+vs.toFixed(2),20,158);}
+function vernierLog(id){const d=parseFloat(document.getElementById(`vd-${id}`).value),L=parseFloat(document.getElementById(`vl-${id}`).value),ms=Math.floor(d),vs=Math.round((d-ms)*20)*0.05;setCell(id,0,1,'0.00');setCell(id,1,1,ms.toFixed(1));setCell(id,2,1,vs.toFixed(2));setCell(id,3,1,d.toFixed(2));setCell(id,4,1,L.toFixed(1));[0,1,2,3,4].forEach(r=>highlightRow(id,r));updateLogStatus(id);}
+function vernierRandom(id){document.getElementById(`vd-${id}`).value=(5+Math.random()*25).toFixed(2);document.getElementById(`vl-${id}`).value=(2+Math.random()*18).toFixed(1);vernierDraw(id);}
+function vernierReset(id){document.getElementById(`vd-${id}`).value=14.5;document.getElementById(`vl-${id}`).value=8.5;vernierDraw(id);}
+
+// ─── MICROMETER (Exp 2) ───
+function buildMicrometerSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="micRandom(${id})">🎲 Random Marble</button><button class="sim-log-btn" onclick="micLog(${id})">📋 Log Reading to Table</button><button class="sim-reset" onclick="micReset(${id})">↺ Reset</button></div><div class="slider-row"><label>Mass m (g):</label><input type="range" id="mmass-${id}" min="1" max="20" step="0.1" value="5.2" oninput="micDraw(${id})"><span class="slider-val" id="mmasv-${id}">5.2 g</span></div><div class="slider-row"><label>Diameter (mm):</label><input type="range" id="md-${id}" min="0" max="25" step="0.01" value="12.45" oninput="micDraw(${id})"><span class="slider-val" id="mdv-${id}">12.45 mm</span></div><div style="padding:10px"><canvas id="mc-${id}" width="560" height="160" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">Sleeve: <span id="ms-${id}">12.0</span> mm</div><div class="readout">Thimble: <span id="mt-${id}">0.45</span> mm</div><div class="readout">Diameter d: <span id="mr-${id}">12.45</span> mm</div><div class="readout">Mass m: <span id="mmr-${id}">5.2</span> g</div></div>`;}
+function micDraw(id){const d=parseFloat(document.getElementById(`md-${id}`).value),m=parseFloat(document.getElementById(`mmass-${id}`).value);document.getElementById(`mdv-${id}`).textContent=d.toFixed(2)+' mm';document.getElementById(`mmasv-${id}`).textContent=m.toFixed(1)+' g';const sleeve=Math.floor(d/0.5)*0.5,thimble=d-sleeve;document.getElementById(`ms-${id}`).textContent=sleeve.toFixed(1);document.getElementById(`mt-${id}`).textContent=thimble.toFixed(2);document.getElementById(`mr-${id}`).textContent=d.toFixed(2);document.getElementById(`mmr-${id}`).textContent=m.toFixed(1);const cv=document.getElementById(`mc-${id}`);if(!cv)return;const ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);const W=cv.width,H=cv.height;ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);ctx.fillStyle='#6688aa';ctx.fillRect(60,55,320,50);ctx.strokeStyle='#FFD700';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(60,80);ctx.lineTo(380,80);ctx.stroke();for(let i=0;i<=24;i++){const x=60+i*(320/24);ctx.strokeStyle='#cce0ff';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,55);ctx.lineTo(x,i%2===0?68:62);ctx.stroke();if(i%2===0){ctx.fillStyle='#FFD700';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText(i/2,x,52);}}const tx=60+(sleeve/12)*320;ctx.fillStyle='#335577';ctx.fillRect(tx,40,80,70);ctx.strokeStyle='#00e5ff';ctx.lineWidth=1;for(let j=0;j<25;j++){const y=40+j*(70/25);ctx.beginPath();ctx.moveTo(tx,y);ctx.lineTo(tx+20,y);ctx.stroke();if(j%5===0){ctx.fillStyle='#00e5ff';ctx.font='9px Share Tech Mono';ctx.textAlign='left';ctx.fillText(j*2,tx+22,y+4);}}const hy=40+(thimble/0.01)*(70/25);ctx.strokeStyle='#ff4400';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(tx,hy);ctx.lineTo(tx+80,hy);ctx.stroke();ctx.fillStyle='#FFD700';ctx.font='13px Share Tech Mono';ctx.textAlign='left';ctx.fillText('d = '+d.toFixed(2)+' mm | m = '+m.toFixed(1)+' g',20,145);}
+function micLog(id){const d=parseFloat(document.getElementById(`md-${id}`).value),m=parseFloat(document.getElementById(`mmass-${id}`).value),sleeve=Math.floor(d/0.5)*0.5,thimble=d-sleeve;setCell(id,0,1,m.toFixed(2));setCell(id,1,1,'0.00');setCell(id,2,1,sleeve.toFixed(1));setCell(id,3,1,thimble.toFixed(2));setCell(id,4,1,d.toFixed(2));[0,1,2,3,4].forEach(r=>highlightRow(id,r));updateLogStatus(id);}
+function micRandom(id){document.getElementById(`md-${id}`).value=(5+Math.random()*20).toFixed(2);document.getElementById(`mmass-${id}`).value=(1+Math.random()*15).toFixed(1);micDraw(id);}
+function micReset(id){document.getElementById(`md-${id}`).value=12.45;document.getElementById(`mmass-${id}`).value=5.2;micDraw(id);}
+
+// ─── BOILING TUBE (Exp 3) ───
+function buildBoilingTubeSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="btAddWater(${id})">+ Add 2 cm³</button><button class="sim-log-btn" onclick="btLog(${id})">📋 Log to Table</button><button class="sim-reset" onclick="btReset(${id})">↺ Reset</button></div><div style="padding:14px;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;"><canvas id="btc-${id}" width="160" height="300" style="background:#020810;border-radius:6px;"></canvas><div><div class="readout-row" style="flex-direction:column;gap:8px;"><div class="readout">Volume added V: <span id="btv-${id}">0</span> cm³</div><div class="readout">Height h: <span id="bth-${id}">0.00</span> cm</div><div class="readout">Rows logged: <span id="btlog-${id}">0</span>/6</div></div><p style="font-size:0.78rem;color:var(--muted);margin-top:12px;max-width:240px;">Click "+ Add 2 cm³" then "Log to Table" for each reading.</p></div></div>`;}
+function btReset(id){simState[`bt-${id}`]={V:0,A:1.8,logRow:0};btDraw(id);document.getElementById(`btlog-${id}`).textContent='0';}
+function btAddWater(id){const s=simState[`bt-${id}`]||{V:0,A:1.8,logRow:0};s.V+=2;simState[`bt-${id}`]=s;document.getElementById(`btv-${id}`).textContent=s.V;document.getElementById(`bth-${id}`).textContent=(s.V/s.A).toFixed(2);btDraw(id);}
+function btLog(id){const s=simState[`bt-${id}`]||{V:0,A:1.8,logRow:0};if(s.logRow>=6)return;const h=(s.V/s.A).toFixed(2);setCell(id,s.logRow,0,s.V);setCell(id,s.logRow,1,h);highlightRow(id,s.logRow);s.logRow++;document.getElementById(`btlog-${id}`).textContent=s.logRow;simState[`bt-${id}`]=s;updateLogStatus(id);}
+function btDraw(id){const cv=document.getElementById(`btc-${id}`);if(!cv)return;const s=simState[`bt-${id}`]||{V:0,A:1.8};const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);const tw=60,tx=(W-tw)/2,ty=30,th=220;ctx.strokeStyle='#335577';ctx.lineWidth=3;ctx.strokeRect(tx,ty,tw,th);const h=s.V/s.A,fillH=Math.min(h*(th-10)/15,th-10);if(fillH>0){ctx.fillStyle='rgba(0,100,200,0.5)';ctx.fillRect(tx+2,ty+th-fillH,tw-4,fillH);}ctx.strokeStyle='#FFD700';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(tx-10,ty+th-10);ctx.lineTo(tx+tw+10,ty+th-10);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#FFD700';ctx.font='9px Share Tech Mono';ctx.textAlign='right';ctx.fillText('0 mark',tx-12,ty+th-6);if(fillH>0){ctx.strokeStyle='#00e5ff';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(tx+tw+5,ty+th-10);ctx.lineTo(tx+tw+5,ty+th-fillH);ctx.stroke();ctx.fillStyle='#00e5ff';ctx.font='10px Share Tech Mono';ctx.textAlign='left';ctx.fillText('h='+h.toFixed(1)+'cm',tx+tw+10,(ty+th-10+ty+th-fillH)/2);}ctx.fillStyle='#cce0ff';ctx.font='11px Share Tech Mono';ctx.textAlign='center';ctx.fillText('V='+s.V+' cm³',W/2,H-8);}
+
+// ─── PENDULUM (Exp 4) ───
+function buildPendulumSim(id){return `<div class="sim-controls"><button class="sim-btn active" id="pbtn-${id}" onclick="pendulumToggle(${id})">▶ Start</button><button class="sim-log-btn" onclick="pendulumLog(${id})">📋 Log Row to Table</button><button class="sim-btn" onclick="pendulumLogAll(${id})">⚡ Auto-fill All Rows</button><button class="sim-reset" onclick="pendulumReset(${id})">↺ Reset</button></div><div class="slider-row"><label>Length L (cm):</label><input type="range" id="pl-${id}" min="10" max="80" step="10" value="50" oninput="pendulumUpdateL(${id})"><span class="slider-val" id="plv-${id}">50 cm</span></div><div style="padding:10px"><canvas id="pc-${id}" width="560" height="260" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">L = <span id="pL-${id}">50</span> cm</div><div class="readout">T = <span id="pT-${id}">—</span> s</div><div class="readout">T² = <span id="pT2-${id}">—</span> s²</div><div class="readout">g = <span id="pg-${id}">—</span> m/s²</div></div>`;}
+const pendState={};
+function pendulumReset(id){if(pendState[id]&&pendState[id].raf)cancelAnimationFrame(pendState[id].raf);const L=parseFloat(document.getElementById(`pl-${id}`).value)/100;pendState[id]={angle:0.25,omega:0,running:false,t:0,lastT:null,oscillations:0,raf:null,L};document.getElementById(`pbtn-${id}`).textContent='▶ Start';pendulumDraw(id,0.25);document.getElementById(`pL-${id}`).textContent=Math.round(L*100);['pT','pT2','pg'].forEach(k=>{document.getElementById(`${k}-${id}`).textContent='—';});}
+function pendulumUpdateL(id){const L=parseFloat(document.getElementById(`pl-${id}`).value);document.getElementById(`plv-${id}`).textContent=L+' cm';if(pendState[id]){pendState[id].L=L/100;pendulumReset(id);}}
+function pendulumToggle(id){const s=pendState[id];if(!s)return;s.running=!s.running;document.getElementById(`pbtn-${id}`).textContent=s.running?'⏸ Pause':'▶ Start';if(s.running)pendulumLoop(id);}
+function pendulumLoop(id){const s=pendState[id];if(!s||!s.running)return;const now=performance.now(),dt=s.lastT?Math.min((now-s.lastT)/1000,0.05):0.016;s.lastT=now;const g=9.81,L=s.L||0.5;s.omega+=(-g/L)*Math.sin(s.angle)*dt;s.omega*=0.9995;const prevSign=Math.sign(s.angle);s.angle+=s.omega*dt;if(prevSign>0&&s.angle<=0&&s.omega<0)s.oscillations+=0.5;if(prevSign<0&&s.angle>=0&&s.omega>0)s.oscillations+=0.5;s.t+=dt;if(s.oscillations>0){const T=s.t/s.oscillations;document.getElementById(`pT-${id}`).textContent=T.toFixed(3);document.getElementById(`pT2-${id}`).textContent=(T*T).toFixed(4);document.getElementById(`pg-${id}`).textContent=(4*Math.PI*Math.PI*L/(T*T)).toFixed(2);}pendulumDraw(id,s.angle);s.raf=requestAnimationFrame(()=>pendulumLoop(id));}
+function pendulumDraw(id,angle){const cv=document.getElementById(`pc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);const px=W/2,py=30,L=(parseFloat(document.getElementById(`pl-${id}`).value)||50)/100,scale=Math.min(W,H)*1.5;const bx=px+Math.sin(angle)*L*scale,by=py+Math.cos(angle)*L*scale;ctx.strokeStyle='#667788';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(px,py);ctx.lineTo(bx,by);ctx.stroke();ctx.fillStyle='#FFD700';ctx.beginPath();ctx.arc(px,py,6,0,Math.PI*2);ctx.fill();ctx.fillStyle='#00e5ff';ctx.beginPath();ctx.arc(bx,by,12,0,Math.PI*2);ctx.fill();ctx.strokeStyle='rgba(0,229,255,0.3)';ctx.lineWidth=1;ctx.beginPath();ctx.arc(bx,by,18,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#FFD700';ctx.font='11px Share Tech Mono';ctx.textAlign='left';ctx.fillText('L = '+(L*100).toFixed(0)+' cm',10,20);}
+function pendulumLog(id){const s=pendState[id];if(!s)return;const L=Math.round(s.L*100),rowMap={10:0,20:1,30:2,40:3,50:4,60:5,70:6,80:7},row=rowMap[L];if(row===undefined)return;const T=parseFloat(document.getElementById(`pT-${id}`).textContent)||0,t20=(20*T).toFixed(2),t20b=(20*T*(1+0.003*(Math.random()-0.5))).toFixed(2),tavg=((parseFloat(t20)+parseFloat(t20b))/2).toFixed(2);setCell(id,row,1,t20);setCell(id,row,2,t20b);setCell(id,row,3,tavg);setCell(id,row,4,T.toFixed(3));setCell(id,row,5,(T*T).toFixed(4));highlightRow(id,row);updateLogStatus(id);}
+function pendulumLogAll(id){const Ls=[10,20,30,40,50,60,70,80];Ls.forEach((L,row)=>{const T=2*Math.PI*Math.sqrt(L/100/9.81),t20=(20*T).toFixed(2),t20b=(20*T*(1+0.003*(Math.random()-0.5))).toFixed(2),tavg=((parseFloat(t20)+parseFloat(t20b))/2).toFixed(2);setCell(id,row,1,t20);setCell(id,row,2,t20b);setCell(id,row,3,tavg);setCell(id,row,4,T.toFixed(3));setCell(id,row,5,(T*T).toFixed(4));highlightRow(id,row);});updateLogStatus(id);}
+
+// ─── MOMENTS (Exp 5) ───
+function buildMomentsSim(id){return `<div class="sim-controls"><button class="sim-log-btn" onclick="momentsLog(${id})">📋 Log Row to Table</button><button class="sim-btn" onclick="momentsLogAll(${id})">⚡ Auto-fill All Rows</button><button class="sim-reset" onclick="momentsReset(${id})">↺ Reset</button></div><div class="slider-row"><label>Mass pos l (cm):</label><input type="range" id="ml-${id}" min="5" max="45" step="5" value="20" oninput="momentsDraw(${id})"><span class="slider-val" id="mlv-${id}">20 cm</span></div><div style="padding:10px"><canvas id="mmc-${id}" width="560" height="200" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">l = <span id="mml-${id}">20</span> cm</div><div class="readout">d = <span id="mmd-${id}">—</span> cm</div><div class="readout">Balanced: <span id="mmb-${id}">—</span></div></div>`;}
+function momentsDraw(id){const l=parseFloat(document.getElementById(`ml-${id}`).value);document.getElementById(`mlv-${id}`).textContent=l+' cm';document.getElementById(`mml-${id}`).textContent=l;const W_r=120,d=(100*l)/(100+W_r);document.getElementById(`mmd-${id}`).textContent=d.toFixed(2);document.getElementById(`mmb-${id}`).textContent='✓ Yes';const cv=document.getElementById(`mmc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);const ry=H/2,lx=30,rx=W-30;ctx.fillStyle='#8899bb';ctx.fillRect(lx,ry-5,rx-lx,10);const cogX=(lx+rx)/2;ctx.fillStyle='rgba(255,215,0,0.3)';ctx.fillRect(cogX-1,ry-14,2,25);ctx.fillStyle='#FFD700';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText('COG',cogX,ry-18);const pivX=cogX+d*(rx-lx)/100;ctx.fillStyle='#00e5ff';ctx.beginPath();ctx.moveTo(pivX,ry+5);ctx.lineTo(pivX-10,ry+25);ctx.lineTo(pivX+10,ry+25);ctx.closePath();ctx.fill();const massX=lx+l*(rx-lx)/100;ctx.fillStyle='#ff8800';ctx.fillRect(massX-8,ry-25,16,20);ctx.fillStyle='#fff';ctx.font='9px Share Tech Mono';ctx.textAlign='center';ctx.fillText('100g',massX,ry-10);ctx.strokeStyle='rgba(0,229,255,0.4)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(massX,ry+35);ctx.lineTo(cogX,ry+35);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#00e5ff';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText('l='+l+'cm',(massX+cogX)/2,ry+50);ctx.strokeStyle='rgba(255,215,0,0.4)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(cogX,ry+60);ctx.lineTo(pivX,ry+60);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#FFD700';ctx.font='10px Share Tech Mono';ctx.fillText('d='+d.toFixed(2)+'cm',(cogX+pivX)/2,ry+75);}
+function momentsLog(id){const l=parseFloat(document.getElementById(`ml-${id}`).value),W_r=120,d=(100*l)/(100+W_r),lVals=[5,10,15,20,25,30,35,40,45],row=lVals.indexOf(l);if(row===-1)return;setCell(id,row,1,d.toFixed(2));highlightRow(id,row);updateLogStatus(id);}
+function momentsLogAll(id){[5,10,15,20,25,30,35,40,45].forEach((l,row)=>{const d=(100*l)/(100+120);setCell(id,row,1,d.toFixed(2));highlightRow(id,row);});updateLogStatus(id);}
+function momentsReset(id){document.getElementById(`ml-${id}`).value=20;momentsDraw(id);}
+
+// ─── SPRING (Exp 6) ───
+function buildSpringSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="springAdd(${id})">+ Add 50g</button><button class="sim-btn" onclick="springRemove(${id})">- Remove 50g</button><button class="sim-log-btn" onclick="springLog(${id})">📋 Log Current Mass to Table</button><button class="sim-btn" onclick="springLogAll(${id})">⚡ Auto-fill All Rows</button><button class="sim-reset" onclick="springReset(${id})">↺ Reset</button></div><div style="padding:14px;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;"><canvas id="sc-${id}" width="160" height="320" style="background:#020810;border-radius:6px;"></canvas><div><div class="readout-row" style="flex-direction:column;gap:8px;"><div class="readout">Mass: <span id="sm-${id}">0</span> g</div><div class="readout">Force F: <span id="sf-${id}">0.000</span> N</div><div class="readout">Extension e: <span id="se-${id}">0.00</span> cm</div></div></div></div>`;}
+function springReset(id){simState[`sp-${id}`]={mass:0};springDraw(id);}
+function springAdd(id){const s=simState[`sp-${id}`]||{mass:0};s.mass=Math.min(s.mass+50,350);simState[`sp-${id}`]=s;springDraw(id);}
+function springRemove(id){const s=simState[`sp-${id}`]||{mass:0};s.mass=Math.max(0,s.mass-50);simState[`sp-${id}`]=s;springDraw(id);}
+function springDraw(id){const s=simState[`sp-${id}`]||{mass:0},k=30,F=s.mass*9.81/1000,e=(F/k)*100;document.getElementById(`sm-${id}`).textContent=s.mass;document.getElementById(`sf-${id}`).textContent=F.toFixed(3);document.getElementById(`se-${id}`).textContent=e.toFixed(2);const cv=document.getElementById(`sc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);const cx=W/2,topY=20,natLen=80,ext=Math.min(e*8,100);ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.beginPath();const coils=8,cH=(natLen+ext)/coils;for(let i=0;i<=coils*4;i++){const y=topY+i*cH/4,x=cx+(i%2===0?-18:18);i===0?ctx.moveTo(cx,topY):ctx.lineTo(x,y);}ctx.lineTo(cx,topY+natLen+ext);ctx.stroke();if(s.mass>0){ctx.fillStyle='#335577';ctx.fillRect(cx-20,topY+natLen+ext,40,20);ctx.fillStyle='#cce0ff';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText(s.mass+'g',cx,topY+natLen+ext+14);}ctx.strokeStyle='rgba(255,215,0,0.3)';ctx.lineWidth=1;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(cx+30,topY+natLen);ctx.lineTo(cx+55,topY+natLen);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(255,215,0,0.7)';ctx.font='9px Share Tech Mono';ctx.textAlign='left';ctx.fillText('L₀',cx+58,topY+natLen+4);if(ext>0){ctx.strokeStyle='rgba(0,229,255,0.4)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(cx+30,topY+natLen);ctx.lineTo(cx+30,topY+natLen+ext);ctx.stroke();ctx.fillStyle='#00e5ff';ctx.fillText('e='+e.toFixed(1)+'cm',cx+35,topY+natLen+ext/2+4);}}
+function springLog(id){const s=simState[`sp-${id}`]||{mass:0},masses=[0,50,100,150,200,250,300,350],row=masses.indexOf(s.mass);if(row===-1)return;const F=s.mass*9.81/1000,e=F/0.3*100,eN=(e*(1+0.015*(Math.random()-0.5))).toFixed(2);setCell(id,row,1,F.toFixed(3));setCell(id,row,2,eN);setCell(id,row,3,eN);setCell(id,row,4,eN);highlightRow(id,row);updateLogStatus(id);}
+function springLogAll(id){[0,50,100,150,200,250,300,350].forEach((m,row)=>{const F=m*9.81/1000,e=F/0.3*100,eN=(e*(1+0.015*(Math.random()-0.5))).toFixed(2);setCell(id,row,1,F.toFixed(3));setCell(id,row,2,eN);setCell(id,row,3,eN);setCell(id,row,4,eN);highlightRow(id,row);});updateLogStatus(id);}
+
+// ─── RAMP (Exp 7) ───
+function buildRampSim(id){return `<div class="sim-controls"><button class="sim-btn active" id="rbtn-${id}" onclick="rampRelease(${id})">▶ Release Marble</button><button class="sim-log-btn" onclick="rampLog(${id})">📋 Log to Table</button><button class="sim-btn" onclick="rampLogAll(${id})">⚡ Auto-fill All Rows</button><button class="sim-reset" onclick="rampReset(${id})">↺ Reset</button></div><div class="slider-row"><label>Height h (cm):</label><input type="range" id="rh-${id}" min="5" max="40" step="5" value="15" oninput="rampUpdate(${id})"><span class="slider-val" id="rhv-${id}">15 cm</span></div><div style="padding:10px"><canvas id="rc-${id}" width="560" height="220" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">h = <span id="rH-${id}">15</span> cm</div><div class="readout">θ = <span id="rA-${id}">—</span>°</div><div class="readout">Time t = <span id="rT-${id}">—</span> s</div><div class="readout">Speed v = <span id="rV-${id}">—</span> m/s</div></div>`;}
+const rampState={};
+function rampUpdate(id){const h=parseFloat(document.getElementById(`rh-${id}`).value);document.getElementById(`rhv-${id}`).textContent=h+' cm';document.getElementById(`rH-${id}`).textContent=h;document.getElementById(`rA-${id}`).textContent=(Math.asin(h/100)*180/Math.PI).toFixed(1);rampDraw(id,h,0,false);rampState[id]={h,time:null,speed:null};}
+function rampRelease(id){const h=parseFloat(document.getElementById(`rh-${id}`).value),g=9.81,mu=0.05,theta=Math.asin(h/100),a=g*(Math.sin(theta)-mu*Math.cos(theta)),t=Math.sqrt(2/a),v=1/t,tN=(t*(1+0.01*(Math.random()-0.5))).toFixed(3);document.getElementById(`rT-${id}`).textContent=tN;document.getElementById(`rV-${id}`).textContent=v.toFixed(3);rampState[id]={h,time:tN,speed:v.toFixed(3)};rampAnimate(id,h,t);}
+function rampAnimate(id,h,totalT){const start=performance.now();function frame(now){const p=Math.min((now-start)/1000/totalT,1);rampDraw(id,h,p,p>=1);if(p<1)requestAnimationFrame(frame);}requestAnimationFrame(frame);}
+function rampDraw(id,h,progress,done){const cv=document.getElementById(`rc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);const bx=60,by=H-50,topX=bx+Math.cos(Math.asin(h/100))*(W-120),topY=by-(h/100)*(H-100);ctx.strokeStyle='#8899bb';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(topX,topY);ctx.stroke();ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(topX,by);ctx.lineTo(topX,topY);ctx.stroke();ctx.strokeStyle='rgba(0,229,255,0.5)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(topX+20,by);ctx.lineTo(topX+20,topY);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='#00e5ff';ctx.font='11px Share Tech Mono';ctx.textAlign='left';ctx.fillText('h='+h+'cm',topX+24,(by+topY)/2);const mx=topX+(bx-topX)*progress,my=topY+(by-topY)*progress;ctx.fillStyle=done?'#ff4444':'#FFD700';ctx.beginPath();ctx.arc(mx,my-8,10,0,Math.PI*2);ctx.fill();ctx.fillStyle='#FFD700';ctx.font='11px Share Tech Mono';ctx.textAlign='left';ctx.fillText('θ = '+(Math.asin(h/100)*180/Math.PI).toFixed(1)+'°',10,20);}
+function rampLog(id){const st=rampState[id];if(!st||!st.time)return;const hVals=[5,10,15,20,25,30,35,40],row=hVals.indexOf(st.h);if(row===-1)return;const theta=(Math.asin(st.h/100)*180/Math.PI).toFixed(1),t2=(parseFloat(st.time)*(1+0.008*(Math.random()-0.5))).toFixed(3),tavg=((parseFloat(st.time)+parseFloat(t2))/2).toFixed(3),spd=(1/parseFloat(tavg)).toFixed(3);setCell(id,row,1,st.time);setCell(id,row,2,t2);setCell(id,row,3,tavg);setCell(id,row,4,spd);setCell(id,row,5,theta);highlightRow(id,row);updateLogStatus(id);}
+function rampLogAll(id){const hVals=[5,10,15,20,25,30,35,40],g=9.81,mu=0.05;hVals.forEach((h,row)=>{const theta=Math.asin(h/100),a=g*(Math.sin(theta)-mu*Math.cos(theta)),t=Math.sqrt(2/a),t1=(t*(1+0.01*(Math.random()-0.5))).toFixed(3),t2=(t*(1+0.01*(Math.random()-0.5))).toFixed(3),tavg=((parseFloat(t1)+parseFloat(t2))/2).toFixed(3),spd=(1/parseFloat(tavg)).toFixed(3);setCell(id,row,1,t1);setCell(id,row,2,t2);setCell(id,row,3,tavg);setCell(id,row,4,spd);setCell(id,row,5,(theta*180/Math.PI).toFixed(1));highlightRow(id,row);});updateLogStatus(id);}
+function rampReset(id){rampUpdate(id);}
+
+// ─── ARCHIMEDES (Exp 8) ───
+function buildArchimedesSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="archLower(${id},'full')">⬇ Full Submerge</button><button class="sim-btn" onclick="archLower(${id},'half')">⬇ Half Submerge</button><button class="sim-log-btn" onclick="archLog(${id})">📋 Log Current Reading</button><button class="sim-reset" onclick="archReset(${id})">↺ Reset</button></div><div style="padding:14px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;"><canvas id="arch-${id}" width="320" height="280" style="background:#020810;border-radius:6px;"></canvas><div><div class="readout-row" style="flex-direction:column;gap:8px;"><div class="readout">State: <span id="archstate-${id}">In Air</span></div><div class="readout">W in air: <span id="aw-${id}">1.962</span> N</div><div class="readout">W submerged: <span id="aws-${id}">—</span> N</div><div class="readout">Upthrust U: <span id="au-${id}">—</span> N</div><div class="readout">m₁ (empty beaker): <span id="am1-${id}">85.00</span> g</div><div class="readout">m₂ (beaker+water): <span id="am2-${id}">—</span> g</div></div></div></div>`;}
+function archReset(id){simState[`arch-${id}`]={state:'air'};['archstate','aws','au','am2'].forEach(k=>{const el=document.getElementById(`${k}-${id}`);if(el)el.textContent=k==='archstate'?'In Air':'—';});archDraw(id,'air');}
+function archLower(id,type){simState[`arch-${id}`]={state:type};const m=0.2,rho_obj=7800,g=9.81,V=m/rho_obj,submFrac=type==='full'?1:0.5,Vdisp=V*submFrac,W_air=m*g,U=1000*Vdisp*g,W_sub=W_air-U;document.getElementById(`archstate-${id}`).textContent=type==='full'?'Fully Submerged':'Partially Submerged';document.getElementById(`aws-${id}`).textContent=W_sub.toFixed(3);document.getElementById(`au-${id}`).textContent=U.toFixed(4);document.getElementById(`am2-${id}`).textContent=(85+(U/g*1000)).toFixed(2);archDraw(id,type);}
+function archLog(id){const s=simState[`arch-${id}`]||{state:'air'},m=0.2,rho_obj=7800,g=9.81,V=m/rho_obj,row=s.state==='full'?0:1,submFrac=s.state==='full'?1:0.5,Vdisp=V*submFrac,W_air=(m*g).toFixed(3),U=1000*Vdisp*g,W_sub=(m*g-U).toFixed(3);setCell(id,row,0,s.state==='full'?'Fully submerged':'Partially submerged');setCell(id,row,1,W_air);setCell(id,row,2,W_sub);setCell(id,row,3,'85.00');setCell(id,row,4,(85+(U/g*1000)).toFixed(2));highlightRow(id,row);updateLogStatus(id);}
+function archDraw(id,state){const cv=document.getElementById(`arch-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);const waterY=H-80;ctx.fillStyle='rgba(0,80,180,0.35)';ctx.fillRect(60,waterY,160,80);ctx.strokeStyle='rgba(0,150,255,0.5)';ctx.lineWidth=1.5;ctx.strokeRect(60,waterY,160,80);ctx.fillStyle='rgba(0,150,255,0.3)';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText('WATER',140,H-20);ctx.fillStyle='rgba(85,106,138,0.6)';ctx.fillText('Air (n=1.00)',W-10,waterY-6);ctx.strokeStyle='#00e5ff';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(140,20);ctx.lineTo(140,60);ctx.stroke();ctx.fillStyle='#335577';ctx.fillRect(120,60,40,30);ctx.fillStyle='#FFD700';ctx.font='11px Share Tech Mono';ctx.textAlign='center';const m=0.2,rho_obj=7800,g=9.81,V=m/rho_obj,U=state==='air'?0:(state==='full'?1000*V*g:1000*(V/2)*g);ctx.fillText((m*g-U).toFixed(3)+'N',140,79);const objY=state==='air'?120:state==='full'?waterY+20:waterY+5;ctx.strokeStyle='#667788';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(140,90);ctx.lineTo(140,objY);ctx.stroke();ctx.fillStyle='#4477aa';ctx.fillRect(120,objY,40,30);ctx.fillStyle='#cce0ff';ctx.font='9px Share Tech Mono';ctx.textAlign='center';ctx.fillText('200g',140,objY+18);}
+
+// ─── SHC (Exp 9) ───
+function buildSHCSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="shcHeat(${id})">🔥 Heat Metal (boil)</button><button class="sim-btn" onclick="shcTransfer(${id})">⬇ Transfer to Water</button><button class="sim-log-btn" onclick="shcLog(${id})">📋 Log All Values to Table</button><button class="sim-reset" onclick="shcReset(${id})">↺ Reset</button></div><div style="padding:14px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;"><canvas id="shcc-${id}" width="320" height="260" style="background:#020810;border-radius:6px;"></canvas><div><div class="readout-row" style="flex-direction:column;gap:8px;"><div class="readout">Metal mass m_s: <span id="shcms-${id}">0.150</span> kg</div><div class="readout">Water mass m_w: <span id="shcmw-${id}">0.120</span> kg</div><div class="readout">Metal Temp T₂: <span id="shct2-${id}">25</span> °C</div><div class="readout">Water Temp T₁: <span id="shct1-${id}">25</span> °C</div><div class="readout">Final Temp T₃: <span id="shct3-${id}">—</span> °C</div><div class="readout">c_s (calc): <span id="shccs-${id}">—</span> J/kg°C</div></div></div></div>`;}
+function shcReset(id){simState[`shc-${id}`]={heated:false,transferred:false,T_metal:25,T_water:25};['shct2','shct1','shct3','shccs'].forEach(k=>{const el=document.getElementById(`${k}-${id}`);if(el)el.textContent=k==='shct2'||k==='shct1'?'25':'—';});shcDraw(id);}
+function shcHeat(id){const s=simState[`shc-${id}`]||{};s.heated=true;s.T_metal=99;simState[`shc-${id}`]=s;document.getElementById(`shct2-${id}`).textContent='99';shcDraw(id);}
+function shcTransfer(id){const s=simState[`shc-${id}`]||{};if(!s.heated){alert('Heat the metal first!');return;}s.transferred=true;const ms=0.15,mw=0.12,cw=4200,T2=99,T1=25,cs=385,T3=(ms*cs*T2+mw*cw*T1)/(ms*cs+mw*cw);s.T3=T3;document.getElementById(`shct3-${id}`).textContent=T3.toFixed(1);document.getElementById(`shccs-${id}`).textContent=(mw*cw*(T3-T1)/(ms*(T2-T3))).toFixed(0);simState[`shc-${id}`]=s;shcDraw(id);}
+function shcLog(id){const s=simState[`shc-${id}`]||{};setCell(id,0,1,'0.150');setCell(id,1,1,'0.120');setCell(id,2,1,'25.0');setCell(id,3,1,'99.0');if(s.T3)setCell(id,4,1,s.T3.toFixed(1));[0,1,2,3,4].forEach(r=>highlightRow(id,r));updateLogStatus(id);}
+function shcDraw(id){const cv=document.getElementById(`shcc-${id}`);if(!cv)return;const s=simState[`shc-${id}`]||{T_metal:25,T_water:25};const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);ctx.fillStyle=s.heated?'rgba(200,50,0,0.5)':'rgba(0,80,180,0.3)';ctx.fillRect(30,80,120,130);ctx.strokeStyle='#446688';ctx.lineWidth=2;ctx.strokeRect(30,80,120,130);ctx.fillStyle='#cce0ff';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText(s.heated?'Boiling ~99°C':'Water Bath',90,75);ctx.fillStyle=s.heated?'#aa3300':'#335577';ctx.fillRect(65,120,50,50);ctx.fillStyle='#fff';ctx.font='9px Share Tech Mono';ctx.textAlign='center';ctx.fillText('METAL',90,148);if(s.transferred){ctx.strokeStyle='#FFD700';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(180,150);ctx.lineTo(210,150);ctx.stroke();ctx.fillStyle='#FFD700';ctx.beginPath();ctx.moveTo(210,145);ctx.lineTo(220,150);ctx.lineTo(210,155);ctx.closePath();ctx.fill();}ctx.fillStyle='rgba(255,255,255,0.05)';ctx.fillRect(220,100,80,120);ctx.strokeStyle='#8899bb';ctx.lineWidth=2;ctx.strokeRect(220,100,80,120);ctx.fillStyle='rgba(0,80,180,0.3)';ctx.fillRect(222,140,76,78);ctx.fillStyle='#cce0ff';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText('Cup',260,95);if(s.transferred){ctx.fillStyle='#aa3300';ctx.fillRect(235,140,50,50);ctx.fillStyle='#fff';ctx.font='9px Share Tech Mono';ctx.textAlign='center';ctx.fillText('METAL',260,168);}ctx.strokeStyle='#ff4444';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(275,100);ctx.lineTo(275,220);ctx.stroke();ctx.fillStyle='#ff4444';ctx.beginPath();ctx.arc(275,220,5,0,Math.PI*2);ctx.fill();const T=s.T3||(s.heated?99:25);ctx.fillStyle='#FFD700';ctx.font='11px Share Tech Mono';ctx.textAlign='center';ctx.fillText('T = '+T.toFixed(1)+'°C',260,H-8);}
+
+// ─── LATENT (Exp 10) ───
+function buildLatentSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="latAddIce(${id})">+ Add 20g Ice</button><button class="sim-log-btn" onclick="latLog(${id})">📋 Log All Values to Table</button><button class="sim-reset" onclick="latReset(${id})">↺ Reset</button></div><div style="padding:14px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;"><canvas id="latc-${id}" width="240" height="260" style="background:#020810;border-radius:6px;"></canvas><div><div class="readout-row" style="flex-direction:column;gap:8px;"><div class="readout">Cup mass m_c: <span id="latmc-${id}">45.00</span> g</div><div class="readout">Cup+water m₁: <span id="latm1-${id}">195.00</span> g</div><div class="readout">Water Temp T₁: <span id="latt1-${id}">45.0</span> °C</div><div class="readout">Ice added (g): <span id="lati-${id}">0</span></div><div class="readout">Final Temp T₂: <span id="latt2-${id}">—</span> °C</div><div class="readout">Final mass m_f: <span id="latmf-${id}">—</span> g</div><div class="readout">L_f (calc): <span id="latlf-${id}">—</span> J/kg</div></div></div></div>`;}
+function latReset(id){simState[`lat-${id}`]={ice:0,T1:45};['latt2','latmf','latlf'].forEach(k=>{document.getElementById(`${k}-${id}`).textContent='—';});document.getElementById(`lati-${id}`).textContent='0';latDraw(id);}
+function latAddIce(id){const s=simState[`lat-${id}`]||{ice:0,T1:45};s.ice+=20;const mw=0.15,cw=4200,mi=s.ice/1000,Lf=334000,T1=45,T2=(mw*cw*T1-mi*Lf)/(mw*cw+mi*cw);s.T2=Math.max(0,T2);simState[`lat-${id}`]=s;document.getElementById(`lati-${id}`).textContent=s.ice;document.getElementById(`latt2-${id}`).textContent=s.T2.toFixed(1);document.getElementById(`latmf-${id}`).textContent=(195+s.ice).toFixed(2);document.getElementById(`latlf-${id}`).textContent=((mw*cw*(T1-s.T2)-mi*cw*s.T2)/mi).toFixed(0);latDraw(id);}
+function latLog(id){const s=simState[`lat-${id}`]||{ice:0};setCell(id,0,1,'45.00');setCell(id,1,1,'195.00');setCell(id,2,1,'45.0');if(s.T2!==undefined)setCell(id,3,1,s.T2.toFixed(1));setCell(id,4,1,(195+s.ice).toFixed(2));[0,1,2,3,4].forEach(r=>highlightRow(id,r));updateLogStatus(id);}
+function latDraw(id){const s=simState[`lat-${id}`]||{ice:0,T1:45};const cv=document.getElementById(`latc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);ctx.fillStyle='rgba(255,255,255,0.04)';ctx.fillRect(40,60,W-80,H-90);ctx.strokeStyle='#8899bb';ctx.lineWidth=2;ctx.strokeRect(40,60,W-80,H-90);const T=s.T2||s.T1;ctx.fillStyle=`rgba(${Math.round(20+T*3)},${Math.round(80+T)},200,0.4)`;ctx.fillRect(42,90,W-84,H-152);for(let i=0;i<Math.min(s.ice/20,6);i++){ctx.fillStyle='rgba(200,220,255,0.6)';ctx.fillRect(55+i*22,95,18,14);}ctx.strokeStyle='#ff4444';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(W-30,55);ctx.lineTo(W-30,H-35);ctx.stroke();ctx.fillStyle='#ff4444';ctx.beginPath();ctx.arc(W-30,H-35,5,0,Math.PI*2);ctx.fill();ctx.fillStyle='#FFD700';ctx.font='11px Share Tech Mono';ctx.textAlign='center';ctx.fillText(T.toFixed(1)+'°C',W/2,H-10);}
+
+// ─── COOLING (Exp 11) ───
+function buildCoolingSim(id){return `<div class="sim-controls"><button class="sim-btn active" id="coolbtn-${id}" onclick="coolToggle(${id})">▶ Start Cooling</button><button class="sim-log-btn" onclick="coolLog(${id})">📋 Log All Data to Table</button><button class="sim-reset" onclick="coolReset(${id})">↺ Reset</button></div><div style="padding:10px"><canvas id="coolc-${id}" width="560" height="260" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">Time: <span id="coolt-${id}">0.0</span> min</div><div class="readout">Temp: <span id="coolT-${id}">85</span> °C</div><div class="readout">Phase: <span id="coolp-${id}">Liquid</span></div></div>`;}
+const coolState={};
+function coolReset(id){if(coolState[id]&&coolState[id].interval)clearInterval(coolState[id].interval);coolState[id]={running:false,t:0,T:85,data:[{t:0,T:85}],interval:null};document.getElementById(`coolbtn-${id}`).textContent='▶ Start Cooling';document.getElementById(`coolt-${id}`).textContent='0.0';document.getElementById(`coolT-${id}`).textContent='85';document.getElementById(`coolp-${id}`).textContent='Liquid';coolDraw(id);}
+function coolToggle(id){const s=coolState[id];if(!s)return;s.running=!s.running;document.getElementById(`coolbtn-${id}`).textContent=s.running?'⏸ Pause':'▶ Resume';if(s.running){s.interval=setInterval(()=>{if(!s.running){clearInterval(s.interval);return;}s.t=parseFloat((s.t+0.1).toFixed(1));let dT;if(s.T>58.5)dT=-0.25;else if(s.T>57.5)dT=0;else dT=-0.15;s.T=parseFloat((s.T+dT).toFixed(2));if(s.T<20){s.T=20;s.running=false;clearInterval(s.interval);document.getElementById(`coolbtn-${id}`).textContent='✓ Done';}s.data.push({t:s.t,T:s.T});const phase=s.T>58.5?'Liquid':s.T>57.5?'Phase Change ⟳':'Solid';document.getElementById(`coolt-${id}`).textContent=s.t.toFixed(1);document.getElementById(`coolT-${id}`).textContent=s.T.toFixed(1);document.getElementById(`coolp-${id}`).textContent=phase;coolDraw(id);},100);}}
+function coolLog(id){const s=coolState[id];if(!s||s.data.length<2)return;[0,0.5,1.0,1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0].forEach((t,ri)=>{const pt=s.data.reduce((prev,curr)=>Math.abs(curr.t-t)<Math.abs(prev.t-t)?curr:prev);setCell(id,ri,1,pt.T.toFixed(1));highlightRow(id,ri);});updateLogStatus(id);}
+function coolDraw(id){const s=coolState[id];if(!s)return;const cv=document.getElementById(`coolc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,pad={l:50,r:20,t:20,b:40};ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#FFD700';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,H-pad.b);ctx.lineTo(W-pad.r,H-pad.b);ctx.stroke();ctx.fillStyle='#FFD700';ctx.font='11px Share Tech Mono';ctx.textAlign='center';ctx.fillText('Time (min)',W/2,H-5);ctx.save();ctx.translate(14,H/2);ctx.rotate(-Math.PI/2);ctx.fillText('Temp (°C)',0,0);ctx.restore();ctx.strokeStyle='rgba(30,48,80,0.7)';ctx.lineWidth=1;for(let i=0;i<=5;i++){const y=pad.t+i*(H-pad.t-pad.b)/5;ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();const T=85-i*65/5;ctx.fillStyle='rgba(85,106,138,0.9)';ctx.font='9px Share Tech Mono';ctx.textAlign='right';ctx.fillText(T.toFixed(0),pad.l-4,y+4);}for(let i=0;i<=8;i++){const x=pad.l+i*(W-pad.l-pad.r)/8;ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,H-pad.b);ctx.stroke();ctx.fillStyle='rgba(85,106,138,0.9)';ctx.font='9px Share Tech Mono';ctx.textAlign='center';ctx.fillText((i*2).toFixed(0),x,H-pad.b+14);}const py=pad.t+(85-58)*(H-pad.t-pad.b)/65;ctx.strokeStyle='rgba(255,68,0,0.3)';ctx.lineWidth=1;ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(pad.l,py);ctx.lineTo(W-pad.r,py);ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(255,68,0,0.7)';ctx.font='9px Share Tech Mono';ctx.textAlign='left';ctx.fillText('Melting Pt ≈ 58°C',pad.l+4,py-4);if(s.data.length>1){ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.beginPath();s.data.forEach((d,i)=>{const x=pad.l+(d.t/16)*(W-pad.l-pad.r),y=pad.t+(85-d.T)*(H-pad.t-pad.b)/65;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();}}
+
+// ─── SNELL (Exp 12) ───
+function buildSnellSim(id){return `<div class="sim-controls"><button class="sim-log-btn" onclick="snellLog(${id})">📋 Log Current Angle to Table</button><button class="sim-btn" onclick="snellLogAll(${id})">⚡ Auto-fill All Rows</button><button class="sim-reset" onclick="snellReset(${id})">↺ Reset</button></div><div class="slider-row"><label>Angle of incidence i (°):</label><input type="range" id="si-${id}" min="10" max="70" step="10" value="30" oninput="snellDraw(${id})"><span class="slider-val" id="siv-${id}">30°</span></div><div style="padding:10px"><canvas id="snc-${id}" width="560" height="300" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">i = <span id="snI-${id}">30</span>°</div><div class="readout">r = <span id="snR-${id}">—</span>°</div><div class="readout">sin i = <span id="snSI-${id}">—</span></div><div class="readout">sin r = <span id="snSR-${id}">—</span></div><div class="readout">n = <span id="snN-${id}">1.52</span></div></div>`;}
+function snellDraw(id){const I=parseFloat(document.getElementById(`si-${id}`).value);document.getElementById(`siv-${id}`).textContent=I+'°';const n=1.52,sinR=Math.sin(I*Math.PI/180)/n,R=Math.asin(sinR)*180/Math.PI;document.getElementById(`snI-${id}`).textContent=I;document.getElementById(`snR-${id}`).textContent=R.toFixed(1);document.getElementById(`snSI-${id}`).textContent=Math.sin(I*Math.PI/180).toFixed(4);document.getElementById(`snSR-${id}`).textContent=sinR.toFixed(4);const cv=document.getElementById(`snc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,cy=H/2;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);ctx.fillStyle='rgba(40,80,140,0.25)';ctx.fillRect(0,cy,W,H-cy);ctx.strokeStyle='rgba(100,150,220,0.5)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,cy);ctx.lineTo(W,cy);ctx.stroke();ctx.fillStyle='rgba(100,150,220,0.4)';ctx.font='11px Share Tech Mono';ctx.textAlign='right';ctx.fillText('Glass (n=1.52)',W-10,H-10);ctx.fillStyle='rgba(85,106,138,0.6)';ctx.fillText('Air (n=1.00)',W-10,cy-6);ctx.strokeStyle='rgba(255,215,0,0.3)';ctx.lineWidth=1;ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(cx,cy-100);ctx.lineTo(cx,cy+120);ctx.stroke();ctx.setLineDash([]);const Ir=I*Math.PI/180,Rr=R*Math.PI/180,len=120;ctx.strokeStyle='#FFD700';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx-Math.sin(Ir)*len,cy-Math.cos(Ir)*len);ctx.lineTo(cx,cy);ctx.stroke();ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+Math.sin(Rr)*len,cy+Math.cos(Rr)*len);ctx.stroke();ctx.fillStyle='#FFD700';ctx.font='12px Share Tech Mono';ctx.textAlign='center';ctx.fillText('i='+I+'°',cx-Math.sin(Ir/2)*55-15,cy-Math.cos(Ir/2)*55);ctx.fillStyle='#00e5ff';ctx.fillText('r='+R.toFixed(1)+'°',cx+Math.sin(Rr/2)*55+15,cy+Math.cos(Rr/2)*55);}
+function snellLog(id){const I=parseFloat(document.getElementById(`si-${id}`).value),n=1.52,sinI=Math.sin(I*Math.PI/180),sinR=sinI/n,R=Math.asin(sinR)*180/Math.PI,angles=[10,20,30,40,50,60,70],row=angles.indexOf(I);if(row===-1)return;setCell(id,row,1,R.toFixed(1));setCell(id,row,2,sinI.toFixed(4));setCell(id,row,3,sinR.toFixed(4));highlightRow(id,row);updateLogStatus(id);}
+function snellLogAll(id){[10,20,30,40,50,60,70].forEach((I,row)=>{const n=1.52,sinI=Math.sin(I*Math.PI/180),sinR=sinI/n,R=Math.asin(sinR)*180/Math.PI;setCell(id,row,1,R.toFixed(1));setCell(id,row,2,sinI.toFixed(4));setCell(id,row,3,sinR.toFixed(4));highlightRow(id,row);});updateLogStatus(id);}
+function snellReset(id){document.getElementById(`si-${id}`).value=30;snellDraw(id);}
+
+// ─── REFLECTION (Exp 13) ───
+function buildReflectionSim(id){return `<div class="sim-controls"><button class="sim-log-btn" onclick="reflLog(${id})">📋 Log Current Angle</button><button class="sim-btn" onclick="reflLogAll(${id})">⚡ Auto-fill All Rows</button><button class="sim-reset" onclick="reflReset(${id})">↺ Reset</button></div><div class="slider-row"><label>Angle of incidence i (°):</label><input type="range" id="ri-${id}" min="15" max="75" step="5" value="30" oninput="reflDraw(${id})"><span class="slider-val" id="riv-${id}">30°</span></div><div style="padding:10px"><canvas id="rfc-${id}" width="560" height="280" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">i = <span id="rfI-${id}">30</span>°</div><div class="readout">r = <span id="rfR-${id}">30</span>°</div><div class="readout"><span style="color:var(--green)">i = r ✓</span></div></div>`;}
+function reflDraw(id){const I=parseFloat(document.getElementById(`ri-${id}`).value);document.getElementById(`riv-${id}`).textContent=I+'°';document.getElementById(`rfI-${id}`).textContent=I;document.getElementById(`rfR-${id}`).textContent=I;const cv=document.getElementById(`rfc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,cx=W/2,my=H-60;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#8899bb';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(60,my);ctx.lineTo(W-60,my);ctx.stroke();ctx.fillStyle='rgba(136,153,187,0.1)';ctx.fillRect(60,my,W-120,15);ctx.fillStyle='#8899bb';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText('PLANE MIRROR',W/2,my+25);ctx.strokeStyle='rgba(255,215,0,0.3)';ctx.lineWidth=1;ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(cx,my);ctx.lineTo(cx,40);ctx.stroke();ctx.setLineDash([]);const Ir=I*Math.PI/180,len=160;ctx.strokeStyle='#FFD700';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx-Math.sin(Ir)*len,my-Math.cos(Ir)*len);ctx.lineTo(cx,my);ctx.stroke();ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(cx,my);ctx.lineTo(cx+Math.sin(Ir)*len,my-Math.cos(Ir)*len);ctx.stroke();ctx.fillStyle='#FFD700';ctx.font='12px Share Tech Mono';ctx.textAlign='center';ctx.fillText('i='+I+'°',cx-40,my-50);ctx.fillStyle='#00e5ff';ctx.fillText('r='+I+'°',cx+40,my-50);ctx.fillStyle='#39ff85';ctx.font='13px Share Tech Mono';ctx.fillText('i = r  ✓',cx,my-20);}
+function reflLog(id){const I=parseFloat(document.getElementById(`ri-${id}`).value),angles=[15,20,25,30,35,40,45,50,60,65,70,75],row=angles.indexOf(I);if(row===-1)return;setCell(id,row,1,I.toString());highlightRow(id,row);updateLogStatus(id);}
+function reflLogAll(id){[15,20,25,30,35,40,45,50,60,65,70,75].forEach((I,row)=>{setCell(id,row,1,I.toString());highlightRow(id,row);});updateLogStatus(id);}
+function reflReset(id){document.getElementById(`ri-${id}`).value=30;reflDraw(id);}
+
+// ─── LENS (Exp 14) ───
+function buildLensSim(id){return `<div class="sim-controls"><button class="sim-log-btn" onclick="lensLog(${id})">📋 Log Current Row to Table</button><button class="sim-btn" onclick="lensLogAll(${id})">⚡ Auto-fill All Rows</button><button class="sim-reset" onclick="lensReset(${id})">↺ Reset</button></div><div class="slider-row"><label>Object dist u (cm):</label><input type="range" id="lu-${id}" min="15" max="40" step="5" value="25" oninput="lensDraw(${id})"><span class="slider-val" id="luv-${id}">25 cm</span></div><div style="padding:10px"><canvas id="lc-${id}" width="560" height="260" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">u = <span id="lU-${id}">25</span> cm</div><div class="readout">v = <span id="lV-${id}">—</span> cm</div><div class="readout">1/u = <span id="l1u-${id}">—</span> cm⁻¹</div><div class="readout">1/v = <span id="l1v-${id}">—</span> cm⁻¹</div><div class="readout">f = 10 cm</div></div>`;}
+function lensDraw(id){const u=parseFloat(document.getElementById(`lu-${id}`).value);document.getElementById(`luv-${id}`).textContent=u+' cm';const f=10,v=1/(1/f-1/u);document.getElementById(`lU-${id}`).textContent=u;document.getElementById(`lV-${id}`).textContent=isFinite(v)?v.toFixed(1):'∞';document.getElementById(`l1u-${id}`).textContent=(1/u).toFixed(4);document.getElementById(`l1v-${id}`).textContent=isFinite(v)?(1/v).toFixed(4):'—';const cv=document.getElementById(`lc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,lx=W/2,scale=4;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(255,215,0,0.2)';ctx.lineWidth=1;ctx.setLineDash([4,4]);ctx.beginPath();ctx.moveTo(20,H/2);ctx.lineTo(W-20,H/2);ctx.stroke();ctx.setLineDash([]);ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(lx,H/2-70);ctx.bezierCurveTo(lx-20,H/2-30,lx-20,H/2+30,lx,H/2+70);ctx.stroke();ctx.beginPath();ctx.moveTo(lx,H/2-70);ctx.bezierCurveTo(lx+20,H/2-30,lx+20,H/2+30,lx,H/2+70);ctx.stroke();ctx.fillStyle='rgba(255,100,0,0.7)';ctx.beginPath();ctx.arc(lx-f*scale,H/2,4,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.arc(lx+f*scale,H/2,4,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(255,100,0,0.8)';ctx.font='9px Share Tech Mono';ctx.textAlign='center';ctx.fillText('F',lx-f*scale,H/2-8);ctx.fillText('F',lx+f*scale,H/2-8);const ox=lx-u*scale;ctx.strokeStyle='#FFD700';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(ox,H/2);ctx.lineTo(ox,H/2-40);ctx.stroke();ctx.fillStyle='#FFD700';ctx.beginPath();ctx.moveTo(ox-5,H/2-40);ctx.lineTo(ox+5,H/2-40);ctx.lineTo(ox,H/2-52);ctx.closePath();ctx.fill();ctx.fillStyle='#FFD700';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText('u='+u+'cm',ox,H/2+14);if(isFinite(v)&&v>0){const ix=lx+v*scale,imgH=40*(v/u);ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(ix,H/2);ctx.lineTo(ix,H/2-imgH);ctx.stroke();ctx.fillStyle='#00e5ff';ctx.beginPath();ctx.moveTo(ix-4,H/2-imgH);ctx.lineTo(ix+4,H/2-imgH);ctx.lineTo(ix,H/2-imgH-10);ctx.closePath();ctx.fill();ctx.fillStyle='#00e5ff';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText('v='+v.toFixed(1)+'cm',ix,H/2+14);}}
+function lensLog(id){const u=parseFloat(document.getElementById(`lu-${id}`).value),f=10,v=1/(1/f-1/u),uVals=[15,20,25,30,35,40],row=uVals.indexOf(u);if(row===-1||!isFinite(v))return;setCell(id,row,1,v.toFixed(1));setCell(id,row,2,(1/u).toFixed(4));setCell(id,row,3,(1/v).toFixed(4));highlightRow(id,row);updateLogStatus(id);}
+function lensLogAll(id){[15,20,25,30,35,40].forEach((u,row)=>{const f=10,v=1/(1/f-1/u);if(!isFinite(v))return;setCell(id,row,1,v.toFixed(1));setCell(id,row,2,(1/u).toFixed(4));setCell(id,row,3,(1/v).toFixed(4));highlightRow(id,row);});updateLogStatus(id);}
+function lensReset(id){document.getElementById(`lu-${id}`).value=25;lensDraw(id);}
+
+// ─── IV CHARACTERISTICS (Exp 15 & 16) ───
+function buildIVSim(id,type){return `<div class="sim-controls"><button class="sim-log-btn" onclick="ivLog(${id},'${type}')">📋 Log Current Reading</button><button class="sim-btn" onclick="ivLogAll(${id},'${type}')">⚡ Auto-fill All Rows</button><button class="sim-reset" onclick="ivReset(${id})">↺ Reset</button></div><div class="slider-row"><label>Voltage V (V):</label><input type="range" id="vv-${id}" min="0" max="12" step="0.5" value="4" oninput="ivDraw(${id},'${type}')"><span class="slider-val" id="vvv-${id}">4.0 V</span></div><div style="padding:10px"><canvas id="ivc-${id}" width="560" height="260" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">V = <span id="ivV-${id}">4.0</span> V</div><div class="readout">I = <span id="ivI-${id}">—</span> A</div><div class="readout">R = <span id="ivR-${id}">—</span> Ω</div><div class="readout">${type==='lamp'?'Non-ohmic (lamp)':'Ohmic (R = 47 Ω)'}</div></div>`;}
+function ivCalc(V,type){if(type==='lamp'){const R=5+V*2;return{I:V/R,R};}return{I:V/47,R:47};}
+function ivDraw(id,type){const V=parseFloat(document.getElementById(`vv-${id}`).value);document.getElementById(`vvv-${id}`).textContent=V.toFixed(1)+' V';const{I,R}=ivCalc(V,type);document.getElementById(`ivV-${id}`).textContent=V.toFixed(1);document.getElementById(`ivI-${id}`).textContent=I.toFixed(4);document.getElementById(`ivR-${id}`).textContent=R.toFixed(1);const cv=document.getElementById(`ivc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,pad={l:55,r:20,t:20,b:45};ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);ctx.strokeStyle='#FFD700';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,H-pad.b);ctx.lineTo(W-pad.r,H-pad.b);ctx.stroke();ctx.fillStyle='#FFD700';ctx.font='11px Share Tech Mono';ctx.textAlign='center';ctx.fillText('Voltage V (V)',W/2,H-5);ctx.save();ctx.translate(14,H/2);ctx.rotate(-Math.PI/2);ctx.fillText('Current I (A)',0,0);ctx.restore();const maxV=12,toX=v=>pad.l+(v/maxV)*(W-pad.l-pad.r),toY=i=>H-pad.b-Math.min(i/0.35,1)*(H-pad.t-pad.b);ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.beginPath();for(let v=0;v<=maxV;v+=0.1){const{I:i}=ivCalc(v,type);v===0?ctx.moveTo(toX(v),toY(i)):ctx.lineTo(toX(v),toY(i));}ctx.stroke();ctx.fillStyle='#FFD700';ctx.beginPath();ctx.arc(toX(V),toY(I),6,0,Math.PI*2);ctx.fill();ctx.fillStyle='rgba(85,106,138,0.9)';ctx.font='9px Share Tech Mono';ctx.textAlign='center';for(let v=0;v<=12;v+=3)ctx.fillText(v,toX(v),H-pad.b+14);ctx.textAlign='right';for(let j=0;j<=4;j++){const ival=0.35*(j/4);ctx.fillText(ival.toFixed(2),pad.l-4,toY(ival)+3);}}
+function ivLog(id,type){const V=parseFloat(document.getElementById(`vv-${id}`).value),{I,R}=ivCalc(V,type),exp=EXPERIMENTS.find(e=>e.id===id);let row=-1;for(let r=0;r<exp.resultsRows.length;r++){if(!getCell(id,r,0)||getCell(id,r,0)===''){row=r;break;}}if(row===-1)row=exp.resultsRows.length-1;setCell(id,row,0,V.toFixed(1));setCell(id,row,1,I.toFixed(4));setCell(id,row,2,R.toFixed(1));highlightRow(id,row);updateLogStatus(id);}
+function ivLogAll(id,type){const exp=EXPERIMENTS.find(e=>e.id===id),nRows=exp.resultsRows.length;for(let row=0;row<nRows;row++){const V=parseFloat((1+row*(11/(nRows-1))).toFixed(1)),{I,R}=ivCalc(V,type);setCell(id,row,0,V.toFixed(1));setCell(id,row,1,I.toFixed(4));setCell(id,row,2,R.toFixed(1));highlightRow(id,row);}updateLogStatus(id);}
+function ivReset(id){document.getElementById(`vv-${id}`).value=4;const exp=EXPERIMENTS.find(e=>e.id===id);ivDraw(id,exp.simType==='iv_lamp'?'lamp':'resistor');}
+
+// ─── CARDS (Exp 17) ───
+function buildCardsSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="cardDraw_fn(${id})">🃏 Draw Card (1 trial)</button><button class="sim-btn" onclick="card5(${id})">▶▶ 5 Trials</button><button class="sim-btn" onclick="card100(${id})">⚡ Run 100 Trials</button><button class="sim-log-btn" onclick="cardLog(${id})">📋 Log All Groups to Table</button><button class="sim-reset" onclick="cardReset(${id})">↺ Reset</button></div><div style="padding:14px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;"><canvas id="carc-${id}" width="300" height="240" style="background:#020810;border-radius:6px;"></canvas><div><div class="readout-row" style="flex-direction:column;gap:8px;"><div class="readout">Total trials: <span id="carn-${id}">0</span></div><div class="readout">QS drawn total: <span id="care-${id}">0</span></div><div class="readout">Running freq: <span id="carf-${id}">—</span></div><div class="readout">Expected (1/12): <span style="color:var(--cyan)">0.0833</span></div></div></div></div>`;}
+function cardReset(id){simState[`card-${id}`]={n:0,events:0,history:[],groups:[]};['carn','care','carf'].forEach(k=>{document.getElementById(`${k}-${id}`).textContent=k==='carf'?'—':'0';});cardDrawCanvas(id);}
+function cardDraw_fn(id){const s=simState[`card-${id}`]||{n:0,events:0,history:[]};const drew=Math.random()<1/12;s.n++;if(drew)s.events++;s.history.push(drew?1:0);document.getElementById(`carn-${id}`).textContent=s.n;document.getElementById(`care-${id}`).textContent=s.events;document.getElementById(`carf-${id}`).textContent=(s.events/s.n).toFixed(4);simState[`card-${id}`]=s;cardDrawCanvas(id);}
+function card5(id){for(let i=0;i<5;i++)cardDraw_fn(id);}
+function card100(id){for(let i=0;i<100;i++)cardDraw_fn(id);}
+function cardLog(id){const s=simState[`card-${id}`]||{n:0,events:0,history:[]};for(let g=0;g<20;g++){const start=g*5,end=Math.min(start+5,s.history.length),groupEvents=s.history.slice(start,end).reduce((a,v)=>a+v,0),runTotal=s.history.slice(0,end).reduce((a,v)=>a+v,0),runFreq=end>0?(runTotal/end).toFixed(4):'—';setCell(id,g,1,groupEvents.toString());setCell(id,g,2,runTotal.toString());setCell(id,g,3,runFreq);highlightRow(id,g);}updateLogStatus(id);}
+function cardDrawCanvas(id){const s=simState[`card-${id}`]||{n:0,events:0,history:[]};const cv=document.getElementById(`carc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);const hist=s.history.slice(-60),bw=Math.max((W-40)/Math.max(hist.length,1),3);hist.forEach((v,i)=>{ctx.fillStyle=v?'#FFD700':'rgba(85,106,138,0.25)';ctx.fillRect(20+i*bw,H-50-(v?40:10),bw-1,(v?40:10));});ctx.fillStyle='#FFD700';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText('Recent trials (gold = Queen of Spades)',W/2,16);if(s.history.length>5){ctx.strokeStyle='#00e5ff';ctx.lineWidth=1.5;ctx.beginPath();let runTotal=0;s.history.slice(-60).forEach((v,i)=>{runTotal+=v;const freq=runTotal/(i+1),x=20+(i+0.5)*bw,y=H-50-freq*180;i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();ctx.strokeStyle='rgba(255,68,0,0.4)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(20,H-50-1/12*180);ctx.lineTo(W-20,H-50-1/12*180);ctx.stroke();ctx.setLineDash([]);}ctx.fillStyle='rgba(85,106,138,0.9)';ctx.font='10px Share Tech Mono';ctx.fillText('n='+s.n+' | events='+s.events+' | freq='+(s.n>0?(s.events/s.n).toFixed(3):'—'),W/2,H-8);}
+
+// ─── DICE (Exp 18) ───
+function buildDiceSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="diceThrow(${id})">🎲 Throw Dice</button><button class="sim-log-btn" onclick="diceLog(${id})">📋 Log Current Throw</button><button class="sim-btn" onclick="diceAuto(${id})">⚡ Auto-run All Throws</button><button class="sim-reset" onclick="diceReset(${id})">↺ Reset</button></div><div style="padding:14px;display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap;"><canvas id="dicc-${id}" width="320" height="260" style="background:#020810;border-radius:6px;"></canvas><div><div class="readout-row" style="flex-direction:column;gap:8px;"><div class="readout">Throw #: <span id="dicn-${id}">0</span></div><div class="readout">Remaining: <span id="dicr-${id}">50</span></div><div class="readout">Removed this throw: <span id="dics-${id}">—</span></div></div></div></div>`;}
+function diceReset(id){simState[`dice-${id}`]={throw:0,remaining:50,data:[{n:0,rem:50}]};document.getElementById(`dicn-${id}`).textContent='0';document.getElementById(`dicr-${id}`).textContent='50';document.getElementById(`dics-${id}`).textContent='—';diceDraw(id);}
+function diceThrow(id){const s=simState[`dice-${id}`]||{throw:0,remaining:50,data:[]};if(s.remaining<=0)return;let removed=0;for(let i=0;i<s.remaining;i++)if(Math.random()<1/6)removed++;s.throw++;s.remaining-=removed;s.data.push({n:s.throw,rem:s.remaining,removed});document.getElementById(`dicn-${id}`).textContent=s.throw;document.getElementById(`dicr-${id}`).textContent=s.remaining;document.getElementById(`dics-${id}`).textContent=removed;simState[`dice-${id}`]=s;diceDraw(id);}
+function diceLog(id){const s=simState[`dice-${id}`]||{throw:0,remaining:50};if(s.throw===0)return;const row=s.throw;if(row>15)return;const last=s.data[s.data.length-1];setCell(id,row,1,last.removed.toString());setCell(id,row,2,last.rem.toString());highlightRow(id,row);updateLogStatus(id);}
+function diceAuto(id){simState[`dice-${id}`]={throw:0,remaining:50,data:[{n:0,rem:50}]};setCell(id,0,0,'Start');setCell(id,0,1,'0');setCell(id,0,2,'50');const s2=simState[`dice-${id}`];for(let t=1;t<=15&&s2.remaining>0;t++){let removed=0;for(let i=0;i<s2.remaining;i++)if(Math.random()<1/6)removed++;s2.throw++;s2.remaining-=removed;s2.data.push({n:t,rem:s2.remaining,removed});setCell(id,t,1,removed.toString());setCell(id,t,2,s2.remaining.toString());highlightRow(id,t);}document.getElementById(`dicn-${id}`).textContent=s2.throw;document.getElementById(`dicr-${id}`).textContent=s2.remaining;document.getElementById(`dics-${id}`).textContent='Done';diceDraw(id);updateLogStatus(id);}
+function diceDraw(id){const s=simState[`dice-${id}`]||{data:[{n:0,rem:50}]};const cv=document.getElementById(`dicc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height,pad={l:45,r:15,t:20,b:40};ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);if(!s.data||s.data.length<2){ctx.fillStyle='rgba(85,106,138,0.6)';ctx.font='12px Share Tech Mono';ctx.textAlign='center';ctx.fillText('Click "Throw Dice" to begin',W/2,H/2);return;}ctx.strokeStyle='#FFD700';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(pad.l,pad.t);ctx.lineTo(pad.l,H-pad.b);ctx.lineTo(W-pad.r,H-pad.b);ctx.stroke();ctx.fillStyle='#FFD700';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText('Throw #',W/2,H-5);ctx.save();ctx.translate(12,H/2);ctx.rotate(-Math.PI/2);ctx.fillText('Remaining',0,0);ctx.restore();const maxN=Math.max(s.data[s.data.length-1].n,15),toX=n=>pad.l+n*(W-pad.l-pad.r)/maxN,toY=r=>H-pad.b-(r/50)*(H-pad.t-pad.b);ctx.strokeStyle='rgba(255,68,0,0.4)';ctx.lineWidth=1;ctx.setLineDash([4,3]);ctx.beginPath();for(let n=0;n<=maxN;n+=0.5){const x=toX(n),y=toY(50*Math.pow(5/6,n));n===0?ctx.moveTo(x,y):ctx.lineTo(x,y);}ctx.stroke();ctx.setLineDash([]);ctx.strokeStyle='#00e5ff';ctx.lineWidth=2;ctx.beginPath();s.data.forEach((d,i)=>{i===0?ctx.moveTo(toX(d.n),toY(d.rem)):ctx.lineTo(toX(d.n),toY(d.rem));});ctx.stroke();s.data.forEach(d=>{ctx.fillStyle='#FFD700';ctx.beginPath();ctx.arc(toX(d.n),toY(d.rem),3,0,Math.PI*2);ctx.fill();});ctx.strokeStyle='rgba(255,215,0,0.3)';ctx.lineWidth=1;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(pad.l,toY(25));ctx.lineTo(W-pad.r,toY(25));ctx.stroke();ctx.setLineDash([]);ctx.fillStyle='rgba(255,215,0,0.6)';ctx.font='9px Share Tech Mono';ctx.textAlign='left';ctx.fillText('N₀/2=25',pad.l+4,toY(25)-4);ctx.fillStyle='rgba(85,106,138,0.9)';ctx.font='9px Share Tech Mono';ctx.textAlign='center';[0,5,10,15].forEach(n=>{if(n<=maxN)ctx.fillText(n,toX(n),H-pad.b+14);});ctx.textAlign='right';[0,10,20,30,40,50].forEach(r=>{ctx.fillText(r,pad.l-4,toY(r)+3);});}
+
+// ════════════════════════════════════════════════════════════════
+//  IMPORT ALL DATA
+// ════════════════════════════════════════════════════════════════
+function importAllData(id){
+  const exp=EXPERIMENTS.find(e=>e.id===id);if(!exp)return;
+  switch(exp.simType){
+    case 'vernier':vernierLog(id);break;case 'micrometer':micLog(id);break;
+    case 'boilingtube':if(!simState[`bt-${id}`]||simState[`bt-${id}`].V===0){btReset(id);for(let i=0;i<6;i++){btAddWater(id);btLog(id);}}else{const s=simState[`bt-${id}`];for(let i=s.logRow;i<6;i++){btAddWater(id);btLog(id);}}break;
+    case 'pendulum':pendulumLogAll(id);break;case 'moments':momentsLogAll(id);break;
+    case 'spring':springLogAll(id);break;case 'ramp':rampLogAll(id);break;
+    case 'archimedes':archLower(id,'full');setTimeout(()=>{archLog(id);archLower(id,'half');setTimeout(()=>archLog(id),100);},100);break;
+    case 'shc':shcHeat(id);setTimeout(()=>{shcTransfer(id);setTimeout(()=>shcLog(id),100);},100);break;
+    case 'latent':latReset(id);latAddIce(id);latAddIce(id);latAddIce(id);setTimeout(()=>latLog(id),100);break;
+    case 'cooling':
+      if(!coolState[id]||coolState[id].data.length<2){const s={running:false,t:0,T:85,data:[{t:0,T:85}]};while(s.T>20){s.t=parseFloat((s.t+0.1).toFixed(1));let dT;if(s.T>58.5)dT=-0.25;else if(s.T>57.5)dT=0;else dT=-0.15;s.T=parseFloat((s.T+dT).toFixed(2));if(s.T<20)s.T=20;s.data.push({t:s.t,T:s.T});}coolState[id]=s;coolDraw(id);}coolLog(id);break;
+    case 'snell':snellLogAll(id);break;case 'reflection':reflLogAll(id);break;
+    case 'lens':lensLogAll(id);break;case 'iv_lamp':ivLogAll(id,'lamp');break;
+    case 'iv_resistor':ivLogAll(id,'resistor');break;
+    case 'cards':if(!(simState[`card-${id}`]&&simState[`card-${id}`].n>=100))card100(id);cardLog(id);break;
+    case 'dice':diceAuto(id);break;
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+//  SIM INIT
+// ════════════════════════════════════════════════════════════════
+const simState={};
+function initSim(id){
+  const exp=EXPERIMENTS.find(e=>e.id===id);if(!exp)return;
+  
+  if (id === 19) {
+      setTimeout(() => {
+          const table = document.getElementById('dynamicTable_19');
+          if (table && table.rows.length === 0) {
+              addRow(19, 2);
+              addRow(19, 2);
+              addRow(19, 2);
+          }
+      }, 100);
+      return;
+  }
+
+  setTimeout(()=>{
+    switch(exp.simType){
+      case 'vernier':vernierDraw(id);break;case 'micrometer':micDraw(id);break;
+      case 'boilingtube':btReset(id);break;case 'pendulum':pendulumReset(id);break;
+      case 'moments':momentsDraw(id);break;case 'spring':springReset(id);break;
+      case 'ramp':rampUpdate(id);break;case 'archimedes':archReset(id);break;
+      case 'shc':shcReset(id);break;case 'latent':latReset(id);break;
+      case 'cooling':coolReset(id);break;case 'snell':snellDraw(id);break;
+      case 'reflection':reflDraw(id);break;case 'lens':lensDraw(id);break;
+      case 'iv_lamp':ivDraw(id,'lamp');break;case 'iv_resistor':ivDraw(id,'resistor');break;
+      case 'cards':cardReset(id);break;case 'dice':diceReset(id);break;
+    }
+    exp.analysisQs.forEach((q,i)=>{if(q.type==='graph')initGraph(id,i);});
+    updateLogStatus(id);
+  },150);
+}
+
+// ════════════════════════════════════════════════════════════════
+//  REPORT GENERATION SYSTEM
+// ════════════════════════════════════════════════════════════════
+function generateReport(expId) {
+  const exp = EXPERIMENTS.find(e => e.id === expId);
+  if (!exp) return;
+
+  // ── Capture student, class & teacher names ──
+  const studentName = (document.getElementById('student-name')?.value || '').trim() || '________________________________';
+  const className   = (document.getElementById('class-name')?.value   || '').trim() || '________________________________';
+  const teacherName = (document.getElementById('teacher-name')?.value || '').trim() || '________________________________';
+
+  // Collect results table data
+  const tableRows = [];
+  if (exp.resultsRows) {
+      exp.resultsRows.forEach((defaultRow, ri) => {
+        const row = [];
+        exp.resultsCols.forEach((col, ci) => { row.push(getCell(expId, ri, ci) || '—'); });
+        tableRows.push(row);
+      });
+  }
+
+  // Collect analysis answers
+  const questionWrappers = document.querySelectorAll(`#exp-${expId} .analysis-q`);
+  const analysisAnswers = exp.analysisQs ? exp.analysisQs.map((q, i) => {
+    const textarea = questionWrappers[i]?.querySelector('textarea.answer');
+    return {
+      q: q.label,
+      a: textarea ? textarea.value.trim() : '',
+      type: q.type
+    };
+  }) : [];
+
+  // ── Capture conclusion ──
+  const conclusionEl = document.querySelector(`#exp-${expId} textarea.conclusion-input`);
+  const conclusionText = conclusionEl ? conclusionEl.value.trim() : '';
+
+  // Capture simulation canvas snapshot
+  let simImageSrc = null;
+  const simCanvas = document.querySelector(`#sim-${expId} canvas`);
+  if (simCanvas) { try { simImageSrc = simCanvas.toDataURL('image/png'); } catch(e) {} }
+
+  // Capture graph canvas snapshots
+  const graphImages = [];
+  if (exp.analysisQs) {
+      exp.analysisQs.forEach((q, i) => {
+        if (q.type === 'graph') {
+          const gc = document.getElementById(`gc-${expId}-${i}`);
+          if (gc) { try { graphImages.push({ qi: i, src: gc.toDataURL('image/png'), label: q.label }); } catch(e) {} }
+        }
+      });
+  }
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' });
+
+  let tableHeaderHTML = "";
+  let tableBodyHTML = "";
+  if (exp.resultsCols) {
+      tableHeaderHTML = exp.resultsCols.map(c => `<th>${escHtml(c)}</th>`).join('');
+      tableBodyHTML = tableRows.map(row =>
+        `<tr>${row.map(cell => `<td>${escHtml(cell)}</td>`).join('')}</tr>`
+      ).join('');
+  }
+
+  // ── Set default values for Experiments 1 to 18 ──
+  let customAim = exp.aim;
+  let theoryText = exp.theory
+    .replace(/<div class="formula-block">([\s\S]*?)<\/div>/g, (m, inner) => `<div class="formula-block-rpt">${inner.trim()}</div>`)
+    .replace(/<b>/g,'<strong>').replace(/<\/b>/g,'</strong>');
+  let apparatusHTML = exp.apparatus.map(a => `<li>${escHtml(a)}</li>`).join('');
+  let procedureHTML = exp.procedure.map((s, i) => `<div class="proc-step-rpt"><span class="proc-num-rpt">${i+1}</span><span>${escHtml(s)}</span></div>`).join('');
+  let simBlock = simImageSrc
+    ? `<div class="sim-snap"><img src="${simImageSrc}" alt="Simulation snapshot" style="max-width:100%;border:2px solid #c8a800;border-radius:6px;"></div>`
+    : `<p style="color:#888;font-style:italic;">No simulation snapshot available.</p>`;
+  let customResults = `<table class="results-table-rpt"><thead><tr>${tableHeaderHTML}</tr></thead><tbody>${tableBodyHTML}</tbody></table>`;
+  
+  let analysisHTML = analysisAnswers.map((item, i) => {
+    const qNum = i + 1;
+    const isGraph = item.type === 'graph';
+    const graphImg = graphImages.find(g => g.qi === i);
+    let graphBlock = '';
+    if (isGraph && graphImg) {
+      graphBlock = `<div class="graph-capture"><img src="${graphImg.src}" alt="Graph ${qNum}" style="max-width:100%;border:1px solid #d0c090;border-radius:4px;margin-top:8px;"></div>`;
+    }
+    const answerDisplay = item.a
+      ? `<div class="answer-box">${escHtml(item.a).replace(/\n/g,'<br>')}</div>`
+      : `<div class="answer-box answer-empty"><em>No answer provided.</em></div>`;
+    return `
+      <div class="analysis-item">
+        <div class="q-text"><span class="q-num">Q${qNum}.</span> ${escHtml(item.q)}</div>
+        ${answerDisplay}
+        ${graphBlock}
+      </div>`;
+  }).join('');
+
+  let finalConclusion = conclusionText 
+    ? escHtml(conclusionText).replace(/\n/g,'<br>') 
+    : '<span class="conclusion-prompt">No conclusion was written. Return to the lab, fill in the Conclusion section, then regenerate the report.</span>';
+  
+  let customReflection = ""; 
+
+  // ── OVERRIDE VALUES IF IT IS SPECIAL EXPERIMENT 19 ──
+  if (exp.id === 19) {
+    customAim = document.getElementById('special-aim')?.value.trim() || 'No Aim Provided';
+    
+    const theoryBody = escHtml(document.getElementById('special-theory')?.value.trim() || '').replace(/\n/g, '<br>');
+    const mathEquation = document.getElementById('special-equation')?.value;
+    const equationBlock = mathEquation ? `<div class="formula-block-rpt">$$ ${mathEquation} $$</div>` : '';
+    theoryText = `<div class="theory-content">${theoryBody}${equationBlock}</div>`;
+    
+    apparatusHTML = `<li>${escHtml(document.getElementById('special-apparatus')?.value.trim() || '').replace(/\n/g, '</li><li>')}</li>`;
+    procedureHTML = `<div class="proc-step-rpt"><span>${escHtml(document.getElementById('special-procedure')?.value.trim() || '').replace(/\n/g, '<br>')}</span></div>`;
+    simBlock = `<p style="color:#888;font-style:italic;">Simulation not applicable for Open Laboratory Project.</p>`;
+    
+    // Grabs the custom table created by the user
+    customResults = getPrintableTableHTML(19) || '<p>No data entered.</p>';
+    
+    // Swap standard analysis for the custom Discussion field, and grab the discussion equation
+    const discussionBody = escHtml(document.getElementById('special-discussion')?.value.trim() || '').replace(/\n/g, '<br>');
+    const mathEquationDiscussion = document.getElementById('special-equation-discussion')?.value;
+    const equationBlockDiscussion = mathEquationDiscussion ? `<div class="formula-block-rpt">$$ ${mathEquationDiscussion} $$</div>` : '';
+
+    analysisHTML = `
+      <div class="analysis-item">
+        <div class="q-text">Discussion</div>
+        <div class="answer-box">${discussionBody}${equationBlockDiscussion}</div>
+      </div>`;
+      
+    finalConclusion = document.getElementById('special-conclusion')?.value.trim() 
+      ? escHtml(document.getElementById('special-conclusion').value.trim()).replace(/\n/g, '<br>')
+      : '<span class="conclusion-prompt">No conclusion provided.</span>';
+
+    // Build the new Reflection block
+    customReflection = `
+      <div class="report-section">
+        <div class="section-heading"><span class="section-num">08</span><span class="section-title">Reflection</span></div>
+        <div class="conclusion-box" style="border-color: #00a0c0; border-top-color: #0080a0; background: #f0f8fb;">
+          ${escHtml(document.getElementById('special-reflection')?.value.trim() || 'No reflection provided.').replace(/\n/g, '<br>')}
+        </div>
+      </div>`;
+  }
+
+  // ── Build the final HTML string ──
+  const reportHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Report — ${escHtml(exp.title)}</title>
+<link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=Source+Code+Pro:wght@400;600&family=Oswald:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"><\/script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"><\/script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Crimson Pro',Georgia,serif;font-size:11.5pt;line-height:1.65;color:#1a1a1a;background:#f5f0e8;padding:0;}
+.page-wrap{max-width:820px;margin:0 auto;background:#fff;box-shadow:0 4px 40px rgba(0,0,0,0.12);}
+.report-masthead{background:linear-gradient(160deg,#0a1525 0%,#162035 60%,#0e1e35 100%);color:#fff;position:relative;overflow:hidden;}
+.report-masthead::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(255,215,0,0.03) 30px,rgba(255,215,0,0.03) 31px);}
+.masthead-inner{position:relative;padding:32px 40px 28px;border-bottom:3px solid #FFD700;}
+.school-line{font-family:'Oswald',sans-serif;font-size:9pt;letter-spacing:4px;color:rgba(255,215,0,0.6);text-transform:uppercase;margin-bottom:6px;}
+.report-brand{font-family:'Oswald',sans-serif;font-size:22pt;font-weight:700;color:#FFD700;letter-spacing:3px;line-height:1;margin-bottom:4px;}
+.report-brand span{color:#00e5ff;font-size:10pt;display:block;letter-spacing:6px;font-weight:400;margin-top:4px;}
+.report-exp-badge{position:absolute;top:28px;right:40px;background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.3);border-radius:6px;padding:8px 16px;text-align:center;}
+.badge-num{font-family:'Source Code Pro',monospace;font-size:9pt;color:rgba(255,215,0,0.6);letter-spacing:3px;display:block;}
+.badge-topic{font-family:'Oswald',sans-serif;font-size:11pt;color:#FFD700;letter-spacing:1px;}
+.report-title-bar{background:rgba(255,215,0,0.08);padding:18px 40px;border-bottom:1px solid rgba(255,215,0,0.15);}
+.report-exp-title{font-family:'Oswald',sans-serif;font-size:17pt;font-weight:600;color:#fff;letter-spacing:1px;line-height:1.2;}
+.report-meta{padding:12px 40px;display:flex;gap:32px;flex-wrap:wrap;border-bottom:1px solid rgba(255,215,0,0.1);}
+.meta-field{font-family:'Source Code Pro',monospace;font-size:8pt;color:rgba(255,215,0,0.5);}
+.meta-field span{color:rgba(200,230,255,0.85);margin-left:6px;font-size:9pt;}
+.report-body{padding:0 40px 40px;}
+.report-section{margin-top:28px;page-break-inside:avoid;}
+.section-heading{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #c8a800;}
+.section-num{background:#0a1525;color:#FFD700;font-family:'Source Code Pro',monospace;font-size:8pt;font-weight:600;padding:3px 8px;border-radius:3px;letter-spacing:2px;flex-shrink:0;}
+.section-title{font-family:'Oswald',sans-serif;font-size:12pt;font-weight:600;color:#0a1525;letter-spacing:2px;text-transform:uppercase;}
+.aim-text{font-size:11.5pt;font-style:italic;color:#2a2a2a;padding:10px 16px;background:#faf7f0;border-left:3px solid #c8a800;border-radius:0 4px 4px 0;}
+.theory-content{font-size:11pt;line-height:1.75;color:#2a2a2a;}
+.theory-content p{margin-bottom:8px;}
+.formula-block-rpt{background:#f5f0e8;border-left:3px solid #00a0c0;padding:8px 14px;margin:10px 0;font-family:'Source Code Pro',monospace;font-size:10pt;border-radius:0 4px 4px 0;overflow-x:auto;}
+.apparatus-list-rpt{list-style:none;display:flex;flex-wrap:wrap;gap:8px;}
+.apparatus-list-rpt li{background:#f0f8f0;border:1px solid #90c090;border-radius:14px;padding:3px 12px;font-size:10pt;color:#1a4a1a;font-family:'Source Code Pro',monospace;}
+.proc-step-rpt{display:flex;gap:12px;margin-bottom:8px;align-items:flex-start;}
+.proc-num-rpt{width:22px;height:22px;border-radius:50%;background:#0a1525;color:#FFD700;display:flex;align-items:center;justify-content:center;font-family:'Source Code Pro',monospace;font-size:8pt;flex-shrink:0;margin-top:2px;}
+.sim-snap{background:#050c14;padding:12px;border-radius:6px;text-align:center;}
+.results-table-rpt{width:100%;border-collapse:collapse;font-size:10.5pt;margin-top:8px;}
+.results-table-rpt th{background:#0a1525;color:#FFD700;font-family:'Source Code Pro',monospace;font-size:9pt;padding:8px 12px;border:1px solid #334466;text-align:center;letter-spacing:1px;}
+.results-table-rpt td{border:1px solid #c8d0d8;padding:7px 12px;text-align:center;font-family:'Source Code Pro',monospace;font-size:10pt;color:#1a2a3a;}
+.results-table-rpt tr:nth-child(even) td{background:#f7fafc;}
+.analysis-item{margin-bottom:18px;padding:14px 16px;background:#fafafa;border:1px solid #e0e0e0;border-left:3px solid #0a1525;border-radius:0 6px 6px 0;page-break-inside:avoid;}
+.q-text{font-size:10.5pt;color:#1a1a1a;font-weight:600;margin-bottom:8px;line-height:1.5;}
+.q-num{font-family:'Source Code Pro',monospace;color:#c8a800;font-size:9pt;margin-right:6px;font-weight:700;}
+.answer-box{background:#fff;border:1px solid #d0d8e0;border-radius:4px;padding:10px 14px;font-size:10.5pt;color:#1a2040;line-height:1.7;min-height:40px;}
+.answer-empty{color:#aaa;background:#f8f8f8;}
+.graph-capture{margin-top:10px;}
+.conclusion-box{background:#f5f9f5;border:1px solid #90c090;border-top:3px solid #2a8a2a;border-radius:4px;padding:16px;min-height:80px;font-size:11pt;color:#1a3a1a;line-height:1.75;}
+.conclusion-prompt{color:#aaa;font-style:italic;font-size:10pt;}
+.report-footer{background:#0a1525;color:rgba(255,215,0,0.4);font-family:'Source Code Pro',monospace;font-size:8pt;padding:12px 40px;display:flex;justify-content:space-between;align-items:center;letter-spacing:1px;}
+.footer-brand{color:#FFD700;font-weight:600;}
+.print-toolbar{position:sticky;top:0;z-index:100;background:#0a1525;border-bottom:2px solid #FFD700;padding:10px 40px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+.print-toolbar-title{font-family:'Source Code Pro',monospace;font-size:9pt;color:rgba(255,215,0,0.6);letter-spacing:2px;flex:1;}
+.toolbar-btn{padding:7px 18px;border-radius:4px;border:none;cursor:pointer;font-family:'Source Code Pro',monospace;font-size:9pt;font-weight:600;letter-spacing:1px;}
+.btn-print{background:#FFD700;color:#0a1525;}
+.btn-save{background:rgba(57,255,133,0.15);color:#39ff85;border:1px solid rgba(57,255,133,0.3);}
+.btn-close{background:rgba(255,68,68,0.12);color:#ff6666;border:1px solid rgba(255,68,68,0.25);}
+@media print{body{background:#fff;}
+.print-toolbar{display:none!important;}
+.page-wrap{box-shadow:none;max-width:100%;}
+.report-masthead,.report-footer,.results-table-rpt th,.section-num,.proc-num-rpt{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+.report-section{page-break-inside:avoid;}
+@page{margin:2cm;}}
+</style>
+</head>
+<body>
+<div class="print-toolbar">
+  <span class="print-toolbar-title">GOLD'N GENIUZ · LAB REPORT · EXP ${String(expId).padStart(2,'0')}</span>
+  <button class="toolbar-btn btn-print" onclick="window.print()">🖨 Print / Save PDF</button>
+  <button class="toolbar-btn btn-save" onclick="saveReportHTML()">⬇ Download HTML</button>
+  <button class="toolbar-btn btn-close" onclick="window.close()">✕ Close</button>
+</div>
+<div class="page-wrap">
+  <div class="report-masthead">
+    <div class="masthead-inner">
+      <div class="school-line">Caribbean Examinations Council · CSEC Physics SBA</div>
+      <div class="report-brand">GOLD'N GENIUZ<span>VIRTUAL PHYSICS LAB</span></div>
+      <div class="report-exp-badge">
+        <span class="badge-num">EXP ${String(expId).padStart(2,'0')}</span>
+        <span class="badge-topic">${escHtml(exp.topic)}</span>
+      </div>
+    </div>
+    <div class="report-title-bar"><div class="report-exp-title">${escHtml(exp.title)}</div></div>
+    <div class="report-meta">
+      <div class="meta-field">DATE <span>${dateStr}</span></div>
+      <div class="meta-field">STUDENT <span>${escHtml(studentName)}</span></div>
+      <div class="meta-field">TEACHER <span>${escHtml(teacherName)}</span></div>
+      <div class="meta-field">CLASS <span>${escHtml(className)}</span></div>
+    </div>
+  </div>
+  <div class="report-body">
+    <div class="report-section">
+      <div class="section-heading"><span class="section-num">01</span><span class="section-title">Aim</span></div>
+      <div class="aim-text">${customAim}</div>
+    </div>
+    <div class="report-section">
+      <div class="section-heading"><span class="section-num">02</span><span class="section-title">Theory</span></div>
+      <div class="theory-content">${theoryText}</div>
+    </div>
+    <div class="report-section">
+      <div class="section-heading"><span class="section-num">03</span><span class="section-title">Apparatus</span></div>
+      <ul class="apparatus-list-rpt">${apparatusHTML}</ul>
+    </div>
+    <div class="report-section">
+      <div class="section-heading"><span class="section-num">04</span><span class="section-title">Method</span></div>
+      ${procedureHTML}
+    </div>
+    <div class="report-section">
+      <div class="section-heading"><span class="section-num">05</span><span class="section-title">Results</span></div>
+      ${customResults}
+    </div>
+    <div class="report-section">
+      <div class="section-heading"><span class="section-num">06</span><span class="section-title">Data Analysis & Discussion</span></div>
+      ${analysisHTML}
+    </div>
+    <div class="report-section">
+      <div class="section-heading"><span class="section-num">07</span><span class="section-title">Conclusion</span></div>
+      <div class="conclusion-box">
+        ${finalConclusion}
+      </div>
+    </div>
+    ${customReflection}
+  </div>
+  <div class="report-footer">
+    <span><span class="footer-brand">GOLD'N GENIUZ</span> · CSEC Physics Virtual Lab · Auto-Generated Report</span>
+    <span>Exp ${String(expId).padStart(2,'0')} of 19 · ${dateStr}</span>
+  </div>
+</div>
+<script>
+function saveReportHTML(){
+  const html='<!DOCTYPE html>'+document.documentElement.outerHTML;
+  const blob=new Blob([html],{type:'text/html'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='LabReport_Exp${String(expId).padStart(2,'0')}_${exp.title.replace(/[^a-z0-9]/gi,'_').substring(0,30)}.html';
+  a.click();URL.revokeObjectURL(a.href);
+}
+<\/script>
+</body>
+</html>`;
+
+  const win = window.open('', '_blank');
+  if (win) { win.document.write(reportHTML); win.document.close(); }
+  else alert('Pop-up blocked! Please allow pop-ups for this page, then try again.');
+}
+
+function escHtml(str){
+  if(str===null||str===undefined)return'';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+</script>
+</body>
+</html>
