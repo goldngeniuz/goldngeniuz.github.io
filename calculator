@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CSEC Physics — Calculation Bench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0e1620;
+    --panel:#131f2a;
+    --panel-raised:#182632;
+    --grid:#1e2f3d;
+    --hairline:#26394a;
+    --ink:#e7edf2;
+    --ink-dim:#8fa4b3;
+    --cyan:#54e0d0;
+    --cyan-dim:#2c6b64;
+    --amber:#f2a65a;
+    --amber-dim:#7a5730;
+    --red:#e26b6b;
+    --radius:3px;
+    --mono:'JetBrains Mono', monospace;
+    --disp:'Space Grotesk', sans-serif;
+    --body:'Inter', sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      var(--bg);
+    color:var(--ink);
+    font-family:var(--body);
+    min-height:100vh;
+  }
+  a{color:var(--cyan);}
+
+  header{
+    border-bottom:1px solid var(--hairline);
+    padding:28px clamp(16px,4vw,48px) 22px;
+    background:linear-gradient(180deg, rgba(14,22,32,.92), rgba(14,22,32,.55));
+    position:sticky; top:0; z-index:20; backdrop-filter:blur(6px);
+  }
+  .brand{ display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; }
+  .brand-mark{
+    font-family:var(--mono); font-size:12px; letter-spacing:.18em;
+    color:var(--amber); border:1px solid var(--amber-dim);
+    padding:3px 8px; border-radius:var(--radius);
+  }
+  h1{ font-family:var(--disp); font-weight:700; font-size:clamp(22px,3.4vw,32px); margin:0; letter-spacing:-0.01em; }
+  header p{ margin:8px 0 0; color:var(--ink-dim); font-size:14.5px; max-width:66ch; }
+
+  .layout{ display:grid; grid-template-columns:220px 1fr; gap:0; max-width:1220px; margin:0 auto; }
+  @media (max-width:860px){
+    .layout{grid-template-columns:1fr;}
+    nav.rail{position:static; border-right:none; border-bottom:1px solid var(--hairline);}
+  }
+
+  nav.rail{
+    border-right:1px solid var(--hairline);
+    padding:22px 10px;
+    position:sticky; top:98px; align-self:start;
+    max-height:calc(100vh - 98px);
+    overflow-y:auto;
+  }
+  nav.rail .grp-label{
+    font-family:var(--mono); font-size:10.5px; letter-spacing:.14em;
+    color:var(--ink-dim); text-transform:uppercase;
+    padding:14px 10px 6px;
+  }
+  nav.rail button{
+    display:block; width:100%; text-align:left;
+    background:none; border:none; color:var(--ink-dim);
+    font-family:var(--body); font-size:13.5px;
+    padding:7px 10px; border-radius:var(--radius);
+    cursor:pointer; border-left:2px solid transparent;
+  }
+  nav.rail button:hover{ color:var(--ink); background:var(--panel-raised); }
+  nav.rail button.active{
+    color:var(--cyan); border-left:2px solid var(--cyan);
+    background:var(--panel-raised); font-weight:600;
+  }
+
+  main{ padding:30px clamp(16px,4vw,40px) 80px; min-width:0; }
+  section.topic{ display:none; }
+  section.topic.active{ display:block; }
+
+  .topic-head{ margin-bottom:22px; }
+  .topic-head .eyebrow{ font-family:var(--mono); font-size:11px; letter-spacing:.16em; color:var(--cyan); text-transform:uppercase; }
+  .topic-head h2{ font-family:var(--disp); font-size:24px; margin:4px 0 6px; }
+  .topic-head p{ color:var(--ink-dim); font-size:14px; max-width:70ch; margin:0; }
+
+  .cards{ display:grid; grid-template-columns:1fr; gap:18px; }
+
+  .card{ background:var(--panel); border:1px solid var(--hairline); border-radius:6px; padding:20px 20px 18px; }
+  .card h3{ font-family:var(--disp); font-size:16.5px; margin:0 0 3px; display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .card h3 .formula{
+    font-family:var(--mono); font-size:12.5px; color:var(--amber);
+    background:rgba(242,166,90,.08); border:1px solid var(--amber-dim);
+    padding:2px 7px; border-radius:var(--radius);
+  }
+  .card .desc{ color:var(--ink-dim); font-size:13px; margin:2px 0 14px; }
+
+  .field-row{ display:flex; flex-wrap:wrap; gap:12px; margin-bottom:6px; align-items:flex-end; }
+  .field{ display:flex; flex-direction:column; gap:5px; flex:1 1 150px; min-width:130px; transition:opacity .15s; }
+  .field label{ font-size:12px; color:var(--ink-dim); font-family:var(--mono); }
+  .field .input-unit{ display:flex; align-items:stretch; }
+  .field input, .field select{
+    background:var(--bg); border:1px solid var(--hairline); color:var(--ink);
+    font-family:var(--mono); font-size:14px; padding:8px 10px;
+    border-radius:var(--radius) 0 0 var(--radius); width:100%; flex:1;
+  }
+  .field select{ border-radius:var(--radius); }
+  .field input:focus, .field select:focus{ outline:2px solid var(--cyan); outline-offset:-1px; }
+  .field .unit-tag{
+    font-family:var(--mono); font-size:12px; color:var(--ink-dim);
+    background:var(--panel-raised); border:1px solid var(--hairline); border-left:none;
+    padding:8px 9px; border-radius:0 var(--radius) var(--radius) 0; white-space:nowrap;
+  }
+  .field.is-target input{
+    opacity:.45; cursor:not-allowed;
+    background:repeating-linear-gradient(45deg, var(--bg), var(--bg) 4px, #12222d 4px, #12222d 8px);
+  }
+  .field.is-target label{ color:var(--cyan); }
+
+  .actions{ margin-top:14px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+  button.solve, button.solve-vars{
+    background:var(--cyan); color:#04211d; border:none; font-family:var(--body);
+    font-weight:600; font-size:13.5px; padding:9px 16px; border-radius:var(--radius);
+    cursor:pointer;
+  }
+  button.solve:hover, button.solve-vars:hover{ background:#7ce9dc; }
+  button.solve:focus-visible, button.solve-vars:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+  .error-msg{ color:var(--red); font-size:12.5px; font-family:var(--mono); }
+
+  .readout{
+    margin-top:14px; border:1px solid var(--cyan-dim); border-radius:var(--radius);
+    background:linear-gradient(180deg, rgba(84,224,208,.05), rgba(84,224,208,.02));
+    padding:14px 16px; display:none;
+  }
+  .readout.show{ display:block; }
+  .readout .step{
+    display:grid; grid-template-columns:96px 1fr; gap:10px;
+    font-family:var(--mono); font-size:13.5px; padding:5px 0;
+    border-bottom:1px dashed rgba(143,164,179,.18);
+  }
+  .readout .step:last-child{ border-bottom:none; }
+  .readout .step .k{ color:var(--ink-dim); font-size:11px; letter-spacing:.08em; text-transform:uppercase; padding-top:2px;}
+  .readout .step .v{ color:var(--ink); }
+  .readout .result{
+    margin-top:8px; padding-top:10px; border-top:1px solid var(--cyan-dim);
+    font-family:var(--mono); font-size:17px; color:var(--cyan); font-weight:600;
+  }
+
+  .moment-grid{ display:grid; grid-template-columns:1fr 1fr; gap:24px; margin-bottom:16px; padding-bottom:4px; }
+  @media (max-width:560px){ .moment-grid{ grid-template-columns:1fr; } }
+  .moment-col{ border:1px solid var(--hairline); border-radius:var(--radius); padding:12px 12px 12px; background:rgba(255,255,255,.012); }
+  .moment-col-head{ font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; color:var(--amber); margin-bottom:10px; text-transform:uppercase; }
+  .moment-row{ margin-bottom:8px; gap:8px; align-items:flex-end; }
+  .moment-row .field{ min-width:0; flex:1 1 0; margin-bottom:0; }
+  .moment-row .field label{ font-size:11px; }
+  .moment-row .mremove{
+    background:none; border:1px solid var(--hairline); color:var(--ink-dim);
+    border-radius:var(--radius); width:32px; height:34px; cursor:pointer; font-size:13px; flex:0 0 auto;
+  }
+  .moment-row .mremove:hover{ color:var(--red); border-color:var(--red); }
+  button.add-term-btn{
+    margin-top:4px; background:none; border:1px dashed var(--hairline); color:var(--ink-dim);
+    font-family:var(--mono); font-size:12px; padding:6px 10px; border-radius:var(--radius);
+    cursor:pointer; width:100%;
+  }
+  button.add-term-btn:hover{ color:var(--cyan); border-color:var(--cyan-dim); }
+
+  footer{
+    border-top:1px solid var(--hairline); padding:20px clamp(16px,4vw,48px);
+    color:var(--ink-dim); font-size:12.5px; font-family:var(--mono);
+    max-width:1220px; margin:0 auto;
+  }
+  ::selection{ background:var(--cyan-dim); color:#fff; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <span class="brand-mark">CSEC · PHYS</span>
+    <h1>Calculation Bench</h1>
+  </div>
+  <p>An instrument panel for every core CSEC Physics calculation. Every card can now solve for <em>any</em> variable in its formula — pick "Solve for" and fill in the rest. Every readout still shows the full Formula Method: state it, substitute, calculate, and unit.</p>
+</header>
+
+<div class="layout">
+  <nav class="rail" id="rail">
+    <div class="grp-label">Physical Measurements</div>
+    <button data-target="measurement" class="active">Density &amp; Volume</button>
+
+    <div class="grp-label">Mechanics</div>
+    <button data-target="kinematics">Motion (SUVAT)</button>
+    <button data-target="forces">Force · Weight · Momentum</button>
+    <button data-target="pressure-moments">Pressure &amp; Moments</button>
+    <button data-target="work-energy">Work · Energy · Power</button>
+
+    <div class="grp-label">Thermal Physics</div>
+    <button data-target="thermal">Heat &amp; Temperature</button>
+    <button data-target="gaslaws">Gas Laws</button>
+
+    <div class="grp-label">Waves &amp; Light</div>
+    <button data-target="waves">Wave Speed</button>
+    <button data-target="optics">Refraction &amp; Lenses</button>
+
+    <div class="grp-label">Electricity</div>
+    <button data-target="circuits">Ohm's Law &amp; Power</button>
+    <button data-target="resistance">Series / Parallel &amp; Charge</button>
+    <button data-target="transformers">Transformers</button>
+
+    <div class="grp-label">Atomic Physics</div>
+    <button data-target="atomic">Decay &amp; Mass–Energy</button>
+  </nav>
+
+  <main id="main"></main>
+</div>
+
+<footer>
+  METHOD MARKS: state formula → show substitution → calculate → unit. This bench follows that sequence on every readout.
+</footer>
+
+<script>
+/* ================= Helpers ================= */
+
+function V(id,label,unit,short){ return {id,label,unit,short: short||id}; }
+function withDefault(cfg, id, def){ const v=cfg.vars.find(x=>x.id===id); if(v) v.def=def; return cfg; }
+
+function rnd(x){
+  if(x===null||x===undefined||!isFinite(x)) return "—";
+  if(x===0) return 0;
+  const ax=Math.abs(x);
+  if(ax<1e-3 || ax>=1e6) return Number(x.toExponential(4));
+  return Number(x.toPrecision(6));
+}
+
+const SUBDIGITS = {'0':'₀','1':'₁','2':'₂','3':'₃','4':'₄','5':'₅','6':'₆','7':'₇','8':'₈','9':'₉'};
+function toSub(n){ return String(n).split('').map(d=>SUBDIGITS[d]||d).join(''); }
+
+/* ---- Formula factories: build {vars, defaultTarget, formula, solvers} ---- */
+
+// A = B x C
+function threeVarProduct(A,B,C, formula, defaultTarget){
+  return { vars:[A,B,C], defaultTarget, formula, solvers:{
+    [A.id]: v=>{ const val=v[B.id]*v[C.id]; return {steps:[
+        ["Formula", formula],
+        ["Substitute", `${A.short} = ${v[B.id]} × ${v[C.id]}`],
+        ["Calculate", `${A.short} = ${rnd(val)}`]
+      ], result:`${A.short} = ${rnd(val)} ${A.unit}`};},
+    [B.id]: v=>{ if(v[C.id]===0) throw `${C.short} cannot be zero.`; const val=v[A.id]/v[C.id]; return {steps:[
+        ["Formula", formula],
+        ["Rearrange", `${B.short} = ${A.short} / ${C.short}`],
+        ["Substitute", `${B.short} = ${v[A.id]} ÷ ${v[C.id]}`],
+        ["Calculate", `${B.short} = ${rnd(val)}`]
+      ], result:`${B.short} = ${rnd(val)} ${B.unit}`};},
+    [C.id]: v=>{ if(v[B.id]===0) throw `${B.short} cannot be zero.`; const val=v[A.id]/v[B.id]; return {steps:[
+        ["Formula", formula],
+        ["Rearrange", `${C.short} = ${A.short} / ${B.short}`],
+        ["Substitute", `${C.short} = ${v[A.id]} ÷ ${v[B.id]}`],
+        ["Calculate", `${C.short} = ${rnd(val)}`]
+      ], result:`${C.short} = ${rnd(val)} ${C.unit}`};},
+  }};
+}
+
+// A = B / C
+function ratioCard(A,B,C, formula, defaultTarget){
+  return { vars:[A,B,C], defaultTarget, formula, solvers:{
+    [A.id]: v=>{ if(v[C.id]===0) throw `${C.short} cannot be zero.`; const val=v[B.id]/v[C.id]; return {steps:[
+        ["Formula", formula],
+        ["Substitute", `${A.short} = ${v[B.id]} ÷ ${v[C.id]}`],
+        ["Calculate", `${A.short} = ${rnd(val)}`]
+      ], result:`${A.short} = ${rnd(val)} ${A.unit}`};},
+    [B.id]: v=>{ const val=v[A.id]*v[C.id]; return {steps:[
+        ["Formula", formula],
+        ["Rearrange", `${B.short} = ${A.short} × ${C.short}`],
+        ["Substitute", `${B.short} = ${v[A.id]} × ${v[C.id]}`],
+        ["Calculate", `${B.short} = ${rnd(val)}`]
+      ], result:`${B.short} = ${rnd(val)} ${B.unit}`};},
+    [C.id]: v=>{ if(v[A.id]===0) throw `${A.short} cannot be zero.`; const val=v[B.id]/v[A.id]; return {steps:[
+        ["Formula", formula],
+        ["Rearrange", `${C.short} = ${B.short} / ${A.short}`],
+        ["Substitute", `${C.short} = ${v[B.id]} ÷ ${v[A.id]}`],
+        ["Calculate", `${C.short} = ${rnd(val)}`]
+      ], result:`${C.short} = ${rnd(val)} ${C.unit}`};},
+  }};
+}
+
+// A = B x C x D
+function fourVarProduct(A,B,C,D, formula, defaultTarget){
+  return { vars:[A,B,C,D], defaultTarget, formula, solvers:{
+    [A.id]: v=>{ const val=v[B.id]*v[C.id]*v[D.id]; return {steps:[
+        ["Formula", formula],
+        ["Substitute", `${A.short} = ${v[B.id]} × ${v[C.id]} × ${v[D.id]}`],
+        ["Calculate", `${A.short} = ${rnd(val)}`]
+      ], result:`${A.short} = ${rnd(val)} ${A.unit}`};},
+    [B.id]: v=>{ const denom=v[C.id]*v[D.id]; if(denom===0) throw `${C.short} and ${D.short} cannot multiply to zero.`; const val=v[A.id]/denom; return {steps:[
+        ["Formula", formula],
+        ["Rearrange", `${B.short} = ${A.short} / (${C.short} × ${D.short})`],
+        ["Substitute", `${B.short} = ${v[A.id]} ÷ (${v[C.id]} × ${v[D.id]})`],
+        ["Calculate", `${B.short} = ${rnd(val)}`]
+      ], result:`${B.short} = ${rnd(val)} ${B.unit}`};},
+    [C.id]: v=>{ const denom=v[B.id]*v[D.id]; if(denom===0) throw `${B.short} and ${D.short} cannot multiply to zero.`; const val=v[A.id]/denom; return {steps:[
+        ["Formula", formula],
+        ["Rearrange", `${C.short} = ${A.short} / (${B.short} × ${D.short})`],
+        ["Substitute", `${C.short} = ${v[A.id]} ÷ (${v[B.id]} × ${v[D.id]})`],
+        ["Calculate", `${C.short} = ${rnd(val)}`]
+      ], result:`${C.short} = ${rnd(val)} ${C.unit}`};},
+    [D.id]: v=>{ const denom=v[B.id]*v[C.id]; if(denom===0) throw `${B.short} and ${C.short} cannot multiply to zero.`; const val=v[A.id]/denom; return {steps:[
+        ["Formula", formula],
+        ["Rearrange", `${D.short} = ${A.short} / (${B.short} × ${C.short})`],
+        ["Substitute", `${D.short} = ${v[A.id]} ÷ (${v[B.id]} × ${v[C.id]})`],
+        ["Calculate", `${D.short} = ${rnd(val)}`]
+      ], result:`${D.short} = ${rnd(val)} ${D.unit}`};},
+  }};
+}
+
+function card(id,title,desc,cfg){
+  return { id, title, desc, formula:cfg.formula, vars:cfg.vars, defaultTarget:cfg.defaultTarget, solvers:cfg.solvers };
+}
+
+/* ================= Topic / Card data ================= */
+
+const topics = {
+
+  measurement: {
+    eyebrow: "Physical Measurements",
+    title: "Density &amp; Volume",
+    desc: "Density links mass and volume. Work in base SI units (kg, m³) — use the converter below for cm³, g, etc.",
+    cards: [
+      card("density","Density","Solve for density, mass, or volume.",
+        ratioCard(V("rho","ρ — Density","kg/m³","ρ"), V("m","m — Mass","kg","m"), V("V","V — Volume","m³","V"), "ρ = m / V", "rho")),
+      { id:"unitconv", legacy:true, title:"Quick Unit Converter", formula:"prefix ↔ SI",
+        desc:"Convert a value between a metric prefix and its base SI unit (e.g. cm → m, g → kg).",
+        inputs:[{id:"x", label:"Value"}, {id:"pfx", label:"From prefix", type:"select", opts:["centi (×10⁻²)","milli (×10⁻³)","kilo (×10³)","none (base unit)"]}],
+        solve(vals){
+          const x = vals.x_val;
+          const map = {"centi (×10⁻²)":1e-2, "milli (×10⁻³)":1e-3, "kilo (×10³)":1e3, "none (base unit)":1};
+          const factor = map[vals.pfx_val];
+          const out = x*factor;
+          return { steps:[["Rule","value × prefix factor = value in base SI unit"], ["Substitute", `${x} × ${factor}`], ["Calculate", `${x} × ${factor} = ${out}`]], result:`= ${out} (base SI units)` };
+        }
+      }
+    ]
+  },
+
+  kinematics: {
+    eyebrow: "Mechanics", title: "Motion — Equations of SUVAT",
+    desc: "u = initial velocity, v = final velocity, a = acceleration, t = time, s = displacement. Solve for any one.",
+    cards: [
+      card("vuat","Final velocity","v = u + at — solve for v, u, a, or t.", {
+        vars:[V("v","v — Final velocity","m/s"), V("u","u — Initial velocity","m/s"), V("a","a — Acceleration","m/s²"), V("t","t — Time","s")],
+        defaultTarget:"v", formula:"v = u + at",
+        solvers:{
+          v: x=>{ const val=x.u+x.a*x.t; return {steps:[["Formula","v = u + at"],["Substitute",`v = ${x.u} + (${x.a} × ${x.t})`],["Calculate",`v = ${rnd(val)}`]], result:`v = ${rnd(val)} m/s`}; },
+          u: x=>{ const val=x.v-x.a*x.t; return {steps:[["Formula","v = u + at"],["Rearrange","u = v − at"],["Substitute",`u = ${x.v} − (${x.a} × ${x.t})`],["Calculate",`u = ${rnd(val)}`]], result:`u = ${rnd(val)} m/s`}; },
+          a: x=>{ if(x.t===0) throw "Time cannot be zero."; const val=(x.v-x.u)/x.t; return {steps:[["Formula","v = u + at"],["Rearrange","a = (v − u) / t"],["Substitute",`a = (${x.v} − ${x.u}) ÷ ${x.t}`],["Calculate",`a = ${rnd(val)}`]], result:`a = ${rnd(val)} m/s²`}; },
+          t: x=>{ if(x.a===0) throw "a cannot be zero — use s = ut instead."; const val=(x.v-x.u)/x.a; return {steps:[["Formula","v = u + at"],["Rearrange","t = (v − u) / a"],["Substitute",`t = (${x.v} − ${x.u}) ÷ ${x.a}`],["Calculate",`t = ${rnd(val)}`]], result:`t = ${rnd(val)} s`}; },
+        }
+      }),
+      card("suvat2","Displacement","s = ut + ½at² — solve for s, u, a, or t (t uses the quadratic formula).", {
+        vars:[V("s","s — Displacement","m"), V("u","u — Initial velocity","m/s"), V("t","t — Time","s"), V("a","a — Acceleration","m/s²")],
+        defaultTarget:"s", formula:"s = ut + ½at²",
+        solvers:{
+          s: x=>{ const val=x.u*x.t+0.5*x.a*x.t*x.t; return {steps:[["Formula","s = ut + ½at²"],["Substitute",`s = (${x.u} × ${x.t}) + (½ × ${x.a} × ${x.t}²)`],["Calculate",`s = ${rnd(val)}`]], result:`s = ${rnd(val)} m`}; },
+          u: x=>{ if(x.t===0) throw "Time cannot be zero."; const val=(x.s-0.5*x.a*x.t*x.t)/x.t; return {steps:[["Formula","s = ut + ½at²"],["Rearrange","u = (s − ½at²) / t"],["Substitute",`u = (${x.s} − ${rnd(0.5*x.a*x.t*x.t)}) ÷ ${x.t}`],["Calculate",`u = ${rnd(val)}`]], result:`u = ${rnd(val)} m/s`}; },
+          a: x=>{ if(x.t===0) throw "Time cannot be zero."; const val=2*(x.s-x.u*x.t)/(x.t*x.t); return {steps:[["Formula","s = ut + ½at²"],["Rearrange","a = 2(s − ut) / t²"],["Substitute",`a = 2 × (${x.s} − ${x.u}×${x.t}) ÷ ${x.t}²`],["Calculate",`a = ${rnd(val)}`]], result:`a = ${rnd(val)} m/s²`}; },
+          t: x=>{
+            let roots=[];
+            if(x.a===0){
+              if(x.u===0) throw "Cannot solve — a and u are both zero.";
+              roots=[x.s/x.u];
+            } else {
+              const disc = x.u*x.u + 2*x.a*x.s;
+              if(disc<0) throw "No real solution — discriminant is negative for these values.";
+              const sq=Math.sqrt(disc);
+              roots=[(-x.u+sq)/x.a, (-x.u-sq)/x.a];
+            }
+            const valid = roots.filter(r=>r>=-1e-9).map(r=>Math.max(r,0));
+            if(valid.length===0) throw "No physically valid (non-negative) time found.";
+            const val = Math.min(...valid);
+            const note = valid.length>1 && Math.abs(valid[0]-valid[1])>1e-9 ? "  (other mathematical root discarded as negative/irrelevant)" : "";
+            return {steps:[["Formula","s = ut + ½at²"],["Rearrange","½at² + ut − s = 0  (quadratic in t)"],["Solve","t = [−u ± √(u² + 2as)] / a"],["Calculate",`t = ${rnd(val)}`]], result:`t = ${rnd(val)} s${note}`};
+          },
+        }
+      }),
+      card("suvat3","Velocity–displacement","v² = u² + 2as — solve for v, u, a, or s.", {
+        vars:[V("v","v — Final velocity","m/s"), V("u","u — Initial velocity","m/s"), V("a","a — Acceleration","m/s²"), V("s","s — Displacement","m")],
+        defaultTarget:"v", formula:"v² = u² + 2as",
+        solvers:{
+          v: x=>{ const val2=x.u*x.u+2*x.a*x.s; if(val2<0) throw "u² + 2as is negative — no real solution."; const val=Math.sqrt(val2); return {steps:[["Formula","v² = u² + 2as"],["Substitute",`v² = ${x.u}² + (2 × ${x.a} × ${x.s})`],["Calculate",`v² = ${rnd(val2)}  →  v = ${rnd(val)}`]], result:`v = ${rnd(val)} m/s`}; },
+          u: x=>{ const val2=x.v*x.v-2*x.a*x.s; if(val2<0) throw "v² − 2as is negative — no real solution."; const val=Math.sqrt(val2); return {steps:[["Formula","v² = u² + 2as"],["Rearrange","u² = v² − 2as"],["Substitute",`u² = ${x.v}² − (2 × ${x.a} × ${x.s})`],["Calculate",`u² = ${rnd(val2)}  →  u = ${rnd(val)}`]], result:`u = ${rnd(val)} m/s`}; },
+          a: x=>{ if(x.s===0) throw "Displacement cannot be zero."; const val=(x.v*x.v-x.u*x.u)/(2*x.s); return {steps:[["Formula","v² = u² + 2as"],["Rearrange","a = (v² − u²) / 2s"],["Substitute",`a = (${x.v}² − ${x.u}²) ÷ (2 × ${x.s})`],["Calculate",`a = ${rnd(val)}`]], result:`a = ${rnd(val)} m/s²`}; },
+          s: x=>{ if(x.a===0) throw "Acceleration cannot be zero."; const val=(x.v*x.v-x.u*x.u)/(2*x.a); return {steps:[["Formula","v² = u² + 2as"],["Rearrange","s = (v² − u²) / 2a"],["Substitute",`s = (${x.v}² − ${x.u}²) ÷ (2 × ${x.a})`],["Calculate",`s = ${rnd(val)}`]], result:`s = ${rnd(val)} m`}; },
+        }
+      }),
+    ]
+  },
+
+  forces: {
+    eyebrow:"Mechanics", title:"Force · Weight · Momentum",
+    desc:"Newton's second law and its close relatives. Solve for any variable.",
+    cards:[
+      card("force","Force","Solve for F, m, or a.",
+        threeVarProduct(V("F","F — Force","N"), V("m","m — Mass","kg"), V("a","a — Acceleration","m/s²"), "F = ma", "F")),
+      card("weight","Weight","Solve for W, m, or g (g defaults to 9.81 m/s²).",
+        withDefault(threeVarProduct(V("W","W — Weight","N"), V("m","m — Mass","kg"), V("g","g — Grav. field strength","m/s²"), "W = mg", "W"), "g", "9.81")),
+      card("momentum","Momentum","Solve for p, m, or v.",
+        threeVarProduct(V("p","p — Momentum","kg·m/s"), V("m","m — Mass","kg"), V("v","v — Velocity","m/s"), "p = mv", "p")),
+    ]
+  },
+
+  "pressure-moments": {
+    eyebrow:"Mechanics", title:"Pressure &amp; Moments",
+    desc:"Pressure spreads a force over an area; a moment is a force's turning effect about a pivot.",
+    cards:[
+      card("pressure","Pressure","Solve for P, F, or A.",
+        ratioCard(V("P","P — Pressure","Pa"), V("F","F — Force","N"), V("A","A — Area","m²"), "P = F / A", "P")),
+      card("moment","Moment of a force","Solve for M, F, or d.",
+        threeVarProduct(V("M","M — Moment","N·m"), V("F","F — Force","N"), V("d","d — Perpendicular distance","m"), "M = Fd", "M")),
+      card("hydrostatic","Hydrostatic Pressure","Pressure exerted by a fluid column — solve for P, h, ρ, or g.",
+        withDefault(fourVarProduct(V("P","P — Pressure","Pa"), V("h","h — Depth","m"), V("rho","ρ — Fluid density","kg/m³","ρ"), V("g","g — Grav. field strength","m/s²"), "P = hρg", "P"), "g", "9.81")),
+      { id:"principle", custom:"principle",
+        title:"Principle of Moments", formula:"ΣM(ACW) = ΣM(CW)",
+        desc:"A system in equilibrium has total anticlockwise moments equal to total clockwise moments. Add or remove force–distance terms on either side — the two sides don't need the same number of terms. Choose which value to find, then Calculate."
+      }
+    ]
+  },
+
+  "work-energy": {
+    eyebrow:"Mechanics", title:"Work · Energy · Power",
+    desc:"Work transfers energy; kinetic and potential energy describe motion and position; power is the rate of doing work.",
+    cards:[
+      card("work","Work done","Solve for W, F, or s.",
+        threeVarProduct(V("W","W — Work done","J"), V("F","F — Force","N"), V("s","s — Displacement","m"), "W = Fs", "W")),
+      card("ke","Kinetic energy","Eₖ = ½mv² — solve for Eₖ, m, or v.", {
+        vars:[V("Ek","Eₖ — Kinetic energy","J"), V("m","m — Mass","kg"), V("v","v — Velocity","m/s")],
+        defaultTarget:"Ek", formula:"Eₖ = ½mv²",
+        solvers:{
+          Ek: x=>{ const val=0.5*x.m*x.v*x.v; return {steps:[["Formula","Eₖ = ½mv²"],["Substitute",`Eₖ = ½ × ${x.m} × ${x.v}²`],["Calculate",`Eₖ = ${rnd(val)}`]], result:`Eₖ = ${rnd(val)} J`}; },
+          m: x=>{ if(x.v===0) throw "Velocity cannot be zero."; const val=2*x.Ek/(x.v*x.v); return {steps:[["Formula","Eₖ = ½mv²"],["Rearrange","m = 2Eₖ / v²"],["Substitute",`m = (2 × ${x.Ek}) ÷ ${x.v}²`],["Calculate",`m = ${rnd(val)}`]], result:`m = ${rnd(val)} kg`}; },
+          v: x=>{ if(x.m===0) throw "Mass cannot be zero."; const val2=2*x.Ek/x.m; if(val2<0) throw "2Eₖ/m is negative — check your values."; const val=Math.sqrt(val2); return {steps:[["Formula","Eₖ = ½mv²"],["Rearrange","v = √(2Eₖ / m)"],["Substitute",`v = √((2 × ${x.Ek}) ÷ ${x.m})`],["Calculate",`v = ${rnd(val)}`]], result:`v = ${rnd(val)} m/s`}; },
+        }
+      }),
+      card("pe","Gravitational potential energy","Solve for Eₚ, m, g, or h (g defaults to 9.81 m/s²).",
+        withDefault(fourVarProduct(V("Ep","Eₚ — Potential energy","J"), V("m","m — Mass","kg"), V("g","g — Grav. field strength","m/s²"), V("h","h — Height","m"), "Eₚ = mgh", "Ep"), "g", "9.81")),
+      card("power","Power","Solve for P, W, or t.",
+        ratioCard(V("P","P — Power","W"), V("W","W — Work/Energy","J"), V("t","t — Time","s"), "P = W / t", "P")),
+    ]
+  },
+
+  thermal: {
+    eyebrow:"Thermal Physics", title:"Heat &amp; Temperature",
+    desc:"Convert between Celsius and Kelvin, then work with specific heat capacity and specific latent heat.",
+    cards:[
+      card("temp","Temperature conversion","K = θ + 273 — solve for either.", {
+        vars:[V("K","T — Kelvin","K"), V("C","θ — Celsius","°C")],
+        defaultTarget:"K", formula:"K = θ + 273",
+        solvers:{
+          K: x=>{ const val=x.C+273; return {steps:[["Formula","K = θ + 273"],["Substitute",`K = ${x.C} + 273`],["Calculate",`K = ${rnd(val)}`]], result:`K = ${rnd(val)} K`}; },
+          C: x=>{ const val=x.K-273; return {steps:[["Formula","θ = K − 273"],["Substitute",`θ = ${x.K} − 273`],["Calculate",`θ = ${rnd(val)}`]], result:`θ = ${rnd(val)} °C`}; },
+        }
+      }),
+      card("shc","Specific heat capacity","Solve for Q, m, c, or Δθ.",
+        fourVarProduct(V("Q","Q — Heat energy","J"), V("m","m — Mass","kg"), V("c","c — Specific heat capacity","J/(kg·K)"), V("dt","Δθ — Temperature change","K or °C","Δθ"), "Q = mcΔθ", "Q")),
+      card("slh","Specific latent heat","Solve for Q, m, or L.",
+        threeVarProduct(V("Q","Q — Heat energy","J"), V("m","m — Mass","kg"), V("L","L — Specific latent heat","J/kg"), "Q = mL", "Q")),
+    ]
+  },
+
+  gaslaws: {
+    eyebrow:"Thermal Physics", title:"Gas Laws",
+    desc:"Combined gas law — temperatures must be in Kelvin. Solve for any of the six quantities.",
+    cards:[
+      card("combined","Combined gas law","P₁V₁/T₁ = P₂V₂/T₂ — solve for any one value.", {
+        vars:[V("P1","P₁","pressure unit"), V("V1","V₁","volume unit"), V("T1","T₁","K"), V("P2","P₂","same unit as P₁"), V("V2","V₂","same unit as V₁"), V("T2","T₂","K")],
+        defaultTarget:"P2", formula:"P₁V₁/T₁ = P₂V₂/T₂",
+        solvers:{
+          P1: x=>{ if(x.V1===0||x.T2===0) throw "V₁ and T₂ cannot be zero."; const val=(x.P2*x.V2*x.T1)/(x.V1*x.T2); return {steps:[["Formula","P₁V₁/T₁ = P₂V₂/T₂"],["Rearrange","P₁ = P₂V₂T₁ / (V₁T₂)"],["Substitute",`P₁ = (${x.P2}×${x.V2}×${x.T1}) ÷ (${x.V1}×${x.T2})`],["Calculate",`P₁ = ${rnd(val)}`]], result:`P₁ = ${rnd(val)}`}; },
+          V1: x=>{ if(x.P1===0||x.T2===0) throw "P₁ and T₂ cannot be zero."; const val=(x.P2*x.V2*x.T1)/(x.P1*x.T2); return {steps:[["Formula","P₁V₁/T₁ = P₂V₂/T₂"],["Rearrange","V₁ = P₂V₂T₁ / (P₁T₂)"],["Substitute",`V₁ = (${x.P2}×${x.V2}×${x.T1}) ÷ (${x.P1}×${x.T2})`],["Calculate",`V₁ = ${rnd(val)}`]], result:`V₁ = ${rnd(val)}`}; },
+          T1: x=>{ if(x.P2===0||x.V2===0) throw "P₂ and V₂ cannot be zero."; const val=(x.P1*x.V1*x.T2)/(x.P2*x.V2); return {steps:[["Formula","P₁V₁/T₁ = P₂V₂/T₂"],["Rearrange","T₁ = P₁V₁T₂ / (P₂V₂)"],["Substitute",`T₁ = (${x.P1}×${x.V1}×${x.T2}) ÷ (${x.P2}×${x.V2})`],["Calculate",`T₁ = ${rnd(val)}`]], result:`T₁ = ${rnd(val)} K`}; },
+          P2: x=>{ if(x.T1===0||x.V2===0) throw "T₁ and V₂ cannot be zero."; const val=(x.P1*x.V1*x.T2)/(x.T1*x.V2); return {steps:[["Formula","P₁V₁/T₁ = P₂V₂/T₂"],["Rearrange","P₂ = P₁V₁T₂ / (T₁V₂)"],["Substitute",`P₂ = (${x.P1}×${x.V1}×${x.T2}) ÷ (${x.T1}×${x.V2})`],["Calculate",`P₂ = ${rnd(val)}`]], result:`P₂ = ${rnd(val)}`}; },
+          V2: x=>{ if(x.T1===0||x.P2===0) throw "T₁ and P₂ cannot be zero."; const val=(x.P1*x.V1*x.T2)/(x.T1*x.P2); return {steps:[["Formula","P₁V₁/T₁ = P₂V₂/T₂"],["Rearrange","V₂ = P₁V₁T₂ / (T₁P₂)"],["Substitute",`V₂ = (${x.P1}×${x.V1}×${x.T2}) ÷ (${x.T1}×${x.P2})`],["Calculate",`V₂ = ${rnd(val)}`]], result:`V₂ = ${rnd(val)}`}; },
+          T2: x=>{ if(x.P1===0||x.V1===0) throw "P₁ and V₁ cannot be zero."; const val=(x.P2*x.V2*x.T1)/(x.P1*x.V1); return {steps:[["Formula","P₁V₁/T₁ = P₂V₂/T₂"],["Rearrange","T₂ = P₂V₂T₁ / (P₁V₁)"],["Substitute",`T₂ = (${x.P2}×${x.V2}×${x.T1}) ÷ (${x.P1}×${x.V1})`],["Calculate",`T₂ = ${rnd(val)}`]], result:`T₂ = ${rnd(val)} K`}; },
+        }
+      }),
+    ]
+  },
+
+  waves: {
+    eyebrow:"Waves &amp; Light", title:"Wave Speed",
+    desc:"The universal wave equation. Solve for v, f, or λ.",
+    cards:[
+      card("wavespeed","Wave speed","Solve for v, f, or λ.",
+        threeVarProduct(V("v","v — Wave speed","m/s"), V("f","f — Frequency","Hz"), V("lam","λ — Wavelength","m","λ"), "v = fλ", "v")),
+    ]
+  },
+
+  optics: {
+    eyebrow:"Waves &amp; Light", title:"Refraction &amp; Lenses",
+    desc:"Snell's Law, refractive index from real/apparent depth, and the thin lens formula.",
+    cards:[
+      card("snell","Snell's Law","n = sin i / sin r — solve for n, i, or r (angles in degrees).", {
+        vars:[V("n","n — Refractive index",""), V("i","i — Angle of incidence","°"), V("r","r — Angle of refraction","°")],
+        defaultTarget:"n", formula:"n = sin i / sin r",
+        solvers:{
+          n: x=>{ const sr=Math.sin(x.r*Math.PI/180); if(sr===0) throw "Angle of refraction cannot be 0°."; const si=Math.sin(x.i*Math.PI/180); const val=si/sr; return {steps:[["Formula","n = sin i / sin r"],["Substitute",`n = sin(${x.i}°) / sin(${x.r}°)`],["Calculate",`n = ${rnd(si)} / ${rnd(sr)} = ${rnd(val)}`]], result:`n = ${rnd(val)} (no unit)`}; },
+          i: x=>{ const s=x.n*Math.sin(x.r*Math.PI/180); if(s<-1||s>1) throw "No valid angle — n × sin r is outside [-1,1]."; const val=Math.asin(s)*180/Math.PI; return {steps:[["Formula","n = sin i / sin r"],["Rearrange","i = sin⁻¹(n × sin r)"],["Substitute",`i = sin⁻¹(${x.n} × sin(${x.r}°))`],["Calculate",`i = ${rnd(val)}`]], result:`i = ${rnd(val)} °`}; },
+          r: x=>{ if(x.n===0) throw "n cannot be zero."; const s=Math.sin(x.i*Math.PI/180)/x.n; if(s<-1||s>1) throw "No valid angle — sin i / n is outside [-1,1]."; const val=Math.asin(s)*180/Math.PI; return {steps:[["Formula","n = sin i / sin r"],["Rearrange","r = sin⁻¹(sin i / n)"],["Substitute",`r = sin⁻¹(sin(${x.i}°) ÷ ${x.n})`],["Calculate",`r = ${rnd(val)}`]], result:`r = ${rnd(val)} °`}; },
+        }
+      }),
+      card("depth","Refractive index (depth)","Solve for n, real depth, or apparent depth.",
+        ratioCard(V("n","n — Refractive index",""), V("real","Real depth","m or cm"), V("app","Apparent depth","same unit"), "n = real depth / apparent depth", "n")),
+      card("lens","Thin lens formula","1/f = 1/u + 1/v — solve for f, u, or v.", {
+        vars:[V("f","f — Focal length","m or cm"), V("u","u — Object distance","same unit"), V("v","v — Image distance","same unit")],
+        defaultTarget:"v", formula:"1/f = 1/u + 1/v",
+        solvers:{
+          f: x=>{ if(x.u===0||x.v===0) throw "u and v cannot be zero."; const inv=1/x.u+1/x.v; if(inv===0) throw "1/u + 1/v is zero — cannot solve."; const val=1/inv; return {steps:[["Formula","1/f = 1/u + 1/v"],["Substitute",`1/f = 1/${x.u} + 1/${x.v}`],["Calculate",`1/f = ${rnd(inv)}  →  f = ${rnd(val)}`]], result:`f = ${rnd(val)}`}; },
+          u: x=>{ if(x.f===0||x.v===0) throw "f and v cannot be zero."; const inv=1/x.f-1/x.v; if(inv===0) throw "1/f − 1/v is zero — cannot solve."; const val=1/inv; return {steps:[["Formula","1/f = 1/u + 1/v"],["Rearrange","1/u = 1/f − 1/v"],["Substitute",`1/u = 1/${x.f} − 1/${x.v}`],["Calculate",`1/u = ${rnd(inv)}  →  u = ${rnd(val)}`]], result:`u = ${rnd(val)}`}; },
+          v: x=>{ if(x.f===0||x.u===0) throw "f and u cannot be zero."; const inv=1/x.f-1/x.u; if(inv===0) throw "1/f − 1/u is zero — cannot solve."; const val=1/inv; return {steps:[["Formula","1/f = 1/u + 1/v"],["Rearrange","1/v = 1/f − 1/u"],["Substitute",`1/v = 1/${x.f} − 1/${x.u}`],["Calculate",`1/v = ${rnd(inv)}  →  v = ${rnd(val)}`]], result:`v = ${rnd(val)}`}; },
+        }
+      }),
+    ]
+  },
+
+  circuits: {
+    eyebrow:"Electricity", title:"Ohm's Law &amp; Power",
+    desc:"The core relationships between voltage, current, resistance and electrical power.",
+    cards:[
+      card("ohm","Ohm's Law","Solve for V, I, or R.",
+        threeVarProduct(V("V","V — Voltage","V"), V("I","I — Current","A"), V("R","R — Resistance","Ω"), "V = IR", "V")),
+      card("power-elec","Electrical power","Solve for P, I, or V.",
+        threeVarProduct(V("P","P — Power","W"), V("I","I — Current","A"), V("Vv","V — Voltage","V","V"), "P = IV", "P")),
+    ]
+  },
+
+  resistance: {
+    eyebrow:"Electricity", title:"Series / Parallel Resistance &amp; Charge",
+    desc:"Combine up to three resistors, and relate charge to current and time.",
+    cards:[
+      card("series","Series resistance","Rₜ = R₁ + R₂ + R₃ — solve for any one (leave unused R at 0).", {
+        vars:[V("Rt","Rₜ — Total resistance","Ω"), V("R1","R₁","Ω"), V("R2","R₂","Ω"), V("R3","R₃ (0 if unused)","Ω")],
+        defaultTarget:"Rt", formula:"Rₜ = R₁ + R₂ + R₃",
+        solvers:{
+          Rt: x=>{ const val=x.R1+x.R2+x.R3; return {steps:[["Formula","Rₜ = R₁ + R₂ + R₃"],["Substitute",`Rₜ = ${x.R1} + ${x.R2} + ${x.R3}`],["Calculate",`Rₜ = ${rnd(val)}`]], result:`Rₜ = ${rnd(val)} Ω`}; },
+          R1: x=>{ const val=x.Rt-x.R2-x.R3; return {steps:[["Formula","Rₜ = R₁ + R₂ + R₃"],["Rearrange","R₁ = Rₜ − R₂ − R₃"],["Substitute",`R₁ = ${x.Rt} − ${x.R2} − ${x.R3}`],["Calculate",`R₁ = ${rnd(val)}`]], result:`R₁ = ${rnd(val)} Ω`}; },
+          R2: x=>{ const val=x.Rt-x.R1-x.R3; return {steps:[["Formula","Rₜ = R₁ + R₂ + R₃"],["Rearrange","R₂ = Rₜ − R₁ − R₃"],["Substitute",`R₂ = ${x.Rt} − ${x.R1} − ${x.R3}`],["Calculate",`R₂ = ${rnd(val)}`]], result:`R₂ = ${rnd(val)} Ω`}; },
+          R3: x=>{ const val=x.Rt-x.R1-x.R2; return {steps:[["Formula","Rₜ = R₁ + R₂ + R₃"],["Rearrange","R₃ = Rₜ − R₁ − R₂"],["Substitute",`R₃ = ${x.Rt} − ${x.R1} − ${x.R2}`],["Calculate",`R₃ = ${rnd(val)}`]], result:`R₃ = ${rnd(val)} Ω`}; },
+        }
+      }),
+      card("parallel","Parallel resistance","1/Rₜ = 1/R₁ + 1/R₂ + 1/R₃ — solve for any one (leave unused R at 0).", {
+        vars:[V("Rt","Rₜ — Total resistance","Ω"), V("R1","R₁","Ω"), V("R2","R₂","Ω"), V("R3","R₃ (0 if unused)","Ω")],
+        defaultTarget:"Rt", formula:"1/Rₜ = 1/R₁ + 1/R₂ + 1/R₃",
+        solvers:{
+          Rt: x=>{ if(x.R1===0||x.R2===0) throw "R₁ and R₂ must be greater than zero."; const inv=1/x.R1+1/x.R2+(x.R3!==0?1/x.R3:0); if(inv===0) throw "Sum of reciprocals is zero."; const val=1/inv; return {steps:[["Formula","1/Rₜ = 1/R₁ + 1/R₂ + 1/R₃"],["Substitute",`1/Rₜ = 1/${x.R1} + 1/${x.R2}${x.R3!==0?` + 1/${x.R3}`:""}`],["Calculate",`1/Rₜ = ${rnd(inv)}  →  Rₜ = ${rnd(val)}`]], result:`Rₜ = ${rnd(val)} Ω`}; },
+          R1: x=>{ if(x.Rt===0) throw "Rₜ cannot be zero."; const inv=1/x.Rt-1/x.R2-(x.R3!==0?1/x.R3:0); if(inv<=0) throw "Result is not physical — check R₂, R₃ and Rₜ."; const val=1/inv; return {steps:[["Formula","1/Rₜ = 1/R₁ + 1/R₂ + 1/R₃"],["Rearrange","1/R₁ = 1/Rₜ − 1/R₂ − 1/R₃"],["Substitute",`1/R₁ = 1/${x.Rt} − 1/${x.R2}${x.R3!==0?` − 1/${x.R3}`:""}`],["Calculate",`1/R₁ = ${rnd(inv)}  →  R₁ = ${rnd(val)}`]], result:`R₁ = ${rnd(val)} Ω`}; },
+          R2: x=>{ if(x.Rt===0) throw "Rₜ cannot be zero."; const inv=1/x.Rt-1/x.R1-(x.R3!==0?1/x.R3:0); if(inv<=0) throw "Result is not physical — check R₁, R₃ and Rₜ."; const val=1/inv; return {steps:[["Formula","1/Rₜ = 1/R₁ + 1/R₂ + 1/R₃"],["Rearrange","1/R₂ = 1/Rₜ − 1/R₁ − 1/R₃"],["Substitute",`1/R₂ = 1/${x.Rt} − 1/${x.R1}${x.R3!==0?` − 1/${x.R3}`:""}`],["Calculate",`1/R₂ = ${rnd(inv)}  →  R₂ = ${rnd(val)}`]], result:`R₂ = ${rnd(val)} Ω`}; },
+          R3: x=>{ if(x.Rt===0) throw "Rₜ cannot be zero."; const inv=1/x.Rt-1/x.R1-1/x.R2; if(inv<=0) throw "Result is not physical — check R₁, R₂ and Rₜ."; const val=1/inv; return {steps:[["Formula","1/Rₜ = 1/R₁ + 1/R₂ + 1/R₃"],["Rearrange","1/R₃ = 1/Rₜ − 1/R₁ − 1/R₂"],["Substitute",`1/R₃ = 1/${x.Rt} − 1/${x.R1} − 1/${x.R2}`],["Calculate",`1/R₃ = ${rnd(inv)}  →  R₃ = ${rnd(val)}`]], result:`R₃ = ${rnd(val)} Ω`}; },
+        }
+      }),
+      card("charge","Charge flow","Solve for Q, I, or t.",
+        threeVarProduct(V("Q","Q — Charge","C"), V("I","I — Current","A"), V("t","t — Time","s"), "Q = It", "Q")),
+    ]
+  },
+
+  transformers: {
+    eyebrow:"Electricity", title:"Transformers",
+    desc:"Relates the voltage and turns ratio between primary and secondary coils. Solve for any of the four values.",
+    cards:[
+      card("transformer","Turns ratio","Vₛ/Vₚ = Nₛ/Nₚ — solve for Vₚ, Vₛ, Nₚ, or Nₛ.", {
+        vars:[V("Vp","Vₚ — Primary voltage","V"), V("Vs","Vₛ — Secondary voltage","V"), V("Np","Nₚ — Primary turns",""), V("Ns","Nₛ — Secondary turns","")],
+        defaultTarget:"Vs", formula:"Vₛ/Vₚ = Nₛ/Nₚ",
+        solvers:{
+          Vs: x=>{ if(x.Np===0) throw "Primary turns cannot be zero."; const val=x.Vp*(x.Ns/x.Np); return {steps:[["Formula","Vₛ/Vₚ = Nₛ/Nₚ"],["Rearrange","Vₛ = Vₚ × (Nₛ/Nₚ)"],["Substitute",`Vₛ = ${x.Vp} × (${x.Ns}/${x.Np})`],["Calculate",`Vₛ = ${rnd(val)}`]], result:`Vₛ = ${rnd(val)} V`}; },
+          Vp: x=>{ if(x.Ns===0) throw "Secondary turns cannot be zero."; const val=x.Vs*(x.Np/x.Ns); return {steps:[["Formula","Vₛ/Vₚ = Nₛ/Nₚ"],["Rearrange","Vₚ = Vₛ × (Nₚ/Nₛ)"],["Substitute",`Vₚ = ${x.Vs} × (${x.Np}/${x.Ns})`],["Calculate",`Vₚ = ${rnd(val)}`]], result:`Vₚ = ${rnd(val)} V`}; },
+          Np: x=>{ if(x.Vs===0) throw "Secondary voltage cannot be zero."; const val=x.Vp*(x.Ns/x.Vs); return {steps:[["Formula","Vₛ/Vₚ = Nₛ/Nₚ"],["Rearrange","Nₚ = Vₚ × (Nₛ/Vₛ)"],["Substitute",`Nₚ = ${x.Vp} × (${x.Ns}/${x.Vs})`],["Calculate",`Nₚ = ${rnd(val)}`]], result:`Nₚ = ${rnd(val)}`}; },
+          Ns: x=>{ if(x.Vp===0) throw "Primary voltage cannot be zero."; const val=x.Vs*(x.Np/x.Vp); return {steps:[["Formula","Vₛ/Vₚ = Nₛ/Nₚ"],["Rearrange","Nₛ = Vₛ × (Nₚ/Vₚ)"],["Substitute",`Nₛ = ${x.Vs} × (${x.Np}/${x.Vp})`],["Calculate",`Nₛ = ${rnd(val)}`]], result:`Nₛ = ${rnd(val)}`}; },
+        }
+      }),
+    ]
+  },
+
+  atomic: {
+    eyebrow:"Atomic Physics", title:"Decay &amp; Mass–Energy",
+    desc:"Exponential radioactive decay and Einstein's mass–energy equivalence. Solve for any variable.",
+    cards:[
+      card("decay","Radioactive decay","N = N₀(½)^(t/t½) — solve for N, N₀, t, or t½.", {
+        vars:[V("N","N — Remaining amount",""), V("N0","N₀ — Initial amount","","N₀"), V("t","t — Elapsed time","any"), V("half","t½ — Half-life","same unit as t","t½")],
+        defaultTarget:"N", formula:"N = N₀ (½)^(t/t½)",
+        solvers:{
+          N: x=>{ if(x.half===0) throw "Half-life cannot be zero."; const val=x.N0*Math.pow(0.5,x.t/x.half); return {steps:[["Formula","N = N₀(½)^(t/t½)"],["Substitute",`N = ${x.N0} × (½)^(${x.t}/${x.half})`],["Calculate",`N = ${rnd(val)}`]], result:`N = ${rnd(val)}`}; },
+          N0: x=>{ if(x.half===0) throw "Half-life cannot be zero."; const val=x.N/Math.pow(0.5,x.t/x.half); return {steps:[["Formula","N = N₀(½)^(t/t½)"],["Rearrange","N₀ = N / (½)^(t/t½)"],["Substitute",`N₀ = ${x.N} ÷ (½)^(${x.t}/${x.half})`],["Calculate",`N₀ = ${rnd(val)}`]], result:`N₀ = ${rnd(val)}`}; },
+          t: x=>{ if(x.N0<=0||x.N<=0) throw "N and N₀ must both be greater than zero."; if(x.half===0) throw "Half-life cannot be zero."; const ratio=x.N/x.N0; const val=x.half*Math.log(ratio)/Math.log(0.5); return {steps:[["Formula","N = N₀(½)^(t/t½)"],["Rearrange","t = t½ × log(N/N₀) / log(½)"],["Substitute",`t = ${x.half} × log(${x.N}/${x.N0}) / log(0.5)`],["Calculate",`t = ${rnd(val)}`]], result:`t = ${rnd(val)}`}; },
+          half: x=>{ if(x.N0<=0||x.N<=0) throw "N and N₀ must both be greater than zero."; const ratio=x.N/x.N0; if(ratio===1) throw "N equals N₀ — half-life is undefined (no decay has occurred)."; const val=x.t*Math.log(0.5)/Math.log(ratio); return {steps:[["Formula","N = N₀(½)^(t/t½)"],["Rearrange","t½ = t × log(½) / log(N/N₀)"],["Substitute",`t½ = ${x.t} × log(0.5) / log(${x.N}/${x.N0})`],["Calculate",`t½ = ${rnd(val)}`]], result:`t½ = ${rnd(val)}`}; },
+        }
+      }),
+      card("emc2","Mass–energy equivalence","E = mc² — solve for E or m. c = 3 × 10⁸ m/s.", {
+        vars:[V("E","E — Energy","J"), V("m","m — Mass","kg")],
+        defaultTarget:"E", formula:"E = mc²",
+        solvers:{
+          E: x=>{ const c=3e8; const val=x.m*c*c; return {steps:[["Formula","E = mc²"],["Substitute",`E = ${x.m} × (3×10⁸)²`],["Calculate",`E = ${val.toExponential(4)}`]], result:`E = ${val.toExponential(4)} J`}; },
+          m: x=>{ const c=3e8; const val=x.E/(c*c); return {steps:[["Formula","E = mc²"],["Rearrange","m = E / c²"],["Substitute",`m = ${x.E} ÷ (3×10⁸)²`],["Calculate",`m = ${val.toExponential(4)}`]], result:`m = ${val.toExponential(4)} kg`}; },
+        }
+      }),
+    ]
+  },
+};
+
+/* ================= Generic rendering engine (vars-based cards) ================= */
+
+const varsCardIndex = {};
+
+function fieldHTML2(card, v){
+  const inputId = `${card.id}_${v.id}`;
+  return `<div class="field" data-var="${v.id}" id="fld_${inputId}">
+    <label for="${inputId}">${v.label}</label>
+    <div class="input-unit">
+      <input type="number" step="any" id="${inputId}" placeholder="0" ${v.def!==undefined?`value="${v.def}"`:""}>
+      ${v.unit ? `<span class="unit-tag">${v.unit}</span>` : ""}
+    </div>
+  </div>`;
+}
+
+function varsCardHTML(card){
+  varsCardIndex[card.id] = card;
+  return `
+  <div class="card">
+    <h3>${card.title} <span class="formula">${card.formula}</span></h3>
+    <p class="desc">${card.desc}</p>
+    <div class="field-row">${card.vars.map(v=>fieldHTML2(card,v)).join("")}</div>
+    <div class="field-row">
+      <div class="field" style="flex:1 1 240px;">
+        <label for="${card.id}_target">Solve for</label>
+        <select id="${card.id}_target" data-card="${card.id}">
+          ${card.vars.map(v=>`<option value="${v.id}" ${v.id===card.defaultTarget?"selected":""}>${v.label}</option>`).join("")}
+        </select>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="solve-vars" data-card="${card.id}">Calculate</button>
+      <span class="error-msg" id="err_${card.id}"></span>
+    </div>
+    <div class="readout" id="readout_${card.id}"></div>
+  </div>`;
+}
+
+function refreshTargetDisable(card){
+  const sel = document.getElementById(`${card.id}_target`);
+  if(!sel) return;
+  const target = sel.value;
+  card.vars.forEach(v=>{
+    const fld = document.getElementById(`fld_${card.id}_${v.id}`);
+    const inp = document.getElementById(`${card.id}_${v.id}`);
+    if(!fld || !inp) return;
+    if(v.id === target){ fld.classList.add('is-target'); inp.value = ""; inp.disabled = true; }
+    else { fld.classList.remove('is-target'); inp.disabled = false; }
+  });
+}
+
+/* ---- Legacy simple card (unit converter) ---- */
+
+function legacyFieldHTML(cardId, f){
+  const inputId = `${cardId}_${f.id}`;
+  if(f.type === "select"){
+    return `<div class="field"><label for="${inputId}">${f.label}</label><select id="${inputId}">${f.opts.map(o=>`<option value="${o}">${o}</option>`).join("")}</select></div>`;
+  }
+  return `<div class="field"><label for="${inputId}">${f.label}</label><div class="input-unit"><input type="number" step="any" id="${inputId}" placeholder="0">${f.unitTag?`<span class="unit-tag">${f.unitTag}</span>`:""}</div></div>`;
+}
+
+function legacyCardHTML(card){
+  return `
+  <div class="card">
+    <h3>${card.title} <span class="formula">${card.formula}</span></h3>
+    <p class="desc">${card.desc}</p>
+    <div class="field-row">${card.inputs.map(f=>legacyFieldHTML(card.id, f)).join("")}</div>
+    <div class="actions">
+      <button class="solve" data-legacy="${card.id}">Calculate</button>
+      <span class="error-msg" id="err_${card.id}"></span>
+    </div>
+    <div class="readout" id="readout_${card.id}"></div>
+  </div>`;
+}
+
+const legacyCardIndex = {};
+
+/* ---- Principle of Moments (dynamic rows) ---- */
+
+let pidCounter = 0;
+function newPid(){ return ++pidCounter; }
+
+function momentRowHTML(side, pid){
+  return `<div class="field-row moment-row" data-side="${side}" data-pid="${pid}">
+    <div class="field"><label>F</label><div class="input-unit"><input type="number" step="any" class="mforce" id="f_${pid}" placeholder="0"><span class="unit-tag">N</span></div></div>
+    <div class="field"><label>d</label><div class="input-unit"><input type="number" step="any" class="mdist" id="d_${pid}" placeholder="0"><span class="unit-tag">m</span></div></div>
+    <button type="button" class="mremove" data-pid="${pid}" data-side="${side}" title="Remove this term">✕</button>
+  </div>`;
+}
+
+function principleCardHTML(card){
+  const acwRows = [1,2,3].map(()=>momentRowHTML('acw', newPid())).join("");
+  const cwRows = [1,2,3].map(()=>momentRowHTML('cw', newPid())).join("");
+  return `
+  <div class="card">
+    <h3>${card.title} <span class="formula">${card.formula}</span></h3>
+    <p class="desc">${card.desc}</p>
+    <div class="moment-grid">
+      <div class="moment-col" data-side="acw">
+        <div class="moment-col-head">↺ Anticlockwise (ACW)</div>
+        <div class="moment-rows" id="rows_acw">${acwRows}</div>
+        <button type="button" class="add-term-btn" data-side="acw">+ Add term</button>
+      </div>
+      <div class="moment-col" data-side="cw">
+        <div class="moment-col-head">↻ Clockwise (CW)</div>
+        <div class="moment-rows" id="rows_cw">${cwRows}</div>
+        <button type="button" class="add-term-btn" data-side="cw">+ Add term</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field" style="flex:1 1 280px;">
+        <label for="principle_target">Solve for</label>
+        <select id="principle_target"><option value="">— choose the unknown —</option></select>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="solve" id="btn_${card.id}" data-custom="principle">Calculate</button>
+      <span class="error-msg" id="err_${card.id}"></span>
+    </div>
+    <div class="readout" id="readout_${card.id}"></div>
+  </div>`;
+}
+
+function rebuildPrincipleTargetOptions(){
+  const sel = document.getElementById('principle_target');
+  if(!sel) return;
+  const prevVal = sel.value;
+  let optionsHTML = '<option value="">— choose the unknown —</option>';
+  ['acw','cw'].forEach(side=>{
+    const rows = document.querySelectorAll(`#rows_${side} .moment-row`);
+    rows.forEach((row, idx)=>{
+      const pid = row.dataset.pid;
+      const n = idx+1;
+      const labels = row.querySelectorAll('.field label');
+      if(labels[0]) labels[0].textContent = `F${toSub(n)}`;
+      if(labels[1]) labels[1].textContent = `d${toSub(n)}`;
+      const sideLabel = side === 'acw' ? 'ACW' : 'CW';
+      optionsHTML += `<option value="${side}-${pid}-f">${sideLabel} F${toSub(n)}</option>`;
+      optionsHTML += `<option value="${side}-${pid}-d">${sideLabel} d${toSub(n)}</option>`;
+    });
+  });
+  sel.innerHTML = optionsHTML;
+  if([...sel.options].some(o=>o.value===prevVal)) sel.value = prevVal;
+}
+
+function termsSumInfo(rowsArr, excludeIdx){
+  const parts = [];
+  let sum = 0;
+  rowsArr.forEach((r, idx)=>{
+    if(idx === excludeIdx) return;
+    if(r.f === 0 && r.d === 0) return;
+    parts.push(`(${r.f}×${r.d})`);
+    sum += r.f * r.d;
+  });
+  return { str: parts.length ? `${parts.join(" + ")} = ${rnd(sum)} N·m` : "0 N·m", sum };
+}
+
+function readMomentRows(side){
+  return [...document.querySelectorAll(`#rows_${side} .moment-row`)].map(row=>{
+    const pid = row.dataset.pid;
+    const fEl = document.getElementById(`f_${pid}`);
+    const dEl = document.getElementById(`d_${pid}`);
+    const f = fEl && fEl.value !== "" ? parseFloat(fEl.value) : 0;
+    const d = dEl && dEl.value !== "" ? parseFloat(dEl.value) : 0;
+    return { pid, f, d };
+  });
+}
+
+function solvePrinciple(){
+  const target = document.getElementById('principle_target').value;
+  if(!target) throw "Choose which value (a force or a distance) you want to solve for.";
+  const [side, pid, varType] = target.split("-");
+  const other = side === "acw" ? "cw" : "acw";
+
+  const sideRows = readMomentRows(side);
+  const otherRows = readMomentRows(other);
+  const targetRowIdx = sideRows.findIndex(r=>r.pid===pid);
+  if(targetRowIdx === -1) throw "That term no longer exists — pick another from the dropdown.";
+
+  const sideKnown = termsSumInfo(sideRows, targetRowIdx);
+  const otherKnown = termsSumInfo(otherRows, undefined);
+  const targetRow = sideRows[targetRowIdx];
+  const partner = varType === "f" ? targetRow.d : targetRow.f;
+  if(partner === 0){
+    throw `${varType === "f" ? "The distance" : "The force"} for that term is 0 — enter it before solving for its pair.`;
+  }
+
+  const acwInfo = side === "acw" ? sideKnown : otherKnown;
+  const cwInfo  = side === "cw"  ? sideKnown : otherKnown;
+  const x = side === "acw" ? (cwInfo.sum - acwInfo.sum) / partner : (acwInfo.sum - cwInfo.sum) / partner;
+
+  const posLabel = targetRowIdx + 1;
+  const varLabel = varType === "f" ? `F${toSub(posLabel)}` : `d${toSub(posLabel)}`;
+  const eq = side === "acw"
+    ? `${rnd(acwInfo.sum)} + (${varLabel} × ${partner}) = ${rnd(cwInfo.sum)}`
+    : `${rnd(acwInfo.sum)} = ${rnd(cwInfo.sum)} + (${varLabel} × ${partner})`;
+
+  const steps = [
+    ["Formula", "ΣM(ACW) = ΣM(CW)"],
+    ["ACW terms", acwInfo.str],
+    ["CW terms", cwInfo.str],
+    ["Equation", eq],
+    ["Rearrange", `${varLabel} = (${side==="acw"?rnd(cwInfo.sum):rnd(acwInfo.sum)} − ${side==="acw"?rnd(acwInfo.sum):rnd(cwInfo.sum)}) ÷ ${partner}`],
+    ["Calculate", `${varLabel} = ${rnd(x)}`],
+  ];
+  const unit = varType === "f" ? "N" : "m";
+  let note = "";
+  if(x < 0) note = "  — a negative result usually means a distance or force was entered on the wrong side.";
+  return { steps, result: `${varLabel} (${side.toUpperCase()}) = ${rnd(x)} ${unit}${note}` };
+}
+
+/* ================= Page assembly ================= */
+
+function cardHTML(card){
+  if(card.custom === "principle") return principleCardHTML(card);
+  if(card.legacy) { legacyCardIndex[card.id] = card; return legacyCardHTML(card); }
+  return varsCardHTML(card);
+}
+
+function renderTopic(id){
+  const t = topics[id];
+  const section = document.createElement('section');
+  section.className = "topic";
+  section.id = `topic_${id}`;
+  section.innerHTML = `
+    <div class="topic-head">
+      <div class="eyebrow">${t.eyebrow}</div>
+      <h2>${t.title}</h2>
+      <p>${t.desc}</p>
+    </div>
+    <div class="cards">${t.cards.map(c=>cardHTML(c)).join("")}</div>
+  `;
+  return section;
+}
+
+const main = document.getElementById('main');
+const rail = document.getElementById('rail');
+
+Object.keys(topics).forEach(id=>{ main.appendChild(renderTopic(id)); });
+document.getElementById('topic_measurement').classList.add('active');
+
+Object.values(varsCardIndex).forEach(c=>refreshTargetDisable(c));
+rebuildPrincipleTargetOptions();
+
+rail.querySelectorAll('button[data-target]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    rail.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('section.topic').forEach(s=>s.classList.remove('active'));
+    document.getElementById(`topic_${btn.dataset.target}`).classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+
+main.addEventListener('change', (e)=>{
+  if(e.target.matches('select[id$="_target"]') && e.target.dataset.card){
+    const c = varsCardIndex[e.target.dataset.card];
+    if(c) refreshTargetDisable(c);
+  }
+});
+
+main.addEventListener('click', (e)=>{
+  const addBtn = e.target.closest('.add-term-btn');
+  if(addBtn){
+    const side = addBtn.dataset.side;
+    const container = document.getElementById(`rows_${side}`);
+    if(container.children.length >= 8) return;
+    container.insertAdjacentHTML('beforeend', momentRowHTML(side, newPid()));
+    rebuildPrincipleTargetOptions();
+    return;
+  }
+  const rmBtn = e.target.closest('.mremove');
+  if(rmBtn){
+    const row = rmBtn.closest('.moment-row');
+    if(row) row.remove();
+    rebuildPrincipleTargetOptions();
+    return;
+  }
+
+  const solveBtn = e.target.closest('button.solve-vars');
+  if(solveBtn){
+    const card = varsCardIndex[solveBtn.dataset.card];
+    const errEl = document.getElementById(`err_${card.id}`);
+    const readoutEl = document.getElementById(`readout_${card.id}`);
+    errEl.textContent = "";
+    try{
+      const target = document.getElementById(`${card.id}_target`).value;
+      const vals = {};
+      card.vars.forEach(v=>{
+        const raw = document.getElementById(`${card.id}_${v.id}`).value;
+        vals[v.id] = raw === "" ? 0 : parseFloat(raw);
+      });
+      const out = card.solvers[target](vals);
+      readoutEl.innerHTML = out.steps.map(([k,v])=>`<div class="step"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("") + `<div class="result">${out.result}</div>`;
+      readoutEl.classList.add('show');
+    }catch(err){
+      errEl.textContent = typeof err === "string" ? err : "Check your inputs.";
+      readoutEl.classList.remove('show');
+    }
+    return;
+  }
+
+  const genericBtn = e.target.closest('button.solve');
+  if(genericBtn && genericBtn.dataset.custom === "principle"){
+    const errEl = document.getElementById('err_principle');
+    const readoutEl = document.getElementById('readout_principle');
+    errEl.textContent = "";
+    try{
+      const out = solvePrinciple();
+      readoutEl.innerHTML = out.steps.map(([k,v])=>`<div class="step"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("") + `<div class="result">${out.result}</div>`;
+      readoutEl.classList.add('show');
+    }catch(err){
+      errEl.textContent = typeof err === "string" ? err : "Check your inputs.";
+      readoutEl.classList.remove('show');
+    }
+    return;
+  }
+
+  if(genericBtn && genericBtn.dataset.legacy){
+    const card = legacyCardIndex[genericBtn.dataset.legacy];
+    const errEl = document.getElementById(`err_${card.id}`);
+    const readoutEl = document.getElementById(`readout_${card.id}`);
+    errEl.textContent = "";
+    try{
+      const vals = {};
+      card.inputs.forEach(f=>{
+        const inputId = `${card.id}_${f.id}`;
+        const el = document.getElementById(inputId);
+        if(f.type === "select") vals[`${f.id}_val`] = el.value;
+        else vals[`${f.id}_val`] = el.value === "" ? 0 : parseFloat(el.value);
+      });
+      const out = card.solve(vals);
+      readoutEl.innerHTML = out.steps.map(([k,v])=>`<div class="step"><div class="k">${k}</div><div class="v">${v}</div></div>`).join("") + `<div class="result">${out.result}</div>`;
+      readoutEl.classList.add('show');
+    }catch(err){
+      errEl.textContent = typeof err === "string" ? err : "Check your inputs.";
+      readoutEl.classList.remove('show');
+    }
+  }
+});
+</script>
+</body>
+</html>
