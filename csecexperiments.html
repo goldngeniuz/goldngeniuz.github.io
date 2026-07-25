@@ -606,17 +606,18 @@ function buildSim(exp){
 
 // ─── VERNIER (Exp 1) ───
 function buildVernierSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="vernierRandom(${id})">🎲 Random Object</button><button class="sim-log-btn" onclick="vernierLog(${id})">📋 Log Reading to Table</button><button class="sim-reset" onclick="vernierReset(${id})">↺ Reset</button></div><div class="slider-row"><label>Diameter (mm):</label><input type="range" id="vd-${id}" min="5" max="30" step="0.02" value="14.5" oninput="vernierDraw(${id})"><span class="slider-val" id="vdv-${id}">14.50 mm</span></div><div class="slider-row"><label>Length L (cm):</label><input type="range" id="vl-${id}" min="2" max="20" step="0.1" value="8.5" oninput="vernierDraw(${id})"><span class="slider-val" id="vlv-${id}">8.5 cm</span></div><div style="padding:10px"><canvas id="vc-${id}" width="560" height="160" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">Main Scale: <span id="vms-${id}">14</span> mm</div><div class="readout">Vernier: <span id="vvs-${id}">0.50</span> mm</div><div class="readout">Diameter d: <span id="vtot-${id}">14.50</span> mm</div><div class="readout">Length L: <span id="vtotL-${id}">8.5</span> cm</div></div>`;}
+function randZeroError(){const mag=0.01+Math.random()*0.04;const sign=Math.random()<0.5?-1:1;return parseFloat((sign*mag).toFixed(2));}
 function vernierDraw(id){const d=parseFloat(document.getElementById(`vd-${id}`).value),L=parseFloat(document.getElementById(`vl-${id}`).value);document.getElementById(`vdv-${id}`).textContent=d.toFixed(2)+' mm';document.getElementById(`vlv-${id}`).textContent=L.toFixed(1)+' cm';const ms=Math.floor(d),vs=Math.round((d-ms)*20)*0.05,vDiv=Math.round((d-ms)/0.05);document.getElementById(`vms-${id}`).textContent=ms;document.getElementById(`vvs-${id}`).textContent=vs.toFixed(2);document.getElementById(`vtot-${id}`).textContent=d.toFixed(2);document.getElementById(`vtotL-${id}`).textContent=L.toFixed(1);const cv=document.getElementById(`vc-${id}`);if(!cv)return;const ctx=cv.getContext('2d'),W=cv.width,H=cv.height;ctx.clearRect(0,0,W,H);ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);ctx.fillStyle='#8899bb';ctx.fillRect(20,40,W-40,30);ctx.fillStyle='#FFD700';ctx.font='11px Share Tech Mono';ctx.textAlign='center';for(let i=0;i<=25;i++){const x=20+i*(W-40)/25;ctx.fillStyle='#cce0ff';ctx.fillRect(x,40,1,i%5===0?20:12);if(i%5===0){ctx.fillStyle='#FFD700';ctx.fillText(i,x,35);}}const vOff=20+(d/25)*(W-40)-20;ctx.fillStyle='#1e3a5a';ctx.fillRect(vOff,55,120,30);ctx.fillStyle='#00e5ff';for(let j=0;j<=10;j++){const x2=vOff+j*12;ctx.fillRect(x2,55,1,j%5===0?18:10);if(j%5===0){ctx.font='9px Share Tech Mono';ctx.fillText(j,x2,92);}}const matchX=vOff+vDiv*12;ctx.strokeStyle='#ff4400';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(matchX,53);ctx.lineTo(matchX,87);ctx.stroke();ctx.fillStyle='rgba(255,68,0,0.2)';ctx.fillRect(matchX-3,53,6,34);ctx.fillStyle='#FFD700';ctx.font='13px Share Tech Mono';ctx.textAlign='left';ctx.fillText('Reading = '+d.toFixed(2)+' mm',20,140);ctx.fillStyle='rgba(0,229,255,0.6)';ctx.font='11px Share Tech Mono';ctx.fillText('Main: '+ms+' | Vernier div: '+vDiv+' × 0.05 = '+vs.toFixed(2),20,158);}
-function vernierLog(id){const d=parseFloat(document.getElementById(`vd-${id}`).value),L=parseFloat(document.getElementById(`vl-${id}`).value),ms=Math.floor(d),vs=Math.round((d-ms)*20)*0.05;setCell(id,0,1,'0.00');setCell(id,1,1,ms.toFixed(1));setCell(id,2,1,vs.toFixed(2));setCell(id,3,1,d.toFixed(2));setCell(id,4,1,L.toFixed(1));[0,1,2,3,4].forEach(r=>highlightRow(id,r));updateLogStatus(id);}
-function vernierRandom(id){document.getElementById(`vd-${id}`).value=(5+Math.random()*25).toFixed(2);document.getElementById(`vl-${id}`).value=(2+Math.random()*18).toFixed(1);vernierDraw(id);}
-function vernierReset(id){document.getElementById(`vd-${id}`).value=14.5;document.getElementById(`vl-${id}`).value=8.5;vernierDraw(id);}
+function vernierLog(id){const d=parseFloat(document.getElementById(`vd-${id}`).value),L=parseFloat(document.getElementById(`vl-${id}`).value),ms=Math.floor(d),vs=Math.round((d-ms)*20)*0.05;window._vZeroErr=window._vZeroErr||{};if(window._vZeroErr[id]===undefined)window._vZeroErr[id]=randZeroError();const ze=window._vZeroErr[id];const zeStr=(ze>=0?'+':'')+ze.toFixed(2);setCell(id,0,1,zeStr);setCell(id,1,1,ms.toFixed(1));setCell(id,2,1,vs.toFixed(2));setCell(id,3,1,(d-ze).toFixed(2));setCell(id,4,1,L.toFixed(1));[0,1,2,3,4].forEach(r=>highlightRow(id,r));updateLogStatus(id);}
+function vernierRandom(id){document.getElementById(`vd-${id}`).value=(5+Math.random()*25).toFixed(2);document.getElementById(`vl-${id}`).value=(2+Math.random()*18).toFixed(1);window._vZeroErr=window._vZeroErr||{};window._vZeroErr[id]=randZeroError();vernierDraw(id);}
+function vernierReset(id){document.getElementById(`vd-${id}`).value=14.5;document.getElementById(`vl-${id}`).value=8.5;window._vZeroErr=window._vZeroErr||{};window._vZeroErr[id]=randZeroError();vernierDraw(id);}
 
 // ─── MICROMETER (Exp 2) ───
 function buildMicrometerSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="micRandom(${id})">🎲 Random Marble</button><button class="sim-log-btn" onclick="micLog(${id})">📋 Log Reading to Table</button><button class="sim-reset" onclick="micReset(${id})">↺ Reset</button></div><div class="slider-row"><label>Mass m (g):</label><input type="range" id="mmass-${id}" min="1" max="20" step="0.1" value="5.2" oninput="micDraw(${id})"><span class="slider-val" id="mmasv-${id}">5.2 g</span></div><div class="slider-row"><label>Diameter (mm):</label><input type="range" id="md-${id}" min="0" max="25" step="0.01" value="12.45" oninput="micDraw(${id})"><span class="slider-val" id="mdv-${id}">12.45 mm</span></div><div style="padding:10px"><canvas id="mc-${id}" width="560" height="160" style="width:100%;background:#020810;border-radius:4px;"></canvas></div><div class="readout-row"><div class="readout">Sleeve: <span id="ms-${id}">12.0</span> mm</div><div class="readout">Thimble: <span id="mt-${id}">0.45</span> mm</div><div class="readout">Diameter d: <span id="mr-${id}">12.45</span> mm</div><div class="readout">Mass m: <span id="mmr-${id}">5.2</span> g</div></div>`;}
 function micDraw(id){const d=parseFloat(document.getElementById(`md-${id}`).value),m=parseFloat(document.getElementById(`mmass-${id}`).value);document.getElementById(`mdv-${id}`).textContent=d.toFixed(2)+' mm';document.getElementById(`mmasv-${id}`).textContent=m.toFixed(1)+' g';const sleeve=Math.floor(d/0.5)*0.5,thimble=d-sleeve;document.getElementById(`ms-${id}`).textContent=sleeve.toFixed(1);document.getElementById(`mt-${id}`).textContent=thimble.toFixed(2);document.getElementById(`mr-${id}`).textContent=d.toFixed(2);document.getElementById(`mmr-${id}`).textContent=m.toFixed(1);const cv=document.getElementById(`mc-${id}`);if(!cv)return;const ctx=cv.getContext('2d');ctx.clearRect(0,0,cv.width,cv.height);const W=cv.width,H=cv.height;ctx.fillStyle='#020810';ctx.fillRect(0,0,W,H);ctx.fillStyle='#6688aa';ctx.fillRect(60,55,320,50);ctx.strokeStyle='#FFD700';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(60,80);ctx.lineTo(380,80);ctx.stroke();for(let i=0;i<=24;i++){const x=60+i*(320/24);ctx.strokeStyle='#cce0ff';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(x,55);ctx.lineTo(x,i%2===0?68:62);ctx.stroke();if(i%2===0){ctx.fillStyle='#FFD700';ctx.font='10px Share Tech Mono';ctx.textAlign='center';ctx.fillText(i/2,x,52);}}const tx=60+(sleeve/12)*320;ctx.fillStyle='#335577';ctx.fillRect(tx,40,80,70);ctx.strokeStyle='#00e5ff';ctx.lineWidth=1;for(let j=0;j<25;j++){const y=40+j*(70/25);ctx.beginPath();ctx.moveTo(tx,y);ctx.lineTo(tx+20,y);ctx.stroke();if(j%5===0){ctx.fillStyle='#00e5ff';ctx.font='9px Share Tech Mono';ctx.textAlign='left';ctx.fillText(j*2,tx+22,y+4);}}const hy=40+(thimble/0.01)*(70/25);ctx.strokeStyle='#ff4400';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(tx,hy);ctx.lineTo(tx+80,hy);ctx.stroke();ctx.fillStyle='#FFD700';ctx.font='13px Share Tech Mono';ctx.textAlign='left';ctx.fillText('d = '+d.toFixed(2)+' mm | m = '+m.toFixed(1)+' g',20,145);}
-function micLog(id){const d=parseFloat(document.getElementById(`md-${id}`).value),m=parseFloat(document.getElementById(`mmass-${id}`).value),sleeve=Math.floor(d/0.5)*0.5,thimble=d-sleeve;setCell(id,0,1,m.toFixed(2));setCell(id,1,1,'0.00');setCell(id,2,1,sleeve.toFixed(1));setCell(id,3,1,thimble.toFixed(2));setCell(id,4,1,d.toFixed(2));[0,1,2,3,4].forEach(r=>highlightRow(id,r));updateLogStatus(id);}
-function micRandom(id){document.getElementById(`md-${id}`).value=(5+Math.random()*20).toFixed(2);document.getElementById(`mmass-${id}`).value=(1+Math.random()*15).toFixed(1);micDraw(id);}
-function micReset(id){document.getElementById(`md-${id}`).value=12.45;document.getElementById(`mmass-${id}`).value=5.2;micDraw(id);}
+function micLog(id){const d=parseFloat(document.getElementById(`md-${id}`).value),m=parseFloat(document.getElementById(`mmass-${id}`).value),sleeve=Math.floor(d/0.5)*0.5,thimble=d-sleeve;window._mZeroErr=window._mZeroErr||{};if(window._mZeroErr[id]===undefined)window._mZeroErr[id]=randZeroError();const ze=window._mZeroErr[id];const zeStr=(ze>=0?'+':'')+ze.toFixed(2);setCell(id,0,1,m.toFixed(2));setCell(id,1,1,zeStr);setCell(id,2,1,sleeve.toFixed(1));setCell(id,3,1,thimble.toFixed(2));setCell(id,4,1,(d-ze).toFixed(2));[0,1,2,3,4].forEach(r=>highlightRow(id,r));updateLogStatus(id);}
+function micRandom(id){document.getElementById(`md-${id}`).value=(5+Math.random()*20).toFixed(2);document.getElementById(`mmass-${id}`).value=(1+Math.random()*15).toFixed(1);window._mZeroErr=window._mZeroErr||{};window._mZeroErr[id]=randZeroError();micDraw(id);}
+function micReset(id){document.getElementById(`md-${id}`).value=12.45;document.getElementById(`mmass-${id}`).value=5.2;window._mZeroErr=window._mZeroErr||{};window._mZeroErr[id]=randZeroError();micDraw(id);}
 
 // ─── BOILING TUBE (Exp 3) ───
 function buildBoilingTubeSim(id){return `<div class="sim-controls"><button class="sim-btn" onclick="btAddWater(${id})">+ Add 2 cm³</button><button class="sim-log-btn" onclick="btLog(${id})">📋 Log to Table</button><button class="sim-reset" onclick="btReset(${id})">↺ Reset</button></div><div style="padding:14px;display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;"><canvas id="btc-${id}" width="160" height="300" style="background:#020810;border-radius:6px;"></canvas><div><div class="readout-row" style="flex-direction:column;gap:8px;"><div class="readout">Volume added V: <span id="btv-${id}">0</span> cm³</div><div class="readout">Height h: <span id="bth-${id}">0.00</span> cm</div><div class="readout">Rows logged: <span id="btlog-${id}">0</span>/6</div></div><p style="font-size:0.78rem;color:var(--muted);margin-top:12px;max-width:240px;">Click "+ Add 2 cm³" then "Log to Table" for each reading.</p></div></div>`;}
@@ -954,50 +955,49 @@ function generateReport(expId) {
 <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]})"><\/script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Crimson Pro',Georgia,serif;font-size:11.5pt;line-height:1.65;color:#1a1a1a;background:#f5f0e8;padding:0;}
-.page-wrap{max-width:820px;margin:0 auto;background:#fff;box-shadow:0 4px 40px rgba(0,0,0,0.12);}
-.report-masthead{background:linear-gradient(160deg,#0a1525 0%,#162035 60%,#0e1e35 100%);color:#fff;position:relative;overflow:hidden;}
-.report-masthead::before{content:'';position:absolute;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(45deg,transparent,transparent 30px,rgba(255,215,0,0.03) 30px,rgba(255,215,0,0.03) 31px);}
-.masthead-inner{position:relative;padding:32px 40px 28px;border-bottom:3px solid #FFD700;}
-.school-line{font-family:'Oswald',sans-serif;font-size:9pt;letter-spacing:4px;color:rgba(255,215,0,0.6);text-transform:uppercase;margin-bottom:6px;}
-.report-brand{font-family:'Oswald',sans-serif;font-size:22pt;font-weight:700;color:#FFD700;letter-spacing:3px;line-height:1;margin-bottom:4px;}
-.report-brand span{color:#00e5ff;font-size:10pt;display:block;letter-spacing:6px;font-weight:400;margin-top:4px;}
-.report-exp-badge{position:absolute;top:28px;right:40px;background:rgba(255,215,0,0.12);border:1px solid rgba(255,215,0,0.3);border-radius:6px;padding:8px 16px;text-align:center;}
-.badge-num{font-family:'Source Code Pro',monospace;font-size:9pt;color:rgba(255,215,0,0.6);letter-spacing:3px;display:block;}
-.badge-topic{font-family:'Oswald',sans-serif;font-size:11pt;color:#FFD700;letter-spacing:1px;}
-.report-title-bar{background:rgba(255,215,0,0.08);padding:18px 40px;border-bottom:1px solid rgba(255,215,0,0.15);}
-.report-exp-title{font-family:'Oswald',sans-serif;font-size:17pt;font-weight:600;color:#fff;letter-spacing:1px;line-height:1.2;}
-.report-meta{padding:12px 40px;display:flex;gap:32px;flex-wrap:wrap;border-bottom:1px solid rgba(255,215,0,0.1);}
-.meta-field{font-family:'Source Code Pro',monospace;font-size:8pt;color:rgba(255,215,0,0.5);}
-.meta-field span{color:rgba(200,230,255,0.85);margin-left:6px;font-size:9pt;}
+body{font-family:'Crimson Pro',Georgia,serif;font-size:11.5pt;line-height:1.65;color:#000;background:#fff;padding:0;}
+.page-wrap{max-width:820px;margin:0 auto;background:#fff;}
+.report-masthead{background:#fff;color:#000;position:relative;}
+.masthead-inner{position:relative;padding:24px 40px 20px;border-bottom:2px solid #000;}
+.school-line{font-family:'Oswald',sans-serif;font-size:9pt;letter-spacing:4px;color:#000;text-transform:uppercase;margin-bottom:6px;}
+.report-brand{font-family:'Oswald',sans-serif;font-size:22pt;font-weight:700;color:#000;letter-spacing:3px;line-height:1;margin-bottom:4px;}
+.report-brand span{color:#000;font-size:10pt;display:block;letter-spacing:6px;font-weight:400;margin-top:4px;}
+.report-exp-badge{position:absolute;top:24px;right:40px;background:#fff;border:1px solid #000;border-radius:6px;padding:8px 16px;text-align:center;}
+.badge-num{font-family:'Source Code Pro',monospace;font-size:9pt;color:#000;letter-spacing:3px;display:block;}
+.badge-topic{font-family:'Oswald',sans-serif;font-size:11pt;color:#000;letter-spacing:1px;}
+.report-title-bar{background:#fff;padding:14px 40px;border-bottom:1px solid #000;}
+.report-exp-title{font-family:'Oswald',sans-serif;font-size:17pt;font-weight:600;color:#000;letter-spacing:1px;line-height:1.2;}
+.report-meta{padding:12px 40px;display:flex;gap:32px;flex-wrap:wrap;border-bottom:1px solid #000;}
+.meta-field{font-family:'Source Code Pro',monospace;font-size:8pt;color:#000;}
+.meta-field span{color:#000;margin-left:6px;font-size:9pt;}
 .report-body{padding:0 40px 40px;}
 .report-section{margin-top:28px;page-break-inside:avoid;}
-.section-heading{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #c8a800;}
-.section-num{background:#0a1525;color:#FFD700;font-family:'Source Code Pro',monospace;font-size:8pt;font-weight:600;padding:3px 8px;border-radius:3px;letter-spacing:2px;flex-shrink:0;}
-.section-title{font-family:'Oswald',sans-serif;font-size:12pt;font-weight:600;color:#0a1525;letter-spacing:2px;text-transform:uppercase;}
-.aim-text{font-size:11.5pt;font-style:italic;color:#2a2a2a;padding:10px 16px;background:#faf7f0;border-left:3px solid #c8a800;border-radius:0 4px 4px 0;}
-.theory-content{font-size:11pt;line-height:1.75;color:#2a2a2a;}
+.section-heading{display:flex;align-items:center;gap:12px;margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid #000;}
+.section-num{background:#fff;color:#000;font-family:'Source Code Pro',monospace;font-size:8pt;font-weight:600;padding:3px 8px;border:1px solid #000;border-radius:3px;letter-spacing:2px;flex-shrink:0;}
+.section-title{font-family:'Oswald',sans-serif;font-size:12pt;font-weight:600;color:#000;letter-spacing:2px;text-transform:uppercase;}
+.aim-text{font-size:11.5pt;font-style:italic;color:#000;padding:10px 16px;background:#fff;border-left:3px solid #000;border-radius:0 4px 4px 0;}
+.theory-content{font-size:11pt;line-height:1.75;color:#000;}
 .theory-content p{margin-bottom:8px;}
-.formula-block-rpt{background:#f5f0e8;border-left:3px solid #00a0c0;padding:8px 14px;margin:10px 0;font-family:'Source Code Pro',monospace;font-size:10pt;border-radius:0 4px 4px 0;overflow-x:auto;}
+.formula-block-rpt{background:#fff;border-left:3px solid #000;padding:8px 14px;margin:10px 0;font-family:'Source Code Pro',monospace;font-size:10pt;border-radius:0 4px 4px 0;overflow-x:auto;}
 .apparatus-list-rpt{list-style:none;display:flex;flex-wrap:wrap;gap:8px;}
-.apparatus-list-rpt li{background:#f0f8f0;border:1px solid #90c090;border-radius:14px;padding:3px 12px;font-size:10pt;color:#1a4a1a;font-family:'Source Code Pro',monospace;}
+.apparatus-list-rpt li{background:#fff;border:1px solid #000;border-radius:14px;padding:3px 12px;font-size:10pt;color:#000;font-family:'Source Code Pro',monospace;}
 .proc-step-rpt{display:flex;gap:12px;margin-bottom:8px;align-items:flex-start;}
-.proc-num-rpt{width:22px;height:22px;border-radius:50%;background:#0a1525;color:#FFD700;display:flex;align-items:center;justify-content:center;font-family:'Source Code Pro',monospace;font-size:8pt;flex-shrink:0;margin-top:2px;}
-.sim-snap{background:#050c14;padding:12px;border-radius:6px;text-align:center;}
+.proc-num-rpt{width:22px;height:22px;border-radius:50%;background:#fff;color:#000;border:1px solid #000;display:flex;align-items:center;justify-content:center;font-family:'Source Code Pro',monospace;font-size:8pt;flex-shrink:0;margin-top:2px;}
+.sim-snap{background:#fff;border:1px solid #000;padding:12px;border-radius:6px;text-align:center;}
 .results-table-rpt{width:100%;border-collapse:collapse;font-size:10.5pt;margin-top:8px;}
-.results-table-rpt th{background:#0a1525;color:#FFD700;font-family:'Source Code Pro',monospace;font-size:9pt;padding:8px 12px;border:1px solid #334466;text-align:center;letter-spacing:1px;}
-.results-table-rpt td{border:1px solid #c8d0d8;padding:7px 12px;text-align:center;font-family:'Source Code Pro',monospace;font-size:10pt;color:#1a2a3a;}
-.results-table-rpt tr:nth-child(even) td{background:#f7fafc;}
-.analysis-item{margin-bottom:18px;padding:14px 16px;background:#fafafa;border:1px solid #e0e0e0;border-left:3px solid #0a1525;border-radius:0 6px 6px 0;page-break-inside:avoid;}
-.q-text{font-size:10.5pt;color:#1a1a1a;font-weight:600;margin-bottom:8px;line-height:1.5;}
-.q-num{font-family:'Source Code Pro',monospace;color:#c8a800;font-size:9pt;margin-right:6px;font-weight:700;}
-.answer-box{background:#fff;border:1px solid #d0d8e0;border-radius:4px;padding:10px 14px;font-size:10.5pt;color:#1a2040;line-height:1.7;min-height:40px;}
-.answer-empty{color:#aaa;background:#f8f8f8;}
+.results-table-rpt th{background:#fff;color:#000;font-family:'Source Code Pro',monospace;font-size:9pt;padding:8px 12px;border:1px solid #000;text-align:center;letter-spacing:1px;}
+.results-table-rpt td{border:1px solid #000;padding:7px 12px;text-align:center;font-family:'Source Code Pro',monospace;font-size:10pt;color:#000;}
+.results-table-rpt tr:nth-child(even) td{background:#fff;}
+.analysis-item{margin-bottom:18px;padding:14px 16px;background:#fff;border:1px solid #000;border-left:3px solid #000;border-radius:0 6px 6px 0;page-break-inside:avoid;}
+.q-text{font-size:10.5pt;color:#000;font-weight:600;margin-bottom:8px;line-height:1.5;}
+.q-num{font-family:'Source Code Pro',monospace;color:#000;font-size:9pt;margin-right:6px;font-weight:700;}
+.answer-box{background:#fff;border:1px solid #000;border-radius:4px;padding:10px 14px;font-size:10.5pt;color:#000;line-height:1.7;min-height:40px;}
+.answer-empty{color:#666;background:#fff;}
 .graph-capture{margin-top:10px;}
-.conclusion-box{background:#f5f9f5;border:1px solid #90c090;border-top:3px solid #2a8a2a;border-radius:4px;padding:16px;min-height:80px;font-size:11pt;color:#1a3a1a;line-height:1.75;}
-.conclusion-prompt{color:#aaa;font-style:italic;font-size:10pt;}
-.report-footer{background:#0a1525;color:rgba(255,215,0,0.4);font-family:'Source Code Pro',monospace;font-size:8pt;padding:12px 40px;display:flex;justify-content:space-between;align-items:center;letter-spacing:1px;}
-.footer-brand{color:#FFD700;font-weight:600;}
+.conclusion-box{background:#fff;border:1px solid #000;border-top:3px solid #000;border-radius:4px;padding:16px;min-height:80px;font-size:11pt;color:#000;line-height:1.75;}
+.conclusion-prompt{color:#666;font-style:italic;font-size:10pt;}
+.report-footer{background:#fff;color:#000;font-family:'Source Code Pro',monospace;font-size:8pt;padding:12px 40px;display:flex;justify-content:space-between;align-items:center;letter-spacing:1px;border-top:2px solid #000;}
+.footer-brand{color:#000;font-weight:600;}
 .print-toolbar{position:sticky;top:0;z-index:100;background:#0a1525;border-bottom:2px solid #FFD700;padding:10px 40px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
 .print-toolbar-title{font-family:'Source Code Pro',monospace;font-size:9pt;color:rgba(255,215,0,0.6);letter-spacing:2px;flex:1;}
 .toolbar-btn{padding:7px 18px;border-radius:4px;border:none;cursor:pointer;font-family:'Source Code Pro',monospace;font-size:9pt;font-weight:600;letter-spacing:1px;}
