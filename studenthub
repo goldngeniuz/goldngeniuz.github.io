@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GREEN ISLAND HIGH SCHOOL  — Class Hub</title>
+<style>
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --text:#16181d; --muted:#6b7280;
+  --accent:#2563eb; --border:#e5e7eb; --radius:14px;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1115; --card:#171a21; --text:#e8eaed; --muted:#9aa1ad;
+    --accent:#5b8cff; --border:#262b35;
+  }
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font:16px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+.wrap{max-width:920px;margin:0 auto;padding:0 20px}
+
+header{padding:36px 0 24px}
+header h1{margin:0;font-size:1.7rem;letter-spacing:-.02em}
+header .sub{color:var(--muted);margin-top:4px}
+header .meta{
+  margin-top:16px;display:flex;flex-wrap:wrap;gap:8px 20px;
+  font-size:.9rem;color:var(--muted)
+}
+header .meta a{color:var(--accent);text-decoration:none}
+header .meta a:hover{text-decoration:underline}
+
+.classbar{
+  display:flex;flex-wrap:wrap;align-items:center;gap:12px;
+  padding-top:18px;
+}
+.classbar label{font-weight:700;font-size:.85rem;color:var(--muted)}
+.classbar select{
+  font:inherit;font-size:.95rem;color:var(--text);background:var(--card);
+  border:1px solid var(--border);border-radius:10px;padding:8px 12px;
+}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{
+  appearance:none;cursor:pointer;font:inherit;font-size:.8rem;font-weight:600;
+  border:1px solid var(--border);background:var(--card);color:var(--muted);
+  border-radius:999px;padding:6px 13px;
+}
+.chip:hover{color:var(--text)}
+.chip.active{background:var(--accent);border-color:var(--accent);color:#fff}
+
+nav{
+  display:flex;gap:4px;border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:var(--bg);z-index:10;
+  overflow-x:auto;margin-top:16px;
+}
+.tab{
+  appearance:none;background:none;border:none;cursor:pointer;
+  font:inherit;font-weight:600;color:var(--muted);
+  padding:14px 16px;border-bottom:2px solid transparent;
+  white-space:nowrap;
+}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+main{padding:28px 0 60px}
+.class-heading{font-size:1.15rem;margin:0 0 14px}
+.panel{display:none}
+.panel.active{display:block;animation:fade .18s ease}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;margin-bottom:14px;
+}
+.card h3{margin:0 0 6px;font-size:1.05rem}
+.card p{margin:0 0 8px}
+.card p:last-child{margin-bottom:0}
+.card .body{color:var(--text)}
+.card a{color:var(--accent)}
+
+.row{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.date{color:var(--muted);font-size:.85rem;white-space:nowrap}
+
+.badge{
+  display:inline-block;font-size:.72rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.04em;
+  padding:3px 9px;border-radius:999px;
+}
+.badge.open{background:#dcfce7;color:#166534}
+.badge.soon{background:#fef3c7;color:#92400e}
+.badge.closed{background:#e5e7eb;color:#4b5563}
+.badge.pin{background:var(--accent);color:#fff}
+@media (prefers-color-scheme: dark){
+  .badge.open{background:#14321f;color:#6ee7a0}
+  .badge.soon{background:#3a2c0a;color:#fbbf24}
+  .badge.closed{background:#2a2f3a;color:#9aa1ad}
+}
+
+.subject-tag{
+  display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.03em;
+  text-transform:uppercase;color:var(--accent);
+  background:rgba(37,99,235,.12);padding:3px 9px;border-radius:999px;margin-bottom:8px;
+}
+
+.empty{color:var(--muted);font-style:italic;padding:12px 0}
+
+table{width:100%;border-collapse:collapse;font-size:.94rem}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+th{font-size:.78rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+tbody tr:last-child td{border-bottom:none}
+.scroll{overflow-x:auto;background:var(--card);border:1px solid var(--border);border-radius:var(--radius)}
+td.wk{font-weight:700;color:var(--accent);white-space:nowrap}
+
+footer{color:var(--muted);font-size:.85rem;padding:24px 0 40px;border-top:1px solid var(--border)}
+</style>
+</head>
+<body>
+<header class="wrap">
+  <h1 id="schoolName"></h1>
+  <div class="sub" id="schoolSub"></div>
+  <div class="meta" id="schoolMeta"></div>
+</header>
+
+<div class="wrap classbar" id="classBar">
+  <label for="classPicker">👋 Show work for</label>
+  <select id="classPicker"></select>
+  <div class="chips" id="subjectChips"></div>
+</div>
+
+<nav class="wrap" id="tabs">
+  <button class="tab" data-tab="announcements">📣 Announcements</button>
+  <button class="tab" data-tab="assignments">📝 Assignments</button>
+  <button class="tab" data-tab="outline">📅 Course Outline</button>
+</nav>
+
+<main class="wrap">
+  <h2 class="class-heading" id="classHeading"></h2>
+  <section class="panel" id="announcements"></section>
+  <section class="panel" id="assignments"></section>
+  <section class="panel" id="outline"></section>
+</main>
+
+<footer class="wrap" id="footer"></footer>
+<script>
+(function renderCoursePage(CONTENT){
+  const $ = s => document.querySelector(s);
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, c =>
+    ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+
+  const school  = CONTENT.school || {};
+  const classes = Array.isArray(CONTENT.classes) ? CONTENT.classes : [];
+
+  /* ---------- header / footer ---------- */
+  document.title = (school.name || "Class") + " — Class Hub";
+  $("#schoolName").textContent = school.name || "Class Hub";
+  $("#schoolSub").textContent  = [school.term, school.instructor].filter(Boolean).join(" · ");
+  $("#schoolMeta").innerHTML =
+    (school.email
+      ? '<span>✉️ <a href="mailto:' + esc(school.email) + '">' + esc(school.email) + '</a></span>'
+      : "") +
+    (school.officeHours ? '<span>🕑 ' + esc(school.officeHours) + '</span>' : "");
+  $("#footer").innerHTML =
+    [school.name, school.term].filter(Boolean).map(esc).join(" · ") +
+    " · Last updated " + new Date().toLocaleDateString();
+
+  /* ---------- small helpers ---------- */
+  const prettyDate = iso => {
+    if (!iso) return "TBA";
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    const opts = { month: "short", day: "numeric" };
+    if (String(iso).includes("T")) { opts.hour = "numeric"; opts.minute = "2-digit"; }
+    return d.toLocaleDateString(undefined, opts);
+  };
+
+  const dueStatus = iso => {
+    if (!iso) return { label: "Open", cls: "open" };
+    const days = (new Date(iso) - new Date()) / 86400000;
+    if (days < 0) return { label: "Closed",   cls: "closed" };
+    if (days < 3) return { label: "Due soon", cls: "soon"   };
+    return { label: "Open", cls: "open" };
+  };
+
+  /* ---------- which class is the student looking at? ---------- */
+  const STORE_KEY = "classHub.selectedClass";
+  const store = {
+    get(k){ try { return localStorage.getItem(k); } catch (e) { return null; } },
+    set(k, v){ try { localStorage.setItem(k, v); } catch (e) {} }
+  };
+
+  const picker  = $("#classPicker");
+  const bar     = $("#classBar");
+  const chipsEl = $("#subjectChips");
+  const heading = $("#classHeading");
+
+  let currentId = store.get(STORE_KEY);
+  if (!classes.some(c => c.id === currentId)) currentId = classes.length ? classes[0].id : null;
+  let subjectFilter = "all";
+
+  const getClass = () => classes.find(c => c.id === currentId) || null;
+
+  picker.innerHTML = classes.map(c =>
+    '<option value="' + esc(c.id) + '">' + esc(c.name || "Untitled class") + "</option>").join("");
+  picker.value = currentId || "";
+  bar.style.display = classes.length ? "" : "none";
+
+  const matchesSubject = item =>
+    subjectFilter === "all" || !item.subject || item.subject === subjectFilter;
+
+  /* ---------- subject chips ---------- */
+  function renderChips(){
+    const cls  = getClass();
+    const subs = cls && Array.isArray(cls.subjects) ? cls.subjects : [];
+    if (!subs.length) { chipsEl.innerHTML = ""; return; }
+    chipsEl.innerHTML =
+      '<button type="button" class="chip' + (subjectFilter === "all" ? " active" : "") +
+        '" data-subject="all">All subjects</button>' +
+      subs.map(s =>
+        '<button type="button" class="chip' + (subjectFilter === s ? " active" : "") +
+        '" data-subject="' + esc(s) + '">' + esc(s) + "</button>").join("");
+  }
+
+  /* ---------- announcements ---------- */
+  function renderAnnouncements(){
+    const host = $("#announcements");
+    const cls  = getClass();
+    if (!cls){
+      host.innerHTML = '<p class="empty">Select a class to see its announcements.</p>';
+      return;
+    }
+    const list = (cls.announcements || []).filter(matchesSubject).sort((a, b) => {
+      if (!!a.pinned !== !!b.pinned) return a.pinned ? -1 : 1;
+      return new Date(b.date || 0) - new Date(a.date || 0);
+    });
+    host.innerHTML = list.length ? list.map(a => `
+      <article class="card">
+        ${a.subject ? '<span class="subject-tag">' + esc(a.subject) + "</span>" : ""}
+        <div class="row">
+          <h3>${a.pinned ? '<span class="badge pin">Pinned</span> ' : ""}${esc(a.title)}</h3>
+          <span class="date">${esc(prettyDate(a.date))}</span>
+        </div>
+        <p class="body">${a.body || ""}</p>
+      </article>`).join("")
+      : '<p class="empty">No announcements yet.</p>';
+  }
+
+  /* ---------- assignments ---------- */
+  function renderAssignments(){
+    const host = $("#assignments");
+    const cls  = getClass();
+    if (!cls){
+      host.innerHTML = '<p class="empty">Select a class to see its assignments.</p>';
+      return;
+    }
+    const list = (cls.assignments || []).filter(matchesSubject)
+      .sort((a, b) => new Date(a.due || 0) - new Date(b.due || 0));
+
+    host.innerHTML = list.length ? list.map(a => {
+      const s = dueStatus(a.due);
+      return `
+      <article class="card">
+        ${a.subject ? '<span class="subject-tag">' + esc(a.subject) + "</span>" : ""}
+        <div class="row">
+          <h3>${esc(a.title)}</h3>
+          <span class="badge ${s.cls}">${s.label}</span>
+        </div>
+        <p class="body">${a.body || ""}</p>
+        <div class="row" style="margin-top:10px">
+          <span class="date">Due ${esc(prettyDate(a.due))}${a.points ? " · " + esc(a.points) + " pts" : ""}</span>
+          ${a.link ? '<a href="' + esc(a.link) + '" target="_blank" rel="noopener">Open handout →</a>' : ""}
+        </div>
+      </article>`;
+    }).join("") : '<p class="empty">No assignments posted yet.</p>';
+  }
+
+  /* ---------- outline ---------- */
+  function renderOutline(){
+    const host = $("#outline");
+    const cls  = getClass();
+    if (!cls){
+      host.innerHTML = '<p class="empty">Select a class to see its outline.</p>';
+      return;
+    }
+    const showSubject = (cls.subjects || []).length > 0;
+    const list = (cls.outline || []).filter(matchesSubject)
+      .sort((a, b) => (Number(a.week) || 0) - (Number(b.week) || 0));
+
+    host.innerHTML = list.length ? `
+      <div class="scroll">
+        <table>
+          <thead><tr>
+            <th>Week</th>${showSubject ? "<th>Subject</th>" : ""}
+            <th>Topic</th><th>Reading</th><th>Notes</th>
+          </tr></thead>
+          <tbody>${list.map(w => `
+            <tr>
+              <td class="wk">Week ${esc(w.week)}</td>
+              ${showSubject ? "<td>" + esc(w.subject || "—") + "</td>" : ""}
+              <td>${esc(w.topic)}</td>
+              <td>${esc(w.reading)}</td>
+              <td>${esc(w.notes)}</td>
+            </tr>`).join("")}</tbody>
+        </table>
+      </div>` : '<p class="empty">Outline coming soon.</p>';
+  }
+
+  /* ---------- master render ---------- */
+  function renderAll(){
+    const cls = getClass();
+    heading.textContent = cls ? (cls.name || "") : "";
+    renderChips();
+    renderAnnouncements();
+    renderAssignments();
+    renderOutline();
+  }
+
+  /* ---------- events ---------- */
+  picker.addEventListener("change", () => {
+    currentId = picker.value;
+    subjectFilter = "all";
+    store.set(STORE_KEY, currentId);
+    renderAll();
+  });
+
+  chipsEl.addEventListener("click", e => {
+    const b = e.target.closest("[data-subject]");
+    if (!b) return;
+    subjectFilter = b.dataset.subject;
+    renderAll();
+  });
+
+  /* ---------- tabs ---------- */
+  const ids = ["announcements", "assignments", "outline"];
+  const showTab = id => {
+    document.querySelectorAll(".tab").forEach(b =>
+      b.classList.toggle("active", b.dataset.tab === id));
+    document.querySelectorAll(".panel").forEach(p =>
+      p.classList.toggle("active", p.id === id));
+    try { history.replaceState(null, "", "#" + id); } catch (e) {}
+  };
+  document.querySelectorAll(".tab").forEach(btn =>
+    btn.addEventListener("click", () => showTab(btn.dataset.tab)));
+  const start = (location.hash || "").slice(1);
+  showTab(ids.indexOf(start) > -1 ? start : "announcements");
+
+  renderAll();
+})({
+  "school": {
+    "name": "GREEN ISLAND HIGH SCHOOL ",
+    "term": "Christmas Term ",
+    "instructor": "Mr. Deacon ",
+    "email": "al.deaconjr@gmail.com ",
+    "officeHours": "Tue & Fri, 10 -11 PM · SCI LAB 1"
+  },
+  "classes": [
+    {
+      "id": "cmtz8rcrx5ecr",
+      "name": "GRADE 9",
+      "subjects": [
+        "Physics"
+      ],
+      "announcements": [],
+      "assignments": [],
+      "outline": []
+    },
+    {
+      "id": "cmtz8s3d17l3o",
+      "name": "GRADE 10",
+      "subjects": [
+        "Physics"
+      ],
+      "announcements": [
+        {
+          "title": "Welcome ",
+          "subject": "Physics",
+          "date": "2026-09-13",
+          "pinned": true,
+          "body": "\u003c!DOCTYPE html>\n\u003chtml lang=\"en\" data-qb-installed=\"true\">\u003chead>\n    \u003cmeta charset=\"UTF-8\">\n    \u003cmeta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    \u003ctitle>GRADE 10 CSEC Physics - Complete Master Curriculum\u003c/title>\n    \u003clink rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css\">\n    \u003cstyle>\n      *, *:before, *:after { box-sizing: border-box; }\n      body {\n        font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;\n        padding: 0;\n        margin: 0;\n        color: #1e293b;\n        line-height: 1.6;\n        background-color: #f1f5f9;\n      }\n      .html-top-header {\n        position: sticky;\n        top: 0;\n        z-index: 9999;\n        background: #0f172a;\n        color: #f8fafc;\n        padding: 12px 24px;\n        display: flex;\n        align-items: center;\n        justify-content: space-between;\n        gap: 16px;\n        box-shadow: 0 4px 12px rgba(0,0,0,0.15);\n      }\n      .html-top-header .title-area {\n        display: flex;\n        align-items: center;\n        gap: 10px;\n        min-width: 0;\n      }\n      .html-top-header .tag {\n        background: #0284c7;\n        color: #ffffff;\n        font-size: 11px;\n        font-weight: 700;\n        padding: 3px 8px;\n        border-radius: 4px;\n        text-transform: uppercase;\n        letter-spacing: 0.5px;\n        flex-shrink: 0;\n      }\n      .html-top-header .doc-name {\n        font-weight: 600;\n        font-size: 14px;\n        white-space: nowrap;\n        overflow: hidden;\n        text-overflow: ellipsis;\n      }\n      .html-top-header .actions {\n        display: flex;\n        align-items: center;\n        gap: 8px;\n        flex-shrink: 0;\n      }\n      .html-btn {\n        background: #0284c7;\n        color: #ffffff;\n        border: none;\n        border-radius: 6px;\n        padding: 7px 14px;\n        font-size: 12px;\n        font-weight: 600;\n        cursor: pointer;\n        display: inline-flex;\n        align-items: center;\n        gap: 6px;\n        transition: all 0.15s ease;\n      }\n      .html-btn:hover {\n        background: #0369a1;\n      }\n      .html-btn-secondary {\n        background: #334155;\n      }\n      .html-btn-secondary:hover {\n        background: #475569;\n      }\n      .page-wrapper {\n        max-width: 920px;\n        margin: 32px auto 64px auto;\n        background: #ffffff;\n        padding: 48px;\n        border-radius: 12px;\n        box-shadow: 0 4px 20px rgba(0,0,0,0.06);\n        border: 1px solid #e2e8f0;\n      }\n      h1 { color: #0f172a; border-bottom: 2px solid #0284c7; padding-bottom: 8px; margin-bottom: 16px; font-size: 24px; }\n      h2 { color: #0369a1; margin-top: 24px; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; font-size: 20px; }\n      h3 { color: #334155; margin-top: 18px; margin-bottom: 6px; font-size: 16px; }\n      .phase-box { background: #f8fafc; border: 1px solid #cbd5e1; border-left: 4px solid #0284c7; padding: 14px 18px; margin-bottom: 14px; border-radius: 6px; }\n      .meta-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; background: #f1f5f9; padding: 14px; border-radius: 8px; margin-bottom: 20px; }\n      .badge { display: inline-block; background: #e0f2fe; color: #0369a1; padding: 3px 10px; border-radius: 9999px; font-size: 12px; font-weight: 600; margin-right: 6px; }\n      ul, ol { margin-top: 4px; margin-bottom: 10px; padding-left: 24px; }\n      p { margin-top: 4px; margin-bottom: 8px; }\n      font[size=\"1\"] { font-size: 11px; line-height: 1.45; }\n      font[size=\"2\"] { font-size: 13px; line-height: 1.5; }\n      font[size=\"3\"] { font-size: 15px; line-height: 1.55; }\n      font[size=\"4\"] { font-size: 18px; line-height: 1.4; font-weight: 500; }\n      font[size=\"5\"] { font-size: 22px; line-height: 1.35; font-weight: 600; }\n      font[size=\"6\"] { font-size: 28px; line-height: 1.25; font-weight: 700; }\n      font[size=\"7\"] { font-size: 34px; line-height: 1.2; font-weight: 700; }\n      table { width: 100%; border-collapse: collapse; margin-top: 12px; margin-bottom: 20px; }\n      th, td { border: 1px solid #cbd5e1; padding: 10px 12px; text-align: left; }\n      th { background: #f1f5f9; font-weight: 600; }\n      /* KaTeX math formatting */\n      .katex { font-size: 1.05em; font-family: KaTeX_Main, Times New Roman, serif; }\n      .katex-display { margin: 0.8em 0; text-align: center; }\n      .display-math-block { margin: 12px 0; text-align: center; padding: 8px; }\n      .inline-math-token { display: inline-block; vertical-align: middle; padding: 0 2px; }\n      @media print {\n        body { padding: 0; background: #ffffff; }\n        .page-wrapper { margin: 0; padding: 10px; max-width: 100%; border: none; box-shadow: none; }\n        .html-top-header, .no-print { display: none !important; }\n        .inline-math-token { background: transparent !important; border: none !important; }\n        .display-math-block { background: transparent !important; border: none !important; }\n      }\n    \u003c/style>\n  \u003clink type=\"text/css\" rel=\"stylesheet\" href=\"chrome-extension://fheoggkfdfchfphceeifdbepaooicaho/css/mcafee_fonts.css\">\u003c/head>\n  \u003cbody>\n    \u003cdiv class=\"html-top-header no-print\">\n      \u003cdiv class=\"title-area\">\n        \u003cspan class=\"tag\">HTML View\u003c/span>\n        \u003cspan class=\"doc-name\">GRADE 10 CSEC Physics - Complete Master Curriculum\u003c/span>\n      \u003c/div>\n      \u003cdiv class=\"actions\">\n        \u003cbutton class=\"html-btn\" onclick=\"saveStandaloneFile()\">\n          💾 Save .HTML File\n        \u003c/button>\n        \u003cbutton class=\"html-btn html-btn-secondary\" onclick=\"window.print()\">\n          🖨️ Print / Save PDF\n        \u003c/button>\n      \u003c/div>\n    \u003c/div>\n    \u003cdiv class=\"page-wrapper\">\n      \n      \u003cdiv style=\"max-width: 1100px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #000; padding: 20px;\">\n        \u003cdiv style=\"border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end;\">\n          \u003cdiv>\n            \u003ch1 style=\"margin: 0; font-size: 24px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;\">GRADE 10 CSEC Physics\u003c/h1>\n            \u003cp style=\"margin: 4px 0 0; font-size: 13px; color: #444;\">Weekly Curriculum Master Table (Long-Term Plan)\u003c/p>\n          \u003c/div>\n          \u003cdiv style=\"text-align: right; font-size: 12px; color: #666;\">\n            3 Six-Week Blocks • Generated from Teacher Planner\n          \u003c/div>\n        \u003c/div>\n    \n        \u003cdiv style=\"\">\n          \u003cdiv style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;\">\n            \u003ch2 style=\"margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.2px;\">\n              Block 1: CHRISTMAS TERM  (Weeks 1 - 6)\n            \u003c/h2>\n            \u003cspan style=\"font-size: 12px; font-weight: bold; padding: 2px 8px; background: #f1f5f9; border-radius: 4px;\">\n              6 Weeks\n            \u003c/span>\n          \u003c/div>\n\n          \u003ctable style=\"width: 100%; border-collapse: collapse; border: 2px solid #000; margin-bottom: 24px; table-layout: fixed;\">\n            \u003cthead>\n              \u003ctr>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 1\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 2\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 3\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 4\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 5\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 6\n                  \u003c/th>\n                \n              \u003c/tr>\n              \u003ctr>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    14/09/26 - 18/09/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    21/09/26 - 25/09/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    28/09/26 - 02/10/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    05/10/26 - 09/10/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    12/10/26 - 16/10/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    19/10/26 - 23/10/26\n                  \u003c/th>\n                \n              \u003c/tr>\n            \u003c/thead>\n            \u003ctbody>\n              \u003ctr>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A1.1: Discuss how the methodology employed by Galileo contributed to the development of Physics.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A1.2: Investigate the factors which might affect the period of a simple pendulum.\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A1.3: Use graphs of experimental data from simple pendulum.\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A1.4: Draw a line of \"best fit\" for a set of plotted values.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A1.5: Determine the gradient of the straight line graph.\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A1.6: Express the result of a measurement or calculation to an appropriate number of significant figures.\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A1.7: Discuss possible types and sources of error in any measurement.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A1.8: Use a variety of instruments to measure different quantities.\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A1.9: Assess the suitability of instruments on the basis of sensitivity, accuracy and range.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A1.10: Apply the formula for density: ρ = m / V.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #ffe4e6; border: 1px solid #f43f5e; font-weight: bold;\">\n                        SWT 1\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n              \u003c/tr>\n            \u003c/tbody>\n          \u003c/table>\n        \u003c/div>\n      \n        \u003cdiv style=\"page-break-before: always; margin-top: 36px;\">\n          \u003cdiv style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;\">\n            \u003ch2 style=\"margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.2px;\">\n              Block 2: CHRISTMAS TERM (Weeks 7 - 12)\n            \u003c/h2>\n            \u003cspan style=\"font-size: 12px; font-weight: bold; padding: 2px 8px; background: #f1f5f9; border-radius: 4px;\">\n              6 Weeks\n            \u003c/span>\n          \u003c/div>\n\n          \u003ctable style=\"width: 100%; border-collapse: collapse; border: 2px solid #000; margin-bottom: 24px; table-layout: fixed;\">\n            \u003cthead>\n              \u003ctr>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 7\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 8\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 9\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 10\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 11\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 12\n                  \u003c/th>\n                \n              \u003c/tr>\n              \u003ctr>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    26/10/26 - 30/10/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    02/11/26 - 06/11/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    09/11/26 - 13/11/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    16/11/26 - 20/11/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    23/11/26 - 27/11/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    30/11/26 - 04/12/26\n                  \u003c/th>\n                \n              \u003c/tr>\n            \u003c/thead>\n            \u003ctbody>\n              \u003ctr>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A2.1: Distinguish between scalars and vectors and give examples of each.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A2.2: Use scale diagrams to find the resultant of two vectors.\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A2.3: Calculate the resultant of vectors which are parallel, anti-parallel and perpendicular.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A2.4: Explain that a single vector is equivalent to two other vectors at right angles.\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.1: Explain the effects of forces.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.2: Identify types of forces.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.3: Determine the weight of objects using W = mg.\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.4: Show how derived quantities and their related units are produced.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.5: Recall the special names given to the units for some derived quantities (e.g., kg m s⁻² = N, N m⁻² = Pa, J = N m).\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.6: Express derived units using index notation.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.7: Identify situations in which the application of a force will result in a turning effect.\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.8: Define the moment of a force: T = F × d.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #ffe4e6; border: 1px solid #f43f5e; font-weight: bold;\">\n                        SWT 2\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n              \u003c/tr>\n            \u003c/tbody>\n          \u003c/table>\n        \u003c/div>\n      \n        \u003cdiv style=\"page-break-before: always; margin-top: 36px;\">\n          \u003cdiv style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;\">\n            \u003ch2 style=\"margin: 0; font-size: 18px; font-weight: 800; letter-spacing: 0.2px;\">\n              Block 3: CHRISTMAS TERM (Weeks 13 - 18)\n            \u003c/h2>\n            \u003cspan style=\"font-size: 12px; font-weight: bold; padding: 2px 8px; background: #f1f5f9; border-radius: 4px;\">\n              6 Weeks\n            \u003c/span>\n          \u003c/div>\n\n          \u003ctable style=\"width: 100%; border-collapse: collapse; border: 2px solid #000; margin-bottom: 24px; table-layout: fixed;\">\n            \u003cthead>\n              \u003ctr>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 13\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 14\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 15\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 16\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 17\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 10px 6px; font-size: 13px; font-weight: 800; text-align: center; background-color: #fff; width: 16%;\">\n                    WEEK 18\n                  \u003c/th>\n                \n              \u003c/tr>\n              \u003ctr>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    07/12/26 - 11/12/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    14/12/26 - 18/12/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    21/12/26 - 25/12/26\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    DD/MM/YY - DD/MM/YY\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    DD/MM/YY - DD/MM/YY\n                  \u003c/th>\n                \n                  \u003cth style=\"border: 2px solid #000; padding: 8px 4px; font-size: 11px; font-weight: 600; text-align: center; background-color: #fff;\">\n                    DD/MM/YY - DD/MM/YY\n                  \u003c/th>\n                \n              \u003c/tr>\n            \u003c/thead>\n            \u003ctbody>\n              \u003ctr>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.9: Apply the principle of moments to bodies in equilibrium.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.10: Explain the action of common tools and devices as levers.\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.11: Determine the location of the centre of gravity of a body.\n                      \u003c/div>\n                    \n                      \u003cdiv style=\"margin-bottom: 8px; padding: 4px 6px; background-color: #f8fafc;\">\n                        PHYS-A3.12: Relate the stability of an object to the position of its centre of gravity and its base width.\n                      \u003c/div>\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                  \u003c/td>\n                \n                  \u003ctd style=\"border: 2px solid #000; padding: 10px 8px; vertical-align: top; min-height: 280px; font-size: 11px; line-height: 1.45;\">\n                    \n                  \u003c/td>\n                \n              \u003c/tr>\n            \u003c/tbody>\n          \u003c/table>\n        \u003c/div>\n      \n      \u003c/div>\n    \n    \u003c/div>\n    \u003cscript>\n      function saveStandaloneFile() {\n        const fullDoc = \"\u003c!DOCTYPE html>\\n\" + document.documentElement.outerHTML;\n        const blob = new Blob([fullDoc], { type: \"text/html;charset=utf-8;\" });\n        const url = URL.createObjectURL(blob);\n        const link = document.createElement(\"a\");\n        link.href = url;\n        link.download = \"GRADE_10_CSEC_Physics_-_Complete_Master_Curriculum.html\";\n        document.body.appendChild(link);\n        link.click();\n        document.body.removeChild(link);\n        URL.revokeObjectURL(url);\n      }\n    \u003c/script>\n  \n\u003cspan id=\"PING_CONTENT_DLS_POPUP\" style=\"display: none;\">\u003c/span>\u003cdiv style=\"background-color: transparent; border-width: medium; border-style: none; border-color: currentcolor; border-image: none; bottom: 15px; display: block; margin: 0px; opacity: 1; padding: 0px; position: fixed; right: 15px; z-index: 2147483647;\">\u003c/div>\u003c/body>\u003c/html>"
+        }
+      ],
+      "assignments": [],
+      "outline": []
+    },
+    {
+      "id": "cmtz8sr9mz5t4",
+      "name": "GRADE 11 ",
+      "subjects": [
+        "Physics"
+      ],
+      "announcements": [],
+      "assignments": [],
+      "outline": []
+    },
+    {
+      "id": "cmtz8tbnwuzlk",
+      "name": "GRADE 12/13",
+      "subjects": [
+        "Physics"
+      ],
+      "announcements": [],
+      "assignments": [],
+      "outline": []
+    }
+  ]
+});
+</script>
+</body>
+</html>
